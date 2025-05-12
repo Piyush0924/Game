@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/home';
+import Navbar  from './components/Navbar';
 import Wallet from './components/wallet';
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/navbar" element={<Navbar/>} />
         <Route path="/wallet" element={<Wallet />} />
       </Routes>
     </Router>
