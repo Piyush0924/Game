@@ -1,27 +1,35 @@
+import { GameImage } from './GameImages';
+
 const games = [
   {
     id: 1,
     name: 'Chess',
-    description: 'Challenge players worldwide in the ultimate game of strategy and skill.',
+    description: 'Challenge players worldwide in the ultimate game of strategy and skill. Play 1v1 matches and climb the leaderboard.',
     image: '/chess.jpg',
     players: '2',
     time: '10-30 min',
+    features: ['Real-time matches', 'Tournament mode', 'Skill-based matchmaking'],
+    prize: 'Up to ₹50,000',
   },
   {
     id: 2,
     name: 'Ludo',
-    description: 'Roll the dice and race your tokens to victory in this classic board game.',
+    description: 'Roll the dice and race your tokens to victory in this classic board game. Perfect for quick matches and family fun.',
     image: '/ludo.jpg',
     players: '2-4',
     time: '15-45 min',
+    features: ['Quick matches', 'Team play', 'Daily rewards'],
+    prize: 'Up to ₹25,000',
   },
   {
     id: 3,
     name: 'Carrom',
-    description: 'Test your precision and control in this popular tabletop game.',
+    description: 'Test your precision and control in this popular tabletop game. Master the art of striking and pocketing.',
     image: '/carrom.jpg',
     players: '2-4',
     time: '20-40 min',
+    features: ['Practice mode', 'Tournament play', 'Leaderboards'],
+    prize: 'Up to ₹35,000',
   },
 ];
 
@@ -42,19 +50,19 @@ export default function PopularGames() {
           {games.map((game) => (
             <div
               key={game.id}
-              className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
+              className="group bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
             >
-              <div className="relative h-48 bg-gray-200">
-                {/* Placeholder for game image */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-500 opacity-75" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-white">{game.name}</span>
+              <div className="relative h-48">
+                <GameImage type="main" game={game.name.toLowerCase()} className="w-full h-full" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-4 left-4 text-white">
+                  <h3 className="text-2xl font-bold">{game.name}</h3>
+                  <p className="text-sm text-gray-200">Prize Pool: {game.prize}</p>
                 </div>
               </div>
               
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900">{game.name}</h3>
-                <p className="mt-2 text-gray-600">{game.description}</p>
+                <p className="text-gray-600">{game.description}</p>
                 
                 <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
                   <div className="flex items-center">
@@ -70,10 +78,29 @@ export default function PopularGames() {
                     {game.time}
                   </div>
                 </div>
+
+                <div className="mt-4">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Features:</h4>
+                  <ul className="space-y-1">
+                    {game.features.map((feature, index) => (
+                      <li key={index} className="flex items-center text-sm text-gray-600">
+                        <svg className="h-4 w-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 
-                <button className="mt-6 w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200">
-                  Play Now
-                </button>
+                <div className="mt-6 flex gap-4">
+                  <button className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200">
+                    Play Now
+                  </button>
+                  <button className="flex-1 bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transform hover:scale-105 transition-all duration-200">
+                    Learn More
+                  </button>
+                </div>
               </div>
             </div>
           ))}

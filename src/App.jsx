@@ -5,6 +5,7 @@ import HeroSection from './components/HeroSection';
 import PopularGames from './components/PopularGames';
 import UpcomingTournaments from './components/UpcomingTournaments';
 import Features from './components/Features';
+import BottomNav from './components/BottomNav';
 
 export default function App() {
   useEffect(() => {
@@ -18,17 +19,17 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-      <main>
+      <main className="flex-1 pb-16 md:pb-0"> {/* Add padding bottom for mobile to account for bottom nav */}
         <HeroSection />
         <PopularGames />
         <UpcomingTournaments />
         <Features />
       </main>
       
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      {/* Footer - Hidden on mobile */}
+      <footer className="hidden md:block bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -72,6 +73,9 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }
