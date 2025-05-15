@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import GameSection from './components/GameSection';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
@@ -209,7 +208,6 @@ function HomePage() {
             <Navbar />
             <main className="flex-1 pb-16 md:pb-0">
               <HeroSection />
-              <GameSection />
               <PopularGames />
               <FeaturedTournaments />
               <GameStats />
@@ -219,7 +217,6 @@ function HomePage() {
           </>
         )}
       </div>
-
       <style>{`
         @keyframes gradientShift {
           0% { background-position: 0% 0%; }

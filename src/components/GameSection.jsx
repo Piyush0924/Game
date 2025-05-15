@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Home, Gamepad2, Wallet, Users, User } from 'lucide-react';
 
-export default function GameSection() {
+// GameSection Component
+function GameSection() {
   const [activeTab, setActiveTab] = useState('All');
 
   const games = {
@@ -29,7 +31,7 @@ export default function GameSection() {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       {/* Tabs Section */}
       <div className="max-w-7xl mx-auto">
         {/* Tabs */}
@@ -71,6 +73,68 @@ export default function GameSection() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// BottomNav Component
+const navigation = [
+  { name: 'Home', icon: Home, href: '#' },
+  { name: 'Games', icon: Gamepad2, href: '#' },
+  { name: 'Wallet', icon: Wallet, href: '#' },
+  { name: 'Community', icon: Users, href: '#' },
+  { name: 'Profile', icon: User, href: '#' },
+];
+
+export default function BottomNav() {
+  const [active, setActive] = useState('Home'); // Default to Home
+
+  return (
+    <div className="min-h-screen bg-gray-900 flex flex-col">
+      {/* Content Area */}
+      <div className="flex-grow pb-20">
+        {active === 'Games' && <GameSection />}
+        {active === 'Home' && <div className="text-white text-center pt-12">Home Content</div>}
+        {active === 'Wallet' && <div className="text-white text-center pt-12">Wallet Content</div>}
+        {active === 'Community' && <div className="text-white text-center pt-12">Community Content</div>}
+        {active === 'Profile' && <div className="text-white text-center pt-12">Profile Content</div>}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-[9999]">
+        <div className="mx-auto max-w-2xl">
+          <div className="glass-effect bg-gradient-to-tr from-white/70 via-purple-100/60 to-blue-100/60 backdrop-blur-xl border-t border-gray-200 shadow-2xl rounded-t-2xl flex justify-around items-center h-20 px-2">
+            {navigation.map((item) => {
+              const isActive = active === item.name;
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => setActive(item.name)}
+                  className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
+                    isActive ? 'text-purple-700' : 'text-gray-600 hover:text-purple-600'
+                  }`}
+                  style={{ minWidth: 0 }}
+                >
+                  <span
+                    className={`flex items-center justify-center rounded-full transition-all duration-200 ${
+                      isActive ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110' : ''
+                    } p-2`}
+                  >
+                    <item.icon className={`h-7 w-7 transition-all duration-200 ${isActive ? 'text-white' : ''}`} />
+                  </span>
+                  <span
+                    className={`text-xs mt-1 font-semibold transition-all duration-200 ${
+                      isActive ? 'text-purple-700' : ''
+                    }`}
+                  >
+                    {item.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
