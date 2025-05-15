@@ -10,6 +10,7 @@ const navigation = [
 
 export default function BottomNav() {
   const [active, setActive] = useState('Home');
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999]">
       <div className="mx-auto max-w-2xl">
