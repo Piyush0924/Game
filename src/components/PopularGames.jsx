@@ -87,6 +87,7 @@ const games = [
     topPrize: '₹10,000',
     icon: '🎯',
   },
+
 ];
 
 export default function PopularGames() {
