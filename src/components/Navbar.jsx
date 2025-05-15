@@ -6,7 +6,9 @@ const navigation = [
   { name: 'Home', href: '#' },
   { name: 'Games', href: '#' },
   { name: 'Tournaments', href: '#' },
-  { name: 'Leaderboard', href: '#' },
+  { name: 'Wallet', href: '#' },
+  { name: 'Community', href: '#' },
+  { name: 'Profile', href: '#' },
 ];
 
 const moreOptions = [
@@ -62,4 +64,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-} 
+}

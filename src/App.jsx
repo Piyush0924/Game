@@ -1,16 +1,10 @@
 // src/App.jsx
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-import Navbar from './components/Navbar';
-import HeroSection from './components/HeroSection';
-import GameCategories from './components/GameCategories';
-import PopularGames from './components/PopularGames';
-import FeaturedTournaments from './components/FeaturedTournaments';
-import GameStats from './components/GameStats';
-import SpinToWin from './components/SpinToWin';
-import BottomNav from './components/BottomNav';
+import HomePage from './pages/home';
+import Navbar  from './components/Navbar';
+import Wallet from './components/wallet';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -164,116 +158,11 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen relative">
-        {/* Interactive Background Canvas */}
-        <canvas
-          ref={canvasRef}
-          className="fixed inset-0 w-full h-full z-0"
-          style={{ opacity: 0.7 }}
-        />
-
-        {/* Dynamic Gradient Overlay */}
-        <div 
-          className="fixed inset-0 z-0"
-          style={{
-            background: `
-              radial-gradient(circle at 20% 20%, rgba(162, 89, 255, 0.15) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(58, 242, 255, 0.12) 0%, transparent 50%),
-              linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 50%, rgba(15, 52, 96, 0.95) 100%)
-            `,
-            backgroundBlendMode: 'screen',
-            animation: 'gradientShift 15s ease infinite'
-          }}
-        />
-
-        {/* Animated Glow Effects */}
-        <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float-slow" />
-        <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float-slow-delayed" />
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse-slow" />
-
-        {/* Content Container */}
-        <div className="relative z-10">
-      {/* Splash Screen */}
-      {showSplash && (
-        <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center">
-              <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
-          <div className="relative z-10 flex flex-col items-center justify-center">
-                <img 
-                  src="/images/logo.png" 
-                  alt="BoostNow Games Logo" 
-                  className="h-24 w-24 mb-6 rounded-2xl shadow-2xl animate-float"
-                />
-                <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg tracking-wide animate-pulse-glow">
-                  BoostNow Games
-                </h1>
-          </div>
-        </div>
-      )}
-
-      {!showSplash && (
-        <>
-              <Navbar />
-              <main className="flex-1 pb-16 md:pb-0">
-                <HeroSection />
-                <GameCategories />
-                <PopularGames />
-                <FeaturedTournaments />
-                <GameStats />
-                <SpinToWin />
-              </main>
-          <BottomNav />
-        </>
-      )}
-    </div>
-
-        <style>{`
-          @keyframes gradientShift {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-          }
-
-          @keyframes float-slow {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.05); }
-          }
-
-          @keyframes float-slow-delayed {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.05); }
-          }
-
-          @keyframes pulse-slow {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-          }
-
-          @keyframes pulse-glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(162, 89, 255, 0.5); }
-            50% { text-shadow: 0 0 30px rgba(162, 89, 255, 0.8); }
-          }
-
-          .animate-float-slow {
-            animation: float-slow 8s ease-in-out infinite;
-          }
-
-          .animate-float-slow-delayed {
-            animation: float-slow-delayed 8s ease-in-out infinite 2s;
-          }
-
-          .animate-pulse-slow {
-            animation: pulse-slow 4s ease-in-out infinite;
-          }
-
-          .animate-pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite;
-          }
-
-          .animate-float {
-            animation: float-slow 3s ease-in-out infinite;
-          }
-        `}</style>
-      </div>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/navbar" element={<Navbar/>} />
+        <Route path="/wallet" element={<Wallet />} />
+      </Routes>
     </Router>
   );
 }
