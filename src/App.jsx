@@ -2,12 +2,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import GameSection from './pages/games';
+import Community from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
 import Wallet from './components/Wallet';
+// import GameSection from './components/GameSection';
 import CommunityPage from './components/Vinit/Community';
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -217,7 +220,6 @@ function HomePage() {
           </>
         )}
       </div>
-
       <style>{`
         @keyframes gradientShift {
           0% { background-position: 0% 0%; }
@@ -258,7 +260,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/wallet" element={<Wallet />} />
-        <Route path="/Community" element={<CommunityPage/>} />
+        <Route path="/Community" element={<Community/>} />
+        <Route path="/Games" element={<GameSection/>} />
+
       </Routes>
     </Router>
   );
