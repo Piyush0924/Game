@@ -1,78 +1,72 @@
-import { Wallet, Users, Trophy, Shield } from 'lucide-react';
-
-const features = [
-  {
-    name: 'Secure Wallet',
-    description: 'Instant deposits and withdrawals with multiple payment options. Your money is always safe with us.',
-    icon: Wallet,
-  },
-  {
-    name: 'Active Community',
-    description: 'Join thousands of players, participate in discussions, and make new friends.',
-    icon: Users,
-  },
-  {
-    name: 'Daily Rewards',
-    description: 'Earn rewards just by playing! Daily bonuses and special promotions for our players.',
-    icon: Trophy,
-  },
-  {
-    name: 'Safe & Fair',
-    description: 'Our platform ensures fair play and secure transactions for all players.',
-    icon: Shield,
-  },
-];
+import React from 'react';
+import { Trophy, Shield, Zap, Users, Gift, Star } from 'lucide-react';
 
 export default function Features() {
+  const features = [
+    {
+      icon: <Trophy className="h-8 w-8 text-yellow-500" />,
+      title: "Win Real Cash",
+      description: "Compete in tournaments and win real money prizes instantly"
+    },
+    {
+      icon: <Shield className="h-8 w-8 text-green-500" />,
+      title: "Secure Platform",
+      description: "Your money and data are protected with bank-grade security"
+    },
+    {
+      icon: <Zap className="h-8 w-8 text-blue-500" />,
+      title: "Instant Withdrawals",
+      description: "Get your winnings instantly to your bank account"
+    },
+    {
+      icon: <Users className="h-8 w-8 text-purple-500" />,
+      title: "Large Community",
+      description: "Join thousands of players in daily tournaments"
+    },
+    {
+      icon: <Gift className="h-8 w-8 text-red-500" />,
+      title: "Daily Rewards",
+      description: "Earn rewards just by playing your favorite games"
+    },
+    {
+      icon: <Star className="h-8 w-8 text-amber-500" />,
+      title: "Premium Support",
+      description: "24/7 customer support for all your queries"
+    }
+  ];
+
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+    <section className="py-16 px-4 md:px-8 bg-gray-800/30">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
             Why Choose BoostNow Games?
           </h2>
-          <p className="mt-4 text-xl text-gray-600">
-            Experience gaming like never before with our premium features
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Experience the best gaming platform with instant rewards, secure transactions, and a thriving community
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
             <div
-              key={feature.name}
-              className="relative group bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              key={index}
+              className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10"
             >
-              <div className="absolute -top-4 left-6">
-                <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white transform group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="h-6 w-6" />
-                </div>
+              <div className="mb-4">
+                {feature.icon}
               </div>
-              
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold text-gray-900">{feature.name}</h3>
-                <p className="mt-2 text-gray-600">{feature.description}</p>
-              </div>
-              
-              <div className="mt-4">
-                <button className="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform duration-300">
-                  Learn more
-                  <svg
-                    className="ml-1 h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
+              <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
+              <p className="text-gray-400">{feature.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Call to Action */}
+        <div className="mt-16 text-center">
+          <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-purple-500/20">
+            Start Playing Now
+          </button>
         </div>
       </div>
     </section>
