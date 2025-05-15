@@ -9,6 +9,12 @@ import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
 import Wallet from './components/Wallet';
 import CommunityPage from './components/Vinit/Community';
+import SPS from './components/SPS';
+import MemoryMatchGame from './components/MemoryMatchGame';
+import DiceDuel from './components/DiceDuel';
+import CoinFlipBet from './components/CoinFlipBet';
+import MysteryBoxVsCPU from './components/MysteryBoxVsCPU';
+
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
   const canvasRef = useRef(null);
@@ -258,7 +264,12 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/wallet" element={<Wallet />} />
-        <Route path="/Community" element={<CommunityPage/>} />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/games/sps" element={<SPS />} />
+        <Route path="/games/memory" element={<MemoryMatchGame />} />
+        <Route path="/games/dice" element={<DiceDuel />} />
+        <Route path="/games/coinflip" element={<CoinFlipBet />} />
+        <Route path="/games/mysterybox" element={<MysteryBoxVsCPU />} />
       </Routes>
     </Router>
   );
