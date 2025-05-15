@@ -11,7 +11,7 @@ import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
 
 // Pages / Other Components
-import Wallet from './components/Wallet'; // Note capitalization consistent with import
+import Wallet from './components/wallet'; // Note capitalization consistent with import
 import CommunityPage from './components/Vinit/Community';
 import Community from './pages/community';  // different Community component from second code
 import SPS from './components/SPS';
@@ -22,6 +22,7 @@ import MysteryBoxVsCPU from './components/MysteryBoxVsCPU';
 import GameSection from './pages/games';
 import Rewards from './components/rewards';
 import History from './components/history';
+import GameLobby from './components/GameLobbyTwo';
 
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -256,6 +257,7 @@ function App() {
         <Route path="/Games" element={<GameSection />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/history" element={<History />} />
+        <Route path="/lobby" element={<GameLobby />} />
       </Routes>
     </Router>
   );
