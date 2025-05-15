@@ -1,21 +1,22 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Home', href: '#' },
-  { name: 'Games', href: '#' },
-  { name: 'Tournaments', href: '#' },
-  { name: 'Wallet', href: '#' },
-  { name: 'Community', href: '#' },
-  { name: 'Profile', href: '#' },
+  { name: 'Home', href: '/' },
+  { name: 'Games', href: '/games' },
+  { name: 'Tournaments', href: '/tournaments' },
+  { name: 'Wallet', href: '/wallet' },
+  { name: 'Community', href: '/community' },
+  { name: 'Profile', href: '/profile' },
 ];
 
 const moreOptions = [
-  { name: 'About Us', href: '#' },
-  { name: 'Support', href: '#' },
-  { name: 'Terms & Conditions', href: '#' },
-  { name: 'Privacy Policy', href: '#' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Support', href: '/support' },
+  { name: 'Terms & Conditions', href: '/terms' },
+  { name: 'Privacy Policy', href: '/privacy' },
 ];
 
 export default function Navbar() {
@@ -28,25 +29,25 @@ export default function Navbar() {
               <span className="text-2xl font-bold text-white">BoostNow Games</span>
             </div>
           </div>
-          
+
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navigation.map((item) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
-              
+
               <Menu as="div" className="relative inline-block text-left">
                 <Menu.Button className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 inline-flex items-center">
                   More
                   <ChevronDownIcon className="ml-1 h-4 w-4" aria-hidden="true" />
                 </Menu.Button>
-                
+
                 <Transition
                   as={Fragment}
                   enter="transition ease-out duration-100"
@@ -61,14 +62,14 @@ export default function Navbar() {
                       {moreOptions.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
-                              href={item.href}
+                            <Link
+                              to={item.href}
                               className={`${
                                 active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                               } block px-4 py-2 text-sm`}
                             >
                               {item.name}
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       ))}
@@ -78,7 +79,8 @@ export default function Navbar() {
               </Menu>
             </div>
           </div>
-          
+
+          {/* Optional: Mobile menu icon placeholder */}
           <div className="md:hidden">
             <button
               type="button"
@@ -105,4 +107,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-} 
+}

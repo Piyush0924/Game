@@ -1,9 +1,12 @@
 import React from 'react';
 import Navbar from './Navbar';
 import BottomNav from './BottomNav';
+import { useNavigate } from 'react-router-dom';
 import { FiArrowUpRight, FiArrowDownLeft, FiClock, FiGift, FiDollarSign, FiCreditCard, FiAward } from 'react-icons/fi';
 
 export default function Wallet() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex flex-col">
       {/* Header with gradient */}
@@ -16,7 +19,10 @@ export default function Wallet() {
             <div className="bg-white bg-opacity-20 text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center">
               <FiAward className="mr-1" /> VIP POINTS: 4
             </div>
-            <button className="text-xs bg-white bg-opacity-20 px-3 py-1 rounded-full font-medium">
+            <button 
+              className="text-xs bg-white bg-opacity-20 px-3 py-1 rounded-full font-medium"
+              onClick={() => navigate('/history')}
+            >
               Transactions
             </button>
           </div>
@@ -41,13 +47,22 @@ export default function Wallet() {
         {/* Quick actions */}
         <div className="grid grid-cols-4 gap-2 mb-6">
           {[
-            { icon: <FiArrowUpRight size={20} />, label: 'Send' },
-            { icon: <FiArrowDownLeft size={20} />, label: 'Request' },
-            { icon: <FiClock size={20} />, label: 'History' },
-            { icon: <FiGift size={20} />, label: 'Rewards' }
+            { icon: <FiArrowUpRight size={20} />, label: 'Send', onClick: () => {} },
+            { icon: <FiArrowDownLeft size={20} />, label: 'Request', onClick: () => {} },
+            { 
+              icon: <FiClock size={20} />, 
+              label: 'History', 
+              onClick: () => navigate('/history') 
+            },
+            { 
+              icon: <FiGift size={20} />, 
+              label: 'Rewards', 
+              onClick: () => navigate('/rewards') 
+            }
           ].map((item, index) => (
             <button 
               key={index}
+              onClick={item.onClick}
               className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center"
             >
               <div className="bg-purple-100 text-purple-600 p-2 rounded-full mb-1">
@@ -108,7 +123,10 @@ export default function Wallet() {
                 <p className="text-2xl font-bold text-yellow-600">1,250</p>
               </div>
               <div className="flex space-x-2">
-                <button className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                <button 
+                  className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center"
+                  onClick={() => navigate('/rewards')}
+                >
                   <FiArrowDownLeft className="mr-1" /> Earn
                 </button>
                 <button className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center">
@@ -128,7 +146,12 @@ export default function Wallet() {
             <h3 className="font-semibold text-lg flex items-center">
               <FiClock className="mr-2 text-purple-600" /> Recent Activity
             </h3>
-            <button className="text-sm text-purple-600 font-medium">See All</button>
+            <button 
+              className="text-sm text-purple-600 font-medium"
+              onClick={() => navigate('/history')}
+            >
+              See All
+            </button>
           </div>
           
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
