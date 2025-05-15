@@ -1,6 +1,6 @@
-import { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from 'lucide-react';
+import { ChevronDownIcon, Bell, Wallet, Gift, Trophy, Users } from 'lucide-react';
 
 const navigation = [
   { name: 'Home', href: '#' },
@@ -19,90 +19,49 @@ const moreOptions = [
 ];
 
 export default function Navbar() {
+  const [notifications, setNotifications] = useState(3);
+  const [walletBalance, setWalletBalance] = useState(2500);
+
   return (
-    <nav className="bg-gray-900 fixed w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <span className="text-2xl font-bold text-white">BoostNow Games</span>
-            </div>
-          </div>
-          
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                >
-                  {item.name}
-                </a>
-              ))}
-              
-              <Menu as="div" className="relative inline-block text-left">
-                <Menu.Button className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 inline-flex items-center">
-                  More
-                  <ChevronDownIcon className="ml-1 h-4 w-4" aria-hidden="true" />
-                </Menu.Button>
-                
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
-                      {moreOptions.map((item) => (
-                        <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={`${
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                              } block px-4 py-2 text-sm`}
-                            >
-                              {item.name}
-                            </a>
-                          )}
-                        </Menu.Item>
-                      ))}
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            </div>
-          </div>
-          
-          <div className="md:hidden">
-            <button
-              type="button"
-              className="text-gray-400 hover:text-white focus:outline-none"
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
+    <nav className="glass-effect shadow-xl w-full fixed top-0 left-0 z-[1100] rounded-b-3xl py-3 px-2 md:px-8 flex items-center justify-between">
+      <div className="flex items-center h-16">
+        <img src="/images/logo.png" alt="BoostNow Games Logo" className="h-12 w-12 rounded-lg shadow-md bg-white/80" />
+        <div className="ml-3 hidden md:block">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">BoostNow Games</h1>
+          <p className="text-sm text-gray-600">Play & Win Real Cash</p>
         </div>
+      </div>
+
+      {/* Wallet Balance (center) */}
+      <div className="flex items-center bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 text-white px-5 py-2 rounded-xl mx-2 shadow-lg border-2 border-yellow-200/60">
+        <Wallet className="h-5 w-5 mr-2 text-white drop-shadow" />
+        <span className="font-bold text-lg drop-shadow">₹{walletBalance}</span>
+      </div>
+
+      {/* Nav Links (Desktop) */}
+      <div className="hidden md:flex items-center space-x-6">
+        {navigation.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            className="text-gray-700 hover:text-purple-700 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 hover:bg-purple-100/60 active:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          >
+            {item.name}
+          </a>
+        ))}
+      </div>
+
+      {/* Right Side: Only Notification Icon */}
+      <div className="flex items-center">
+        <button className="relative p-2 rounded-full bg-gray-900 hover:bg-gray-800 transition-all duration-200 shadow-lg border border-gray-800">
+          <Bell className="h-6 w-6 text-white" />
+          {notifications > 0 && (
+            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-md border-2 border-gray-900">
+              {notifications}
+            </span>
+          )}
+        </button>
       </div>
     </nav>
   );
-} 
+}
