@@ -241,7 +241,7 @@ export default function PopularGames() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-extrabold mb-3 tracking-tight">
             <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-500 bg-clip-text text-transparent animate-gradient-x">
-              Popular Games
+            Popular Games
             </span>
           </h2>
           <p className="text-lg text-white/90 max-w-xl mx-auto">
@@ -255,20 +255,20 @@ export default function PopularGames() {
             { id: 'real', label: 'Real Money Games', icon: Crown },
             { id: 'practice', label: 'Practice Games', icon: Target }
           ].map((tab) => (
-            <button
+          <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-8 py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-500 text-white shadow-lg shadow-purple-500/40'
                   : 'bg-white/10 text-white/80 hover:bg-white/20 backdrop-blur-md'
-              }`}
-            >
+            }`}
+          >
               <div className="flex items-center gap-2">
                 <tab.icon className="h-5 w-5" />
                 {tab.label}
               </div>
-            </button>
+          </button>
           ))}
         </div>
 
@@ -374,7 +374,7 @@ export default function PopularGames() {
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-transparent via-white/50 to-transparent group-hover:w-1/2 transition-all duration-300" />
                     </div>
                   ))}
-                </div>
+              </div>
               
                 {/* Game Description */}
                 <p className="text-white/80 mb-6">{game.description}</p>
@@ -429,7 +429,7 @@ export default function PopularGames() {
                     {/* Button Content */}
                     <div className="relative flex items-center justify-center gap-2">
                       <span className="text-base sm:text-lg whitespace-nowrap">
-                        {activeTab === 'real' ? 'Play Now' : 'Practice'}
+                    {activeTab === 'real' ? 'Play Now' : 'Practice'}
                       </span>
                       <ArrowRight className="h-5 w-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
