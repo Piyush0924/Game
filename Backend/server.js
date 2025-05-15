@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const { Server } = require('socket.io');
 const gameRoutes = require('./routes/gameRoutes');
+const postRoutes = require('./routes/postRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,6 +26,7 @@ require('./config/db')();
 
 // API Routes
 app.use('/api/games', gameRoutes);
+app.use('/api/post', postRoutes);
 
 // Socket.IO Connection
 io.on('connection', (socket) => {
