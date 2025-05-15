@@ -8,7 +8,7 @@ import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
 import Wallet from './components/Wallet';
-
+import CommunityPage from './components/Vinit/Community';
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
   const canvasRef = useRef(null);
@@ -258,6 +258,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/wallet" element={<Wallet />} />
+        <Route path="/Community" element={<CommunityPage/>} />
       </Routes>
     </Router>
   );

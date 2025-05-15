@@ -7,7 +7,7 @@ const navigation = [
   { name: 'Games', href: '#' },
   { name: 'Tournaments', href: '#' },
   { name: 'Wallet', href: '#' },
-  { name: 'Community', href: '#' },
+  { name: 'Community', href: '/Community' },
   { name: 'Profile', href: '#' },
 ];
 
