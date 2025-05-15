@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Home, Gamepad2, Wallet, Users, User } from 'lucide-react';
-
+import {Link} from "react-router-dom"
 const navigation = [
   { name: 'Home', icon: Home, href: '#' },
-  { name: 'Games', icon: Gamepad2, href: '#' },
+  { name: 'Games', icon: Gamepad2, href: '/Games' },
   { name: 'Wallet', icon: Wallet, href: '#' },
-  { name: 'Community', icon: Users, href: '#' },
+  { name: 'Community', icon: Users, href: '/Community' },
   { name: 'Profile', icon: User, href: '#' },
 ];
 
@@ -25,7 +25,7 @@ export default function BottomNav() {
                 style={{ minWidth: 0 }}
               >
                 <span className={`flex items-center justify-center rounded-full transition-all duration-200 ${isActive ? 'bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg scale-110' : ''} p-2`}>
-                  <item.icon className={`h-7 w-7 transition-all duration-200 ${isActive ? 'text-white' : ''}`} />
+                 <Link to={item.href}><item.icon className={`h-7 w-7 transition-all duration-200 ${isActive ? 'text-white' : ''}`} /></Link>
                 </span>
                 <span className={`text-xs mt-1 font-semibold transition-all duration-200 ${isActive ? 'text-purple-700' : ''}`}>{item.name}</span>
               </button>
