@@ -2,14 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, Bell, Wallet, Gift, Trophy, Users } from 'lucide-react';
 
-const navigation = [
-  { name: 'Home', href: '#' },
-  { name: 'Games', href: '#' },
-  { name: 'Tournaments', href: '#' },
-  { name: 'Wallet', href: '#' },
-  { name: 'Community', href: '#' },
-  { name: 'Profile', href: '#' },
-];
+const navigation = [];
 
 const moreOptions = [
   { name: 'About Us', href: '#' },
