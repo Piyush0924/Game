@@ -9,7 +9,9 @@ import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
-import Wallet from './components/Wallet';
+import Wallet from './components/wallet';
+import Rewards from './components/rewards';
+import History from './components/history';
 // import GameSection from './components/GameSection';
 import CommunityPage from './components/Vinit/Community';
 function HomePage() {
@@ -262,6 +264,8 @@ function App() {
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/Community" element={<Community/>} />
         <Route path="/Games" element={<GameSection/>} />
+        <Route path="/rewards" element={<Rewards/>} />
+        <Route path="/history" element={<History/>} />
 
       </Routes>
     </Router>

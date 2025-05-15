@@ -4,7 +4,7 @@ import {Link} from "react-router-dom"
 const navigation = [
   { name: 'Home', icon: Home, href: '#' },
   { name: 'Games', icon: Gamepad2, href: '/Games' },
-  { name: 'Wallet', icon: Wallet, href: '#' },
+  { name: 'Wallet', icon: Wallet, href: '/wallet' },
   { name: 'Community', icon: Users, href: '/Community' },
   { name: 'Profile', icon: User, href: '#' },
 ];
