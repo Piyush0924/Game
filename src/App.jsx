@@ -12,6 +12,11 @@ import BottomNav from './components/BottomNav';
 import Wallet from './components/wallet';
 import Rewards from './components/rewards';
 import History from './components/history';
+
+import GameLobbyTwo from './components/GameLobbyTwo';
+
+
+
 // import GameSection from './components/GameSection';
 import CommunityPage from './components/Vinit/Community';
 function HomePage() {
@@ -266,7 +271,7 @@ function App() {
         <Route path="/Games" element={<GameSection/>} />
         <Route path="/rewards" element={<Rewards/>} />
         <Route path="/history" element={<History/>} />
-
+        <Route path="/lobby" element={<GameLobbyTwo/>} />
       </Routes>
     </Router>
   );

@@ -92,7 +92,7 @@ export default function History() {
     <div className="min-h-screen bg-gray-900 text-white pb-20">
           {/* Header */}
           <Navbar />
-    <div className="max-w-md mx-auto bg-gray-50 pt-4 min-h-screen shadow-lg">
+    <div className="max-w-md mx-auto bg-gray-50 pt-8 min-h-screen shadow-lg">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-5 pb-6 rounded-b-2xl">
         <div className="flex items-center justify-between pt-12">

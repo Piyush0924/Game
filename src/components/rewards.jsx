@@ -70,7 +70,7 @@ const RewardsPage = () => {
           {/* Header */}
           <Navbar />
           <BottomNav/>
-    <div className="max-w-md mx-auto bg-gray-50 pt-16 min-h-screen shadow-lg">
+    <div className="max-w-md mx-auto bg-gray-50 pt-20 min-h-screen shadow-lg">
       <div className="p-5 pb-20">
         {/* Header with purple gradient */}
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-b-2xl p-5 -mx-5 -mt-5 mb-6">
