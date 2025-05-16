@@ -1,142 +1,169 @@
-'use client';
+"use client"
 
-import React, { useState } from 'react';
-import { Home, Gamepad2, Wallet, Users, User } from 'lucide-react';
+import { useState } from "react"
+import GameDashboard from "./GameDashboard"
+import CarromDashboard from "./CarromDashboard"
 
-// GameSection Component
-function GameSection() {
-  const [activeTab, setActiveTab] = useState('All');
+export default function GameSection() {
+  const [activeTab, setActiveTab] = useState("All")
+  const [activeDashboard, setActiveDashboard] = useState(null)
 
   const games = {
-    All: ['Ludo', 'Carrom', 'Chess', 'BGMI', 'Freefire', 'TicTacToe', 'RockPaperScissor', 'Uno'],
-    Board: ['Ludo', 'Carrom', 'Chess', 'TicTacToe', 'RockPaperScissor'],
-    Action: ['BGMI', 'Freefire'],
-    Card: ['Uno'],
-  };
-
-  const gameImages = {
-    TicTacToe: '/tictactoe.jpg',
-    RockPaperScissor: '/rock.png',
-    Uno: '/uno.jpg',
-    Ludo: '/ludo.jpeg',
-    Carrom: '/carrom.jpg',
-    Chess: '/chess.jpg',
-    BGMI: '/bgmi.jpg',
-    Freefire: '/freefire.jpg',
-  };
-
-  const handleGameClick = (game) => {
-    console.log(`${game} clicked`);
-    // Placeholder for future dashboard or game logic
-  };
-
-  return (
-    <div className="bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      {/* Tabs Section */}
-      <div className="max-w-7xl mx-auto">
-        {/* Tabs */}
-        <div className="flex flex-nowrap overflow-x-auto justify-start sm:justify-center gap-3 mb-8 scrollbar-hide">
-          {['All', 'Board', 'Card', 'Action'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-3 py-2 text-base font-medium rounded-lg transition-all duration-200 min-w-[80px] flex-shrink-0 ${
-                activeTab === tab
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                  : 'text-white bg-white/10 hover:bg-white/20 hover:shadow-md'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Games Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto">
-          {games[activeTab].map((game) => (
-            <div
-              key={game}
-              className="bg-white/10 rounded-xl text-white hover:bg-white/20 hover:scale-105 hover:shadow-md transition-all duration-200 cursor-pointer aspect-[3/4] flex flex-col"
-              onClick={() => handleGameClick(game)}
-            >
-              {/* Image Section (70%) */}
-              <div className="flex-[0.7] flex items-center justify-center">
-                <img
-                  src={gameImages[game]}
-                  alt={game}
-                  className="w-full h-[180px] sm:h-[200px] object-cover rounded-md aspect-[3/4]"
-                />
-              </div>
-              {/* Text Section (30%) */}
-              <div className="flex-[0.3] flex flex-col items-center justify-center text-sm sm:text-base">
-                <span className="font-medium">{game}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    All: ["Ludo", "Carrom", "Chess", "BGMI", "Freefire", "TicTacToe", "RockPaperScissor", "Uno"],
+    Board: ["Ludo", "Carrom", "Chess", "TicTacToe", "RockPaperScissor"],
+    Action: ["BGMI", "Freefire"],
+    Card: ["Uno"],
+  }
+const gameLinks = {
+  TicTacToe: "/games/tictactoe",
+  RockPaperScissor: "/games/sps",
+  Uno: "/games/uno",
+  Ludo: "/games/ludo",
+  Carrom: "/games/carrom",
+  Chess: "/games/chess",
+  BGMI: "/games/bgmi",
+  Freefire: "/games/freefire",
 }
 
-// BottomNav Component
-const navigation = [
-  { name: 'Home', icon: Home, href: '#' },
-  { name: 'Games', icon: Gamepad2, href: '#' },
-  { name: 'Wallet', icon: Wallet, href: '#' },
-  { name: 'Community', icon: Users, href: '#' },
-  { name: 'Profile', icon: User, href: '#' },
-];
+  const gameImages = {
+    TicTacToe: "/tictactoe.jpg",
+    RockPaperScissor: "/rock.png",
+    Uno: "/uno.jpg",
+    Ludo: "/ludo.jpeg",
+    Carrom: "/carrom.jpg",
+    Chess: "/chess.jpg",
+    BGMI: "/bgmi.jpg",
+    Freefire: "/freefire.jpg",
+  }
 
-export default function BottomNav() {
-  const [active, setActive] = useState('Home'); // Default to Home
+  const gameCategories = {
+    TicTacToe: "Board",
+    RockPaperScissor: "Board",
+    Uno: "Card",
+    Ludo: "Board",
+    Carrom: "Board",
+    Chess: "Board",
+    BGMI: "Action",
+    Freefire: "Action",
+  }
+
+  // Default entry fees for all games (can be customized per game if needed)
+  const defaultEntryFees = {
+    classic: "₹10 - ₹50",
+    quick: "₹5 - ₹25",
+    tournament: "₹20 - ₹100",
+    private: "Custom",
+  }
+
+  // Custom entry fees for specific games (if needed)
+  const gameEntryFees = {
+    BGMI: {
+      classic: "₹15 - ₹75",
+      quick: "₹10 - ₹30",
+      tournament: "₹50 - ₹200",
+      private: "Custom",
+    },
+    Freefire: {
+      classic: "₹15 - ₹75",
+      quick: "₹10 - ₹30",
+      tournament: "₹50 - ₹200",
+      private: "Custom",
+    },
+    // Add other custom entry fees as needed
+  }
+
+  const handleGameClick = (game) => {
+    // Check if the game is implemented
+    if (games.All.includes(game)) {
+      setActiveDashboard(game)
+    } else {
+      console.log(`${game} dashboard not implemented yet`)
+    }
+  }
+
+  const getEntryFees = (game) => {
+    return gameEntryFees[game] || defaultEntryFees
+  }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
-      {/* Content Area */}
-      <div className="flex-grow pb-20">
-        {active === 'Games' && <GameSection />}
-        {active === 'Home' && <div className="text-white text-center pt-12">Home Content</div>}
-        {active === 'Wallet' && <div className="text-white text-center pt-12">Wallet Content</div>}
-        {active === 'Community' && <div className="text-white text-center pt-12">Community Content</div>}
-        {active === 'Profile' && <div className="text-white text-center pt-12">Profile Content</div>}
+    <div className="relative bg-gray-900 min-h-screen overflow-hidden">
+      {/* Background gradient and blur effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-blue-900/50 animate-gradient" />
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl animate-float-delayed" />
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-[9999]">
-        <div className="mx-auto max-w-2xl">
-          <div className="glass-effect bg-gradient-to-tr from-white/70 via-purple-100/60 to-blue-100/60 backdrop-blur-xl border-t border-gray-200 shadow-2xl rounded-t-2xl flex justify-around items-center h-20 px-2">
-            {navigation.map((item) => {
-              const isActive = active === item.name;
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => setActive(item.name)}
-                  className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
-                    isActive ? 'text-purple-700' : 'text-gray-600 hover:text-purple-600'
-                  }`}
-                  style={{ minWidth: 0 }}
-                >
-                  <span
-                    className={`flex items-center justify-center rounded-full transition-all duration-200 ${
-                      isActive ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110' : ''
-                    } p-2`}
-                  >
-                    <item.icon className={`h-7 w-7 transition-all duration-200 ${isActive ? 'text-white' : ''}`} />
-                  </span>
-                  <span
-                    className={`text-xs mt-1 font-semibold transition-all duration-200 ${
-                      isActive ? 'text-purple-700' : ''
-                    }`}
-                  >
-                    {item.name}
-                  </span>
-                </button>
-              );
-            })}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+        {/* Tabs Section */}
+        <div className="mt-12">
+          {/* Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {["All", "Board", "Card", "Action"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 text-sm sm:text-base font-semibold rounded-lg transition-all duration-200 min-w-[80px] ${
+                  activeTab === tab
+                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                    : "text-white bg-white/10 hover:bg-white/20"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Games Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
+            {games[activeTab].map((game) => (
+              <div
+                key={game}
+                className="bg-white/10 rounded-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-200 cursor-pointer flex flex-col shadow-md"
+                onClick={() => handleGameClick(game)}
+              >
+                {/* Image Section (70%) */}
+                <div className="flex-[0.7] p-3">
+                  <div className="relative w-full h-full aspect-[3/4]">
+                    <img
+                      src={gameImages[game] || "/placeholder.svg"}
+                      alt={game}
+                      className="absolute inset-0 w-full h-full object-cover rounded-md border border-gray-700"
+                      onError={(e) => {
+                        e.target.src = "/fallback.jpg" // Fallback image
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* Text Section (30%) */}
+                <div className="flex-[0.3] flex flex-col items-center justify-center text-sm sm:text-base">
+                  <span className="font-medium">{game}</span>
+                  {game === "Ludo" && <span className="text-xs text-green-400 mt-1">Popular</span>}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Game Dashboard Modal */}
+      {activeDashboard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setActiveDashboard(null)}></div>
+          <div className="relative w-full max-w-4xl px-4">
+            <div className="bg-gray-800 rounded-xl p-6 border-4 border-gradient-to-r from-purple-600 to-blue-600">
+              <GameDashboard
+                gameTitle={activeDashboard}
+                gameImage={gameImages[activeDashboard]}
+                gameCategory={gameCategories[activeDashboard]}
+                entryFees={getEntryFees(activeDashboard)}
+                onClose={() => setActiveDashboard(null)}
+                 link={gameLinks[activeDashboard] || "#"}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }

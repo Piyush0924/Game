@@ -914,9 +914,9 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-300 via-purple-200 to-indigo-300 transition-all duration-500">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-200 via-cyan-100 to-white transition-all duration-500">
       {/* Animated background particles */}
-      <div className="gaming-particles"></div>
+      {/* <div className="gaming-particles"></div> */}
 
       {/* Global styles */}
       <style jsx>{`
@@ -1217,7 +1217,7 @@ export default function CommunityPage() {
         }
 
         .create-post-header {
-          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          background: linear-gradient(to right, #1e3a8a, #0f172a); /* from-blue-900 to-slate-800 */
           padding: 0.75rem 1rem;
           color: white;
           font-weight: 600;
@@ -1302,7 +1302,7 @@ export default function CommunityPage() {
 
         /* Recent posts styling */
         .recent-posts-header {
-          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          background: linear-gradient(to right, #1e3a8a, #0f172a); /* from-blue-900 to-slate-800 */
           color: white;
           padding: 0.75rem 1rem;
           border-radius: 0.5rem 0.5rem 0 0;
@@ -1484,10 +1484,10 @@ export default function CommunityPage() {
         }
       `}</style>
 
-      <div className="container max-w-md mx-auto p-4 pb-20 md:pb-4 mt-4 glass rounded-2xl">
+      <div className="container max-w-md mx-auto p-4 pb-20 md:pb-4 mt-4 glass rounded-2xl bg-gradient-to-br from-blue-900/80 via-slate-900/80 to-blue-950/80">
         {/* Community Hub Header */}
         <div className="flex flex-col items-center mb-4">
-          <h1 className="text-2xl font-bold text-center text-white px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 mx-auto inline-block shadow-md">
+          <h1 className="text-2xl font-bold text-center text-white px-6 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-slate-800 mx-auto inline-block shadow-md">
             Community Hub
           </h1>
 
@@ -1505,13 +1505,13 @@ export default function CommunityPage() {
 
         {/* Icons below Community header */}
         <div className="flex justify-center mb-6 overflow-x-auto py-2 icon-nav">
-          <div className="flex space-x-4 md:space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
+          <div className="flex space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
             <button
               onClick={() => setActiveSection("home")}
               className={`icon-button px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "home"
-                  ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md transform scale-110"
-                  : "text-gray-500 hover:bg-gray-200 hover:text-indigo-600"
+                  ? "bg-gradient-to-r from-blue-900 to-slate-800 text-white shadow-md transform scale-110"
+                  : "text-gray-500 hover:bg-gray-200 hover:text-pink-600"
               }`}
               title="Home"
             >
@@ -1523,7 +1523,7 @@ export default function CommunityPage() {
               onClick={() => setActiveSection("topCoins")}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "topCoins"
-                  ? "bg-gradient-to-br from-yellow-400 to-yellow-600 text-white shadow-md transform scale-110"
+                  ? "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-yellow-100 hover:text-yellow-600"
               }`}
               title="Top Coins"
@@ -1536,7 +1536,7 @@ export default function CommunityPage() {
               onClick={() => setActiveSection("topFollowers")}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "topFollowers"
-                  ? "bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-md transform scale-110"
+                  ? "bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-blue-100 hover:text-blue-600"
               }`}
               title="Top Followers"
@@ -1549,7 +1549,7 @@ export default function CommunityPage() {
               onClick={() => setActiveSection("achievements")}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "achievements"
-                  ? "bg-gradient-to-br from-green-400 to-green-600 text-white shadow-md transform scale-110"
+                  ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-green-100 hover:text-green-600"
               }`}
               title="Achievements"
@@ -1565,7 +1565,7 @@ export default function CommunityPage() {
               }}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "messages"
-                  ? "bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-md transform scale-110"
+                  ? "bg-gradient-to-r from-pink-400 to-pink-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-pink-100 hover:text-pink-600"
               }`}
               title="Messages"
@@ -1581,8 +1581,8 @@ export default function CommunityPage() {
               }}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 showUserList
-                  ? "bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-md transform scale-110"
-                  : "text-gray-500 hover:bg-purple-100 hover:text-purple-600"
+                  ? "bg-gradient-to-r from-pink-400 to-pink-600 text-white shadow-md transform scale-110"
+                  : "text-gray-500 hover:bg-pink-100 hover:text-pink-600"
               }`}
               title="Users"
             >
@@ -1597,7 +1597,7 @@ export default function CommunityPage() {
               }}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "settings"
-                  ? "bg-gradient-to-br from-gray-400 to-gray-600 text-white shadow-md transform scale-110"
+                  ? "bg-gradient-to-r from-gray-400 to-gray-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-gray-100 hover:text-gray-600"
               }`}
               title="Settings"
@@ -2701,8 +2701,39 @@ export default function CommunityPage() {
                   </div>
                 </div>
 
-          
-               
+                {/* Actions */}
+                <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
+                  <button
+                    onClick={() => startChat(viewingProfile)}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
+                  >
+                    <MessageCircle className="h-4 w-4 mr-1" /> Chat
+                  </button>
+                  <button
+                    onClick={() => toggleFollow(viewingProfile)}
+                    className={`px-4 py-2 rounded-lg text-sm transition-all duration-300 flex items-center transform hover:scale-105 ${
+                      isFollowing(viewingProfile)
+                        ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600"
+                    }`}
+                  >
+                    {isFollowing(viewingProfile) ? (
+                      <>
+                        <X className="h-4 w-4 mr-1" /> Unfollow
+                      </>
+                    ) : (
+                      <>
+                        <Heart className="h-4 w-4 mr-1" /> Follow
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => inviteToGame(viewingProfile)}
+                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
+                  >
+                    <Trophy className="h-4 w-4 mr-1" /> Invite
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -3137,7 +3168,7 @@ export default function CommunityPage() {
                       }
                     }}
                     disabled={!selectedGame || taggedPeople.length === 0 || !scheduleDate || !scheduleTime}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
+                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg text-sm hover:from-pink-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
                   >
                     Schedule Game
                   </button>
