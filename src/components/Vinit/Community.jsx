@@ -1,24 +1,8 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import {
-  Users,
-  Coins,
-  Award,
-  MessageSquare,
-  Trophy,
-  Heart,
-  MessageCircle,
-  Home,
-  Settings,
-  X,
-  Search,
-  Send,
-  PlusCircle,
-  Calendar,
-  Tag,
-  BarChart2,
-} from "lucide-react"
+import { Users, Coins, Award, MessageSquare, Trophy, Heart, MessageCircle, Home, Settings, X, Search, Send, PlusCircle, Calendar, Tag, BarChart2, Menu } from 'lucide-react'
+import { Music, ImageIcon, Film, Palette, GiftIcon as Gif } from 'lucide-react'
 
 export default function CommunityPage() {
   const [users, setUsers] = useState([])
@@ -43,6 +27,7 @@ export default function CommunityPage() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [userFiles, setUserFiles] = useState({})
   const [uploadProgress, setUploadProgress] = useState(0)
+  
   const fileInputRef = useRef(null)
 
   // New state variables for notifications, emails, and game invitations
@@ -101,6 +86,24 @@ export default function CommunityPage() {
   const [isScheduled, setIsScheduled] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showUserList, setShowUserList] = useState(false)
+
+  const [mediaType, setMediaType] = useState(null)
+  const [backgroundOptions, setBackgroundOptions] = useState([
+    { id: 1, color: "bg-gradient-to-r from-purple-500 to-indigo-500", name: "Purple Haze" },
+    { id: 2, color: "bg-gradient-to-r from-pink-500 to-rose-500", name: "Pink Sunset" },
+    { id: 3, color: "bg-gradient-to-r from-yellow-400 to-amber-500", name: "Golden Hour" },
+    { id: 4, color: "bg-gradient-to-r from-green-400 to-emerald-500", name: "Forest" },
+    { id: 5, color: "bg-gradient-to-r from-blue-400 to-cyan-500", name: "Ocean Blue" },
+  ])
+  const [selectedBackground, setSelectedBackground] = useState(null)
+  const [musicUrl, setMusicUrl] = useState("")
+  const [gifUrl, setGifUrl] = useState("")
+  const [showMediaOptions, setShowMediaOptions] = useState(false)
+  const audioRef = useRef(null)
+  const videoRef = useRef(null)
+  const imageInputRef = useRef(null)
+  const videoInputRef = useRef(null)
+  const musicInputRef = useRef(null)
 
   // Dummy function for toggleLikePost
   const toggleLikePost = (postId) => {
@@ -671,7 +674,7 @@ export default function CommunityPage() {
   // Modify createPost function to handle attachments and other features
   const createPost = () => {
     if (
-      (!newPostContent.trim() && !selectedFile && !screenshotPreview && !hasPoll) ||
+      (!newPostContent.trim() && !selectedFile && !screenshotPreview && !hasPoll && !selectedBackground && !gifUrl) ||
       (isScheduled && (!scheduleDate || !scheduleTime))
     )
       return
@@ -694,6 +697,10 @@ export default function CommunityPage() {
       taggedPeople: taggedPeople.length > 0 ? taggedPeople : null,
       isScheduled: isScheduled,
       scheduledFor: isScheduled ? `${scheduleDate} ${scheduleTime}` : null,
+      mediaType: mediaType,
+      backgroundStyle: selectedBackground ? selectedBackground.color : null,
+      musicUrl: musicUrl || null,
+      gifUrl: gifUrl || null,
     }
 
     // If post is scheduled, show a message instead of adding to posts array
@@ -715,6 +722,11 @@ export default function CommunityPage() {
     setIsScheduled(false)
     setScheduleDate("")
     setScheduleTime("")
+    setMediaType(null)
+    setSelectedBackground(null)
+    setMusicUrl("")
+    setGifUrl("")
+    setShowMediaOptions(false)
 
     // Add notification for new post
     addNotification({
@@ -910,7 +922,7 @@ export default function CommunityPage() {
       <style jsx>{`
         /* Animated background */
         .gaming-particles {
-          position: absolute;
+          position: fixed;
           top: 0;
           left: 0;
           width: 100%;
@@ -1425,6 +1437,44 @@ export default function CommunityPage() {
           box-shadow: none;
         }
 
+        /* Media elements responsive styling */
+        .media-element {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+
+        /* Ensure videos and GIFs are visible on mobile */
+        video, img.gif {
+          width: 100%;
+          max-width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+
+        /* Audio player styling for all devices */
+        audio {
+          width: 100%;
+          max-width: 100%;
+          margin: 10px 0;
+        }
+
+        /* Fix for icon navigation on mobile */
+        @media (max-width: 640px) {
+          .icon-nav {
+            width: 100%;
+            justify-content: flex-start;
+            padding-left: 0;
+            padding-right: 0;
+          }
+          
+          .icon-button {
+            min-width: 60px;
+            margin-left: 0 !important;
+          }
+        }
+
         .post-comments h4 {
           color: #000000;
           font-weight: 600;
@@ -1455,10 +1505,10 @@ export default function CommunityPage() {
 
         {/* Icons below Community header */}
         <div className="flex justify-center mb-6 overflow-x-auto py-2 icon-nav">
-          <div className="flex space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
+          <div className="flex space-x-4 md:space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
             <button
               onClick={() => setActiveSection("home")}
-              className={`icon-button md:ml-4 ml-52 px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+              className={`icon-button px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "home"
                   ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-gray-200 hover:text-indigo-600"
@@ -1509,7 +1559,10 @@ export default function CommunityPage() {
             </button>
 
             <button
-              onClick={() =>{setShowUserList(false); setActiveSection("messages")}}
+              onClick={() => {
+                setShowUserList(false)
+                setActiveSection("messages")
+              }}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "messages"
                   ? "bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-md transform scale-110"
@@ -1522,7 +1575,10 @@ export default function CommunityPage() {
             </button>
 
             <button
-              onClick={() =>{setActiveSection("users"); setShowUserList(true)}}
+              onClick={() => {
+                setActiveSection("users")
+                setShowUserList(true)
+              }}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 showUserList
                   ? "bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-md transform scale-110"
@@ -1535,7 +1591,10 @@ export default function CommunityPage() {
             </button>
 
             <button
-              onClick={() =>{setShowUserList(false); setActiveSection("settings")}}
+              onClick={() => {
+                setShowUserList(false)
+                setActiveSection("settings")
+              }}
               className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "settings"
                   ? "bg-gradient-to-br from-gray-400 to-gray-600 text-white shadow-md transform scale-110"
@@ -1580,7 +1639,7 @@ export default function CommunityPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
                     ) : (
@@ -1637,7 +1696,18 @@ export default function CommunityPage() {
             )}
 
             {/* Post Options */}
-            <div className="post-options">
+            <div className="post-options flex flex-wrap justify-center md:justify-start">
+              <button
+                onClick={() => {
+                  setShowMediaOptions(!showMediaOptions)
+                  setMediaType(null)
+                }}
+                className="post-option"
+              >
+                <PlusCircle className="h-4 w-4" />
+                <span className="hidden xs:inline-block">Add Media</span>
+              </button>
+
               <button onClick={() => alert("Live streaming feature coming soon!")} className="post-option">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1653,44 +1723,278 @@ export default function CommunityPage() {
                   <polyline points="17 2 12 7 7 2" />
                   <circle cx="12" cy="15" r="3" fill="currentColor" />
                 </svg>
-                Go Live
-              </button>
-
-              <button onClick={() => alert("Gameplay sharing feature coming soon!")} className="post-option">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-                  <line x1="6" y1="1" x2="6" y2="4" />
-                  <line x1="10" y1="1" x2="10" y2="4" />
-                  <line x1="14" y1="1" x2="14" y2="4" />
-                </svg>
-                Share Game
+                <span className="hidden xs:inline-block">Go Live</span>
               </button>
 
               <button onClick={() => setShowPollCreator(!showPollCreator)} className="post-option">
                 <BarChart2 className="h-4 w-4" />
-                Create Poll
+                <span className="hidden xs:inline-block">Poll</span>
               </button>
 
               <button onClick={() => setShowTagPeople(!showTagPeople)} className="post-option">
                 <Tag className="h-4 w-4" />
-                Tag People
+                <span className="hidden xs:inline-block">Tag</span>
               </button>
 
               <button onClick={() => setShowScheduler(!showScheduler)} className="post-option">
                 <Calendar className="h-4 w-4" />
-                Schedule
+                <span className="hidden xs:inline-block">Schedule</span>
               </button>
             </div>
+
+            {/* Media Options Panel */}
+            {showMediaOptions && (
+              <div className="bg-white rounded-lg p-3 shadow-md mb-3 fade-in">
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <button
+                    onClick={() => {
+                      setMediaType("photo")
+                      if (imageInputRef.current) imageInputRef.current.click()
+                    }}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${mediaType === "photo" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"}`}
+                  >
+                    <ImageIcon size={16} />
+                    <span>Photo</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMediaType("video")
+                      if (videoInputRef.current) videoInputRef.current.click()
+                    }}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${mediaType === "video" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"}`}
+                  >
+                    <Film size={16} />
+                    <span>Video</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMediaType("music")
+                      if (musicInputRef.current) musicInputRef.current.click()
+                    }}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${mediaType === "music" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"}`}
+                  >
+                    <Music size={16} />
+                    <span>Music</span>
+                  </button>
+
+                  <button
+                    onClick={() => setMediaType("background")}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${mediaType === "background" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"}`}
+                  >
+                    <Palette size={16} />
+                    <span>Background</span>
+                  </button>
+
+                  <button
+                    onClick={() => setMediaType("gif")}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${mediaType === "gif" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"}`}
+                  >
+                    <Gif size={16} />
+                    <span>GIF</span>
+                  </button>
+                </div>
+
+                {/* Hidden file inputs */}
+                <input
+                  type="file"
+                  ref={imageInputRef}
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setSelectedFile(e.target.files[0])
+                      setMediaType("photo")
+                    }
+                  }}
+                />
+                <input
+                  type="file"
+                  ref={videoInputRef}
+                  accept="video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setSelectedFile(e.target.files[0])
+                      setMediaType("video")
+                    }
+                  }}
+                />
+                <input
+                  type="file"
+                  ref={musicInputRef}
+                  accept="audio/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setSelectedFile(e.target.files[0])
+                      setMediaType("music")
+                      // Create object URL for preview
+                      const url = URL.createObjectURL(e.target.files[0])
+                      setMusicUrl(url)
+                    }
+                  }}
+                />
+
+                {/* Media type specific options */}
+                {mediaType === "background" && (
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2 fade-in">
+                    {backgroundOptions.map((bg) => (
+                      <button
+                        key={bg.id}
+                        onClick={() => setSelectedBackground(bg)}
+                        className={`h-12 rounded-lg ${bg.color} transition-all hover:scale-105 ${selectedBackground?.id === bg.id ? "ring-2 ring-indigo-600 ring-offset-2" : ""}`}
+                        title={bg.name}
+                      ></button>
+                    ))}
+                  </div>
+                )}
+
+                {mediaType === "gif" && (
+                  <div className="mt-3 fade-in">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Paste GIF URL here"
+                        className="flex-1 p-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
+                        value={gifUrl}
+                        onChange={(e) => setGifUrl(e.target.value)}
+                      />
+                      <button
+                        onClick={() => {
+                          if (gifUrl) {
+                            // In a real app, you would validate the URL
+                            alert("GIF added to your post!")
+                          }
+                        }}
+                        className="px-3 py-1 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600"
+                        disabled={!gifUrl}
+                      >
+                        Add
+                      </button>
+                    </div>
+                    {gifUrl && (
+                      <div className="mt-2 bg-gray-100 rounded-lg p-2 text-center">
+                        <img
+                          src={gifUrl || "/placeholder.svg"}
+                          alt="GIF preview"
+                          className="max-h-40 mx-auto rounded"
+                          onError={() => alert("Invalid GIF URL. Please try another.")}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Media Previews */}
+            {selectedFile && mediaType === "photo" && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg fade-in">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Photo Preview</span>
+                  <button
+                    onClick={() => {
+                      setSelectedFile(null)
+                      setMediaType(null)
+                    }}
+                    className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="bg-black rounded-lg overflow-hidden">
+                  <img
+                    src={URL.createObjectURL(selectedFile) || "/placeholder.svg"}
+                    alt="Photo preview"
+                    className="w-full object-contain max-h-[200px]"
+                  />
+                </div>
+              </div>
+            )}
+
+            {selectedFile && mediaType === "video" && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg fade-in">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Video Preview</span>
+                  <button
+                    onClick={() => {
+                      setSelectedFile(null)
+                      setMediaType(null)
+                    }}
+                    className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="bg-black rounded-lg overflow-hidden">
+                  <video
+                    ref={videoRef}
+                    src={URL.createObjectURL(selectedFile)}
+                    controls
+                    className="w-full max-h-[200px]"
+                  />
+                </div>
+              </div>
+            )}
+
+            {selectedFile && mediaType === "music" && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg fade-in">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Music: {selectedFile.name}</span>
+                  <button
+                    onClick={() => {
+                      setSelectedFile(null)
+                      setMediaType(null)
+                      setMusicUrl("")
+                    }}
+                    className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <audio ref={audioRef} src={musicUrl} controls className="w-full" />
+              </div>
+            )}
+
+            {selectedBackground && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg fade-in">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Background: {selectedBackground.name}</span>
+                  <button
+                    onClick={() => {
+                      setSelectedBackground(null)
+                      setMediaType(null)
+                    }}
+                    className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className={`h-12 rounded-lg ${selectedBackground.color}`}></div>
+              </div>
+            )}
+
+            {gifUrl && mediaType === "gif" && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg fade-in">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">GIF</span>
+                  <button
+                    onClick={() => {
+                      setGifUrl("")
+                      setMediaType(null)
+                    }}
+                    className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="bg-black rounded-lg overflow-hidden">
+                  <img src={gifUrl || "/placeholder.svg"} alt="GIF" className="w-full object-contain max-h-[200px]" />
+                </div>
+              </div>
+            )}
 
             {/* Post Actions */}
             <div className="flex justify-between items-center mt-3">
@@ -1722,7 +2026,14 @@ export default function CommunityPage() {
               <div className={isScheduled ? "" : "ml-auto"}>
                 <button
                   onClick={createPost}
-                  disabled={!newPostContent.trim() && !selectedFile && !screenshotPreview && !hasPoll}
+                  disabled={
+                    !newPostContent.trim() &&
+                    !selectedFile &&
+                    !screenshotPreview &&
+                    !hasPoll &&
+                    !selectedBackground &&
+                    !gifUrl
+                  }
                   className="post-button"
                 >
                   <Send className="h-3 w-3" />
@@ -1742,9 +2053,7 @@ export default function CommunityPage() {
                 <MessageCircle size={18} />
                 <span>Recent Posts</span>
                 <div className="ml-auto flex items-center ">
-                  <span className="bg-white text-black text-xs font-bold px-2 py-1 rounded-full">
-                    {posts.length}
-                  </span>
+                  <span className="bg-white text-black text-xs font-bold px-2 py-1 rounded-full">{posts.length}</span>
                 </div>
               </div>
               {posts.length > 0 ? (
@@ -1770,7 +2079,52 @@ export default function CommunityPage() {
                       </div>
 
                       {/* Post content */}
-                      <p className="post-content">{post.content}</p>
+                      <div
+                        className={`post-content ${post.backgroundStyle ? post.backgroundStyle + " text-white p-4 rounded-lg my-2" : ""}`}
+                      >
+                        <p>{post.content}</p>
+
+                        {/* Render different media types */}
+                        {post.mediaType === "photo" && post.hasAttachment && (
+                          <div className="mt-3 bg-black rounded-lg overflow-hidden">
+                            <img
+                              src="/placeholder.svg?height=400&width=600"
+                              alt="Photo"
+                              className="w-full object-contain max-h-[300px]"
+                            />
+                          </div>
+                        )}
+
+                        {post.mediaType === "video" && post.hasAttachment && (
+                          <div className="mt-3 bg-black rounded-lg overflow-hidden">
+                            <video
+                              src="/placeholder.svg?height=400&width=600"
+                              controls
+                              className="w-full max-h-[300px]"
+                            />
+                          </div>
+                        )}
+
+                        {post.mediaType === "music" && post.hasAttachment && (
+                          <div className="mt-3 p-2 bg-gray-50 rounded-lg">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Music className="h-5 w-5 text-indigo-500" />
+                              <span className="text-sm font-medium">{post.attachmentName || "Audio Track"}</span>
+                            </div>
+                            <audio controls className="w-full" />
+                          </div>
+                        )}
+
+                        {post.mediaType === "gif" && post.gifUrl && (
+                          <div className="mt-3 bg-black rounded-lg overflow-hidden">
+                            <img
+                              src={post.gifUrl || "/placeholder.svg?height=400&width=600"}
+                              alt="GIF"
+                              className="w-full object-contain max-h-[300px]"
+                            />
+                          </div>
+                        )}
+                      </div>
 
                       {/* Post actions */}
                       <div className="post-actions">
@@ -2135,18 +2489,19 @@ export default function CommunityPage() {
 
         {/* Profile Modal */}
         {viewingProfile && (
-          <div className="modal-container fade-in">
-            <div className="modal-content glass slide-down">
-              <div className="modal-header">
-                <h3 className="font-semibold text-indigo-800">Profile</h3>
-                <button
-                  onClick={closeProfileModal}
-                  className="text-gray-500 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors duration-300"
-                  aria-label="Close profile"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+         <div className="modal-container fixed inset-0 bg-black/50 flex items-center justify-center z-50 fade-in">
+      <div className="modal-content glass slide-down bg-white/90 backdrop-blur-md rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+        <div className="modal-header flex justify-between items-center p-4 border-b">
+          <h3 className="font-semibold text-indigo-800">Profile</h3>
+          <button
+            onClick={closeProfileModal}
+            className="text-gray-500 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors duration-300"
+            aria-label="Close profile"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        
 
               <div className="modal-body">
                 {/* User Info */}
@@ -2183,12 +2538,46 @@ export default function CommunityPage() {
                     </svg>
                     Player Statistics
                   </h4>
+                   <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
+                    <button
+                      onClick={() => startChat(viewingProfile)}
+                      className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
+                    >
+                      <MessageCircle className="h-4 w-4 mr-1" /> Chat
+                    </button>
+                    <button
+                      onClick={() => toggleFollow(viewingProfile)}
+                      className={`px-4 py-2 rounded-lg text-sm transition-all duration-300 flex items-center transform hover:scale-105 ${
+                        isFollowing(viewingProfile)
+                          ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                          : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600"
+                      }`}
+                    >
+                      {isFollowing(viewingProfile) ? (
+                        <>
+                          <X className="h-4 w-4 mr-1" /> Unfollow
+                        </>
+                      ) : (
+                        <>
+                          <Heart className="h-4 w-4 mr-1" /> Follow
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => inviteToGame(viewingProfile)}
+                      className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
+                    >
+                      <Trophy className="h-4 w-4 mr-1" /> Invite
+                    </button>
+                  </div>
+                </div>
                   {playerStats[viewingProfile] ? (
                     <div className="grid grid-cols-2 gap-3 mb-4">
                       <div className="bg-gray-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-gray-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Matches Played</div>
                         <div className="font-bold text-lg">{playerStats[viewingProfile].matchesPlayed}</div>
                       </div>
+                      
                       <div className="bg-green-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-green-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Wins</div>
                         <div className="font-bold text-lg text-green-600">{playerStats[viewingProfile].wins}</div>
@@ -2213,7 +2602,8 @@ export default function CommunityPage() {
                   ) : (
                     <p className="text-gray-500">No stats available</p>
                   )}
-                </div>
+                  {/* Actions */}
+                 
 
                 {/* Achievements */}
                 <div className="mb-6">
@@ -2311,39 +2701,8 @@ export default function CommunityPage() {
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
-                  <button
-                    onClick={() => startChat(viewingProfile)}
-                    className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
-                  >
-                    <MessageCircle className="h-4 w-4 mr-1" /> Chat
-                  </button>
-                  <button
-                    onClick={() => toggleFollow(viewingProfile)}
-                    className={`px-4 py-2 rounded-lg text-sm transition-all duration-300 flex items-center transform hover:scale-105 ${
-                      isFollowing(viewingProfile)
-                        ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600"
-                    }`}
-                  >
-                    {isFollowing(viewingProfile) ? (
-                      <>
-                        <X className="h-4 w-4 mr-1" /> Unfollow
-                      </>
-                    ) : (
-                      <>
-                        <Heart className="h-4 w-4 mr-1" /> Follow
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => inviteToGame(viewingProfile)}
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
-                  >
-                    <Trophy className="h-4 w-4 mr-1" /> Invite
-                  </button>
-                </div>
+          
+               
               </div>
             </div>
           </div>
@@ -2351,6 +2710,7 @@ export default function CommunityPage() {
 
         {/* Game Invite Modal */}
         {showGameInvite && (
+          
           <div className="modal-container fade-in">
             <div className="modal-content glass slide-down">
               <div className="modal-header">
@@ -2787,6 +3147,13 @@ export default function CommunityPage() {
           </div>
         )}
       </div>
+      {/* Mobile menu toggle */}
+      <button
+        onClick={() => setShowMobileMenu(!showMobileMenu)}
+        className="md:hidden fixed bottom-4 right-4 z-50 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full p-3 shadow-lg"
+      >
+        {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
+      </button>
     </div>
   )
 }
