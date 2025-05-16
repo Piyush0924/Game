@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Home, Gamepad2, Wallet, Users, User } from 'lucide-react';
 
 // GameSection Component
-function GameSection() {
+export function GameSection() {
   const [activeTab, setActiveTab] = useState('All');
 
   const games = {
@@ -79,7 +79,7 @@ function GameSection() {
   );
 }
 
-// BottomNav Component
+// Navigation items
 const navigation = [
   { name: 'Home', icon: Home, href: '#' },
   { name: 'Games', icon: Gamepad2, href: '#' },
@@ -88,7 +88,8 @@ const navigation = [
   { name: 'Profile', icon: User, href: '#' },
 ];
 
-export default function BottomNav() {
+// BottomNav Component
+export function BottomNav() {
   const [active, setActive] = useState('Home'); // Default to Home
 
   return (

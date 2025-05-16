@@ -11,15 +11,13 @@ import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
 
 // Pages / Other Components
-import Wallet from './components/Wallet'; // Note capitalization consistent with import
+import Wallet from './components/Wallet';
 import CommunityPage from './components/Vinit/Community';
-import Community from './pages/community';  // different Community component from second code
-import SPS from './components/SPS';
-import MemoryMatchGame from './components/MemoryMatchGame';
-import DiceDuel from './components/DiceDuel';
-import CoinFlipBet from './components/CoinFlipBet';
-import MysteryBoxVsCPU from './components/MysteryBoxVsCPU';
-import GameSection from './pages/games';
+import SPS from './components/Stone-Paper/SPS';
+import MemoryMatchGame from './components/Memory/MemoryMatchGame';
+import DiceDuel from './components/Dice/DiceDuel';
+import CoinFlipBet from './components/Coinflip/CoinFlipBet';
+import Games from './pages/games';
 import Rewards from './components/rewards';
 import History from './components/history';
 
@@ -236,24 +234,16 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/wallet" element={<Wallet />} />
-
-        {/* Note: You have two Community components: 
-            - CommunityPage (Vinit/Community)
-            - Community (pages/community)
-           Decide which route uses which. I kept both for completeness.
-        */}
         <Route path="/community" element={<CommunityPage />} />
-        <Route path="/Community" element={<Community />} />
 
         {/* Games routes */}
         <Route path="/games/sps" element={<SPS />} />
         <Route path="/games/memory" element={<MemoryMatchGame />} />
         <Route path="/games/dice" element={<DiceDuel />} />
         <Route path="/games/coinflip" element={<CoinFlipBet />} />
-        <Route path="/games/mysterybox" element={<MysteryBoxVsCPU />} />
 
-        {/* Additional routes from second code */}
-        <Route path="/Games" element={<GameSection />} />
+        {/* Additional routes */}
+        <Route path="/games" element={<Games />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/history" element={<History />} />
       </Routes>

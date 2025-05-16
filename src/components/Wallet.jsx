@@ -17,7 +17,7 @@ export default function Wallet() {
         
         {/* Wallet summary */}
         <div className="px-4 pt-20">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between pt-8 items-center mb-4">
             <div className="bg-white bg-opacity-20 text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center">
               <FiAward className="mr-1" /> VIP POINTS: 4
             </div>
