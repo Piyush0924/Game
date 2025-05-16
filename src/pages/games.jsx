@@ -1,14 +1,13 @@
 import React from 'react';
-import GameSection from '../components/GameSection';
-import BottomNav from '../components/BottomNav';
+import { GameSection, BottomNav } from '../components/GameSection';
 
-const games = () => {
+const Games = () => {
   return (
-    <div>
-      <GameSection/>
-      <BottomNav/>
+    <div className="min-h-screen bg-gray-900">
+      <GameSection />
+      <BottomNav />
     </div>
   );
 }
 
-export default games;
+export default Games;

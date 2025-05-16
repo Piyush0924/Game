@@ -5,10 +5,10 @@ import { ChevronDownIcon, Bell, Wallet, Gift, Trophy, Users } from 'lucide-react
 const navigation = [];
 
 const moreOptions = [
-  { name: 'About Us', href: '#' },
-  { name: 'Support', href: '#' },
-  { name: 'Terms & Conditions', href: '#' },
-  { name: 'Privacy Policy', href: '#' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Support', href: '/support' },
+  { name: 'Terms & Conditions', href: '/terms' },
+  { name: 'Privacy Policy', href: '/privacy' },
 ];
 
 export default function Navbar() {

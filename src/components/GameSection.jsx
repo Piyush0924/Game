@@ -1,15 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { Users, Trophy, Wallet } from 'lucide-react';
-import LudoDashboard from './LudoDashboard';
-import ChessDashboard from './ChessDashboard';
-import CarromDashboard from './CarromDashboard';
-import BGMIDashboard from './BGMIDashboard';
-import FreefireDashboard from './FreeFireDashboard';
-import TicTacToeDashboard from './TicTacToeDashboard'; // Add this import
+import React, { useState } from 'react';
+import { Home, Gamepad2, Wallet, Users, User } from 'lucide-react';
 
-export default function GameSection() {
+// GameSection Component
+function GameSection() {
   const [activeTab, setActiveTab] = useState('All');
   const [activeDashboard, setActiveDashboard] = useState(null);
 
@@ -79,56 +74,89 @@ export default function GameSection() {
             ))}
           </div>
 
-          {/* Games Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
-            {games[activeTab].map((game) => (
-              <div
-                key={game}
-                className="bg-white/10 rounded-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-200 cursor-pointer flex flex-col shadow-md"
-                onClick={() => handleGameClick(game)}
-              >
-                {/* Image Section (70%) */}
-                <div className="flex-[0.7] p-3">
-                  <div className="relative w-full h-full aspect-[3/4]">
-                    <img
-                      src={gameImages[game]}
-                      alt={game}
-                      className="absolute inset-0 w-full h-full object-cover rounded-md border border-gray-700"
-                      onError={(e) => {
-                        e.target.src = '/fallback.jpg'; // Fallback image
-                      }}
-                    />
-                  </div>
-                </div>
-                {/* Text Section (30%) */}
-                <div className="flex-[0.3] flex flex-col items-center justify-center text-sm sm:text-base">
-                  <span className="font-medium">{game}</span>
-                  {game === 'Ludo' && (
-                    <span className="text-xs text-green-400 mt-1">Popular</span>
-                  )}
-                </div>
+        {/* Games Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto">
+          {games[activeTab].map((game) => (
+            <div
+              key={game}
+              className="bg-white/10 rounded-xl text-white hover:bg-white/20 hover:scale-105 hover:shadow-md transition-all duration-200 cursor-pointer aspect-[3/4] flex flex-col"
+              onClick={() => handleGameClick(game)}
+            >
+              {/* Image Section (70%) */}
+              <div className="flex-[0.7] flex items-center justify-center">
+                <img
+                  src={gameImages[game]}
+                  alt={game}
+                  className="w-full h-[180px] sm:h-[200px] object-cover rounded-md aspect-[3/4]"
+                />
               </div>
-            ))}
-          </div>
+              {/* Text Section (30%) */}
+              <div className="flex-[0.3] flex flex-col items-center justify-center text-sm sm:text-base">
+                <span className="font-medium">{game}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Game Dashboard Modal */}
-      {activeDashboard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/70"
-            onClick={() => setActiveDashboard(null)}
-          ></div>
-          <div className="relative w-full max-w-4xl px-4">
-            <div className="bg-gray-800 rounded-xl p-6 border-4 border-gradient-to-r from-purple-600 to-blue-600">
-              {activeDashboard === 'ludo' && <LudoDashboard />}
-              {activeDashboard === 'chess' && <ChessDashboard />}
-              {activeDashboard === 'carrom' && <CarromDashboard />}
-              {activeDashboard === 'bgmi' && <BGMIDashboard />}
-              {activeDashboard === 'freefire' && <FreefireDashboard />}
-              {activeDashboard === 'tictactoe' && <TicTacToeDashboard />} {/* Add TicTacToe dashboard */}
-            </div>
+// BottomNav Component
+const navigation = [
+  { name: 'Home', icon: Home, href: '#' },
+  { name: 'Games', icon: Gamepad2, href: '#' },
+  { name: 'Wallet', icon: Wallet, href: '#' },
+  { name: 'Community', icon: Users, href: '#' },
+  { name: 'Profile', icon: User, href: '#' },
+];
+
+export default function BottomNav() {
+  const [active, setActive] = useState('Home'); // Default to Home
+
+  return (
+    <div className="min-h-screen bg-gray-900 flex flex-col">
+      {/* Content Area */}
+      <div className="flex-grow pb-20">
+        {active === 'Games' && <GameSection />}
+        {active === 'Home' && <div className="text-white text-center pt-12">Home Content</div>}
+        {active === 'Wallet' && <div className="text-white text-center pt-12">Wallet Content</div>}
+        {active === 'Community' && <div className="text-white text-center pt-12">Community Content</div>}
+        {active === 'Profile' && <div className="text-white text-center pt-12">Profile Content</div>}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-[9999]">
+        <div className="mx-auto max-w-2xl">
+          <div className="glass-effect bg-gradient-to-tr from-white/70 via-purple-100/60 to-blue-100/60 backdrop-blur-xl border-t border-gray-200 shadow-2xl rounded-t-2xl flex justify-around items-center h-20 px-2">
+            {navigation.map((item) => {
+              const isActive = active === item.name;
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => setActive(item.name)}
+                  className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
+                    isActive ? 'text-purple-700' : 'text-gray-600 hover:text-purple-600'
+                  }`}
+                  style={{ minWidth: 0 }}
+                >
+                  <span
+                    className={`flex items-center justify-center rounded-full transition-all duration-200 ${
+                      isActive ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110' : ''
+                    } p-2`}
+                  >
+                    <item.icon className={`h-7 w-7 transition-all duration-200 ${isActive ? 'text-white' : ''}`} />
+                  </span>
+                  <span
+                    className={`text-xs mt-1 font-semibold transition-all duration-200 ${
+                      isActive ? 'text-purple-700' : ''
+                    }`}
+                  >
+                    {item.name}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

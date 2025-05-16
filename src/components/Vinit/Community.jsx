@@ -1,7 +1,24 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { Users, Coins, Award, MessageSquare, Bell, Trophy, Heart, MessageCircle, Home, Settings, X } from "lucide-react"
+import {
+  Users,
+  Coins,
+  Award,
+  MessageSquare,
+  Trophy,
+  Heart,
+  MessageCircle,
+  Home,
+  Settings,
+  X,
+  Search,
+  Send,
+  PlusCircle,
+  Calendar,
+  Tag,
+  BarChart2,
+} from "lucide-react"
 
 export default function CommunityPage() {
   const [users, setUsers] = useState([])
@@ -9,6 +26,7 @@ export default function CommunityPage() {
   const [comments, setComments] = useState({})
   const [rankingType, setRankingType] = useState("daily")
   const [searchQuery, setSearchQuery] = useState("")
+  const [globalSearchQuery, setGlobalSearchQuery] = useState("")
   const [viewingProfile, setViewingProfile] = useState(null)
   const [playerStats, setPlayerStats] = useState({})
   const [activeChatUser, setActiveChatUser] = useState(null)
@@ -380,6 +398,32 @@ export default function CommunityPage() {
 
     setFilteredUsers(result)
   }, [users, searchQuery])
+
+  // Apply global search filtering
+  useEffect(() => {
+    if (globalSearchQuery.trim() === "") return
+
+    // Filter users by name
+    const matchingUsers = users.filter((user) => user.name.toLowerCase().includes(globalSearchQuery.toLowerCase()))
+
+    // Filter posts by content
+    const matchingPosts = posts.filter((post) => {
+      const postContent = post.content.toLowerCase()
+      const searchTerm = globalSearchQuery.toLowerCase()
+      return postContent.includes(searchTerm)
+    })
+
+    // If we have matching users, show the first one's profile
+    if (matchingUsers.length > 0) {
+      setViewingProfile(matchingUsers[0].id)
+    }
+
+    // If we have matching posts, scroll to them (in a real app)
+    if (matchingPosts.length > 0) {
+      // In a real app, you would scroll to the post
+      console.log("Found matching posts:", matchingPosts)
+    }
+  }, [globalSearchQuery])
 
   // Scroll to bottom of chat when messages change
   useEffect(() => {
@@ -850,715 +894,841 @@ export default function CommunityPage() {
     setShowGameInvite(true)
   }
 
-  // CSS for keyframes
-  const keyframesStyle = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+  // Handle global search
+  const handleGlobalSearch = (e) => {
+    if (e.key === "Enter") {
+      setGlobalSearchQuery(e.target.value)
+    }
   }
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
-  }
-  .animate-pulse {
-    animation: pulse 1.5s infinite ease-in-out;
-  }
-  .notification-dot {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 8px;
-    height: 8px;
-    background-color: #ef4444;
-    border-radius: 50%;
-    border: 1px solid white;
-  }
-  
-  button:hover svg {
-    transform: scale(1.1);
-    transition: transform 0.2s ease;
-    color: #6366f1;
-  }
-  
-  .icon-button {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
-  
-  .icon-button::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    width: 0;
-    height: 2px;
-    background-color: #6366f1;
-    transition: width 0.3s ease;
-  }
-  
-  .icon-button:hover::after {
-    width: 70%;
-  }
-`
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-purple-300 via-purple-200 to-indigo-300 transition-all duration-500">
+      {/* Animated background particles */}
       <div className="gaming-particles"></div>
+
+      {/* Global styles */}
       <style jsx>{`
-  .gaming-particles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ff 100%);
-    z-index: -1;
-  }
+        /* Animated background */
+        .gaming-particles {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 100%);
+          z-index: -1;
+          animation: gradientAnimation 15s ease infinite;
+          background-size: 400% 400%;
+        }
 
-  body {
-    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-    min-height: 100vh;
-  }
+        @keyframes gradientAnimation {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
 
-  .min-h-screen {
-    position: relative;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.9)), 
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fillOpacity='0.1' fillRule='evenodd'/%3E%3C/svg%3E");
-  animation: gradientBG 15s ease infinite;
-  background-size: 400% 400%;
-}
+        /* Card hover effects */
+        .card-hover {
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-hover:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+          border-color: rgba(99, 102, 241, 0.3);
+        }
 
-@keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+        /* Button animations */
+        .btn-animated {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
 
-.container {
-  backdrop-filter: blur(5px);
-  background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-}
+        .btn-animated:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: all 0.5s ease;
+        }
 
-.bg-white {
-  background-color: rgba(255, 255, 255, 0.85) !important;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transition: all 0.3s ease;
-}
+        .btn-animated:hover:after {
+          left: 100%;
+        }
 
-.bg-white:hover {
-  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1);
-  transform: translateY(-2px);
-  background-color: rgba(255, 255, 255, 0.95) !important;
-}
+        /* Icon animations */
+        .icon-animated {
+          transition: all 0.3s ease;
+        }
+        
+        .icon-animated:hover {
+          transform: scale(1.2);
+          color: #6366f1;
+        }
 
-  @media (max-width: 640px) {
-    .icon-nav {
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
-    
-    .icon-nav::-webkit-scrollbar {
-      height: 3px;
-    }
-    
-    .icon-nav::-webkit-scrollbar-thumb {
-      background-color: rgba(156, 163, 175, 0.5);
-      border-radius: 3px;
-    }
-    
-    .icon-button {
-      min-width: 60px;
-    }
-  }
+        /* Pulse animation for notifications */
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+        
+        .pulse {
+          animation: pulse 1.5s infinite;
+        }
 
-  @media (min-width: 768px) {
-    .container {
-      max-width: 768px;
-    }
-  }
-  
-  /* New colorful styles */
-  .bg-white {
-    transition: all 0.3s ease;
-  }
-  
-  .bg-white:hover {
-    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1);
-    transform: translateY(-2px);
-  }
-  
-  button {
-    transition: all 0.3s ease;
-  }
-  
-  .rounded-xl {
-    transition: all 0.3s ease;
-  }
-  
-  .rounded-xl:hover {
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
-  }
-  
-  .text-indigo-700 {
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-`}</style>
+        /* Fade in animation */
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+          animation: fadeIn 0.5s ease forwards;
+        }
 
-      <div className="fixed mt-28 top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 shadow-md z-40 backdrop-blur-sm bg-opacity-90">
-        <div className="container max-w-md mx-auto  py-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white">Community</h1>
+        /* Slide down animation for modals */
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-50px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-down {
+          animation: slideDown 0.3s ease forwards;
+        }
 
-          {/* Add this button to the header for mobile menu */}
-          <button
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden p-2 text-white hover:text-yellow-200 transition-colors"
-            aria-label="Toggle mobile menu"
-          >
-            {showMobileMenu ? (
-              <X size={24} />
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            )}
-          </button>
+        /* Responsive styles */
+        @media (max-width: 640px) {
+          .icon-nav {
+            overflow-x: auto;
+            padding-bottom: 8px;
+          }
+          
+          .icon-nav::-webkit-scrollbar {
+            height: 3px;
+          }
+          
+          .icon-nav::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 3px;
+          }
+          
+          .icon-button {
+            min-width: 60px;
+          }
+        }
 
-          <div className="flex items-center space-x-5">
-            {/* Notifications */}
-            <div className="relative">
-              <button
-                className="p-2 text-white hover:text-yellow-200 transition-colors relative"
-                aria-label={`Notifications (${unreadNotifications} unread)`}
-                onClick={toggleNotifications}
-              >
-                <Bell size={24} />
-                {unreadNotifications > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full animate-pulse">
-                    {unreadNotifications}
-                  </span>
-                )}
-              </button>
+        /* Shimmer effect for loading states */
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        
+        .shimmer {
+          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+        }
 
-              {/* Notifications dropdown */}
-              {showNotifications && (
-                <div className="fixed md:absolute right-0 left-0 md:left-auto top-20 md:top-auto md:mt-2 w-full md:w-80 bg-white rounded-lg shadow-lg z-50 overflow-hidden notifications-dropdown mx-auto md:mx-0 max-w-md">
-                  <div className="p-3 bg-indigo-50 border-b">
-                    <h3 className="font-semibold text-indigo-800">Notifications</h3>
-                  </div>
+        /* Glow effect for important elements */
+        .glow {
+          box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+          transition: box-shadow 0.3s ease;
+        }
+        
+        .glow:hover {
+          box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+        }
 
-                  <div className="max-h-80 overflow-y-auto">
-                    {notifications.length > 0 ? (
-                      <div className="divide-y">
-                        {notifications.map((notification) => {
-                          const user = users.find((u) => u.id === notification.userId)
-                          return (
-                            <div
-                              key={notification.id}
-                              className={`p-3 hover:bg-gray-50 ${!notification.read ? "bg-blue-50" : ""}`}
-                            >
-                              <div className="flex items-center">
-                                {user && (
-                                  <img
-                                    src={user.avatar || "/placeholder.svg"}
-                                    alt=""
-                                    className="w-10 h-10 rounded-full mr-3"
-                                  />
-                                )}
-                                <div className="flex-1">
-                                  <p className="text-sm">{notification.content}</p>
-                                  <p className="text-xs text-gray-500 mt-1">{formatDate(notification.timestamp)}</p>
-                                </div>
-                                {!notification.read && (
-                                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                                )}
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    ) : (
-                      <div className="p-4 text-center text-gray-500">No notifications</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+        /* Notification dot */
+        .notification-dot {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 8px;
+          height: 8px;
+          background-color: #ef4444;
+          border-radius: 50%;
+          border: 1px solid white;
+        }
+        
+        /* Icon button hover effects */
+        .icon-button {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+        }
+        
+        .icon-button::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          width: 0;
+          height: 2px;
+          background-color: #6366f1;
+          transition: width 0.3s ease;
+        }
+        
+        .icon-button:hover::after {
+          width: 70%;
+        }
 
-            {/* Game invitations */}
-            <div className="relative">
-              <button
-                className="p-2 text-white hover:text-yellow-200 transition-colors relative"
-                aria-label="Game invitations"
-                onClick={() => {
-                  setShowGameInvite(!showGameInvite)
-                  setShowNotifications(false)
-                  setShowAchievements(false)
-                }}
-              >
-                <Trophy size={24} />
-                {gameInvitations.filter((invite) => invite.to === 1 && invite.status === "pending").length > 0 && (
-                  <span className="notification-dot"></span>
-                )}
-              </button>
-              {showGameInvite && (
-                <div className="fixed md:absolute right-0 left-0 md:left-auto top-16 md:top-auto md:mt-2 w-full md:w-80 bg-white rounded-lg shadow-lg z-50 overflow-hidden mx-auto md:mx-0 max-w-md">
-                  <div className="p-3 bg-indigo-50 border-b">
-                    <h3 className="font-semibold text-indigo-800">Game Invitations</h3>
-                  </div>
-                  <div className="max-h-80 overflow-y-auto p-3">
-                    {gameInvitations.filter((invite) => invite.to === 1).length > 0 ? (
-                      <div className="divide-y">
-                        {gameInvitations
-                          .filter((invite) => invite.to === 1)
-                          .map((invite) => {
-                            const fromUser = users.find((u) => u.id === invite.from)
-                            return (
-                              <div key={invite.id} className="py-2">
-                                <div className="flex items-center mb-1">
-                                  {fromUser && (
-                                    <img
-                                      src={fromUser.avatar || "/placeholder.svg"}
-                                      alt=""
-                                      className="w-8 h-8 rounded-full mr-2"
-                                    />
-                                  )}
-                                  <div>
-                                    <p className="text-sm font-medium">
-                                      {fromUser ? fromUser.name : "Unknown"} invited you to play {invite.game}
-                                    </p>
-                                    <p className="text-xs text-gray-500">{formatDate(invite.timestamp)}</p>
-                                  </div>
-                                </div>
-                                <div className="flex space-x-2 mt-2">
-                                  <button
-                                    onClick={() => respondToGameInvite(invite.id, true)}
-                                    className="px-3 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
-                                  >
-                                    Accept
-                                  </button>
-                                  <button
-                                    onClick={() => respondToGameInvite(invite.id, false)}
-                                    className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-xs hover:bg-gray-400"
-                                  >
-                                    Decline
-                                  </button>
-                                </div>
-                              </div>
-                            )
-                          })}
-                      </div>
-                    ) : (
-                      <div className="text-center py-4 text-gray-500">No game invitations</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+        /* Glass morphism effect */
+        .glass {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        }
 
-            {/* Achievements */}
-            <div className="relative">
-              <button
-                className="p-2 text-white hover:text-yellow-200 transition-colors relative"
-                aria-label={`Achievements (${newAchievements} new)`}
-                onClick={toggleAchievements}
-              >
-                <Award size={24} />
-                {newAchievements > 0 && <span className="notification-dot"></span>}
-              </button>
-              {showAchievements && (
-                <div className="fixed md:absolute right-0 left-0 md:left-auto top-16 md:top-auto md:mt-2 w-full md:w-80 bg-white rounded-lg shadow-lg z-50 overflow-hidden achievements-dropdown mx-auto md:mx-0 max-w-md">
-                  <div className="p-3 bg-indigo-50 border-b">
-                    <h3 className="font-semibold text-indigo-800">Achievements</h3>
-                  </div>
-                  <div className="max-h-80 overflow-y-auto">
-                    {achievements.length > 0 ? (
-                      <div className="grid grid-cols-2 gap-2 p-3">
-                        {achievements.map((achievement) => (
-                          <div
-                            key={achievement.id}
-                            className={`p-2 rounded-lg flex items-center space-x-2 ${achievement.isNew ? "bg-yellow-50" : "bg-gray-50"}`}
-                          >
-                            <div
-                              className={`${achievementCategories.find((c) => c.id === achievement.category)?.color} w-8 h-8 rounded-full flex items-center justify-center text-white`}
-                            >
-                              {achievement.icon}
-                            </div>
-                            <div>
-                              <h4 className="text-sm font-medium">{achievement.name}</h4>
-                              <p className="text-xs text-gray-500">{achievement.description}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-4 text-center text-gray-500">No achievements yet</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+        /* Modal styling for all popups */
+        .modal-container {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          z-index: 50;
+          padding-top: 5rem;
+          background-color: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+          background: white;
+          border-radius: 0.75rem;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          width: 100%;
+          max-width: 28rem;
+          max-height: 85vh;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          border: 2px solid rgba(139, 92, 246, 0.3);
+          animation: slideDown 0.3s ease forwards;
+        }
+
+        .modal-header {
+          padding: 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid #e5e7eb;
+          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          color: white;
+        }
+
+        .modal-header h3 {
+          color: white !important;
+          font-weight: 600;
+        }
+
+        .modal-header button {
+          color: white;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 50%;
+          padding: 0.25rem;
+          transition: all 0.2s ease;
+        }
+
+        .modal-header button:hover {
+          background: rgba(255, 255, 255, 0.3);
+          transform: scale(1.1);
+        }
+
+        .modal-body {
+          padding: 1rem;
+          overflow-y: auto;
+          max-height: calc(85vh - 8rem);
+          background-color: #f9fafb;
+        }
+
+        .modal-footer {
+          padding: 1rem;
+          border-top: 1px solid #e5e7eb;
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.5rem;
+          background-color: white;
+        }
+
+        /* Search bar styling */
+        .search-container {
+          position: relative;
+          margin-bottom: 1rem;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 0.75rem 1rem 0.75rem 2.5rem;
+          border-radius: 9999px;
+          border: 2px solid rgba(139, 92, 246, 0.3);
+          background-color: rgba(255, 255, 255, 0.9);
+          transition: all 0.3s ease;
+          font-size: 0.875rem;
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: rgba(139, 92, 246, 0.8);
+          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 0.75rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #8b5cf6;
+        }
+
+        /* Create post styling */
+        .create-post-card {
+          background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(249, 250, 251, 0.9));
+          border-radius: 1rem;
+          box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1);
+          border: 2px solid rgba(139, 92, 246, 0.2);
+          overflow: hidden;
+        }
+
+        .create-post-header {
+          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          padding: 0.75rem 1rem;
+          color: white;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .create-post-body {
+          padding: 1rem;
+        }
+
+        .create-post-textarea {
+          width: 100%;
+          min-height: 80px;
+          padding: 0.75rem;
+          border-radius: 0.5rem;
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          background-color: white;
+          resize: none;
+          transition: all 0.3s ease;
+        }
+
+        .create-post-textarea:focus {
+          outline: none;
+          border-color: rgba(139, 92, 246, 0.8);
+          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .post-options {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-top: 1rem;
+          padding: 0.75rem 0;
+          border-top: 1px solid rgba(139, 92, 246, 0.2);
+          border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .post-option {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          padding: 0.5rem 0.75rem;
+          border-radius: 9999px;
+          background-color: rgba(139, 92, 246, 0.1);
+          color: #6366f1;
+          font-size: 0.75rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+
+        .post-option:hover {
+          background-color: rgba(139, 92, 246, 0.2);
+          transform: translateY(-2px);
+        }
+
+        .post-button {
+          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          color: white;
+          font-weight: 500;
+          padding: 0.5rem 1.5rem;
+          border-radius: 9999px;
+          transition: all 0.3s ease;
+          margin-top: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .post-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .post-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+
+        /* Recent posts styling */
+        .recent-posts-header {
+          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          color: white;
+          padding: 0.75rem 1rem;
+          border-radius: 0.5rem 0.5rem 0 0;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .post-card {
+          background: white;
+          border-radius: 1rem;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+          overflow: hidden;
+          border: 1px solid rgba(139, 92, 246, 0.2);
+          transition: all 0.3s ease;
+          margin-bottom: 1.5rem;
+        }
+
+        .post-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 28px rgba(99, 102, 241, 0.2);
+          border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .post-header {
+          display: flex;
+          align-items: center;
+          padding: 1rem;
+          border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+          background: linear-gradient(to right, rgba(249, 250, 251, 0.8), white);
+        }
+
+        .post-avatar {
+          width: 3rem;
+          height: 3rem;
+          border-radius: 9999px;
+          margin-right: 0.75rem;
+          border: 3px solid rgba(139, 92, 246, 0.3);
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 8px rgba(99, 102, 241, 0.15);
+        }
+
+        .post-author {
+          font-weight: 600;
+          color: #000000;
+        }
+
+        .post-time {
+          font-size: 0.75rem;
+          color: #9ca3af;
+        }
+
+        .post-content {
+          padding: 1rem;
+          color: #000000;
+          line-height: 1.5;
+          font-weight: 500;
+        }
+
+        .post-actions {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.75rem 1rem;
+          border-top: 1px solid rgba(139, 92, 246, 0.1);
+          border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .post-action {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          color: #000000;
+          transition: all 0.3s ease;
+        }
+
+        .post-action:hover {
+          transform: scale(1.1);
+        }
+
+        .post-action.liked {
+          color: #ef4444;
+        }
+
+        .post-comments {
+          padding: 1rem;
+        }
+
+        .comment-form {
+          display: flex;
+          gap: 0.5rem;
+          margin-top: 1rem;
+          background: rgba(249, 250, 251, 0.8);
+          padding: 0.75rem;
+          border-radius: 0.75rem;
+        }
+
+        .comment-input {
+          flex: 1;
+          padding: 0.5rem 0.75rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          font-size: 0.875rem;
+          transition: all 0.3s ease;
+        }
+
+        .comment-input:focus {
+          outline: none;
+          border-color: rgba(139, 92, 246, 0.8);
+          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .comment-button {
+          background: linear-gradient(to right, #8b5cf6, #6366f1);
+          color: white;
+          font-weight: 500;
+          padding: 0.5rem 1rem;
+          border-radius: 9999px;
+          transition: all 0.3s ease;
+        }
+
+        .comment-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .comment-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+
+        .post-comments h4 {
+          color: #000000;
+          font-weight: 600;
+          border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+          padding-bottom: 0.5rem;
+          margin-bottom: 0.75rem;
+        }
+      `}</style>
+
+      <div className="container max-w-md mx-auto p-4 pb-20 md:pb-4 mt-4 glass rounded-2xl">
+        {/* Community Hub Header */}
+        <div className="flex flex-col items-center mb-4">
+          <h1 className="text-2xl font-bold text-center text-white px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 mx-auto inline-block shadow-md">
+            Community Hub
+          </h1>
+
+          {/* Search Bar */}
+          <div className="search-container w-full mt-3">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search for people, posts, games..."
+              onKeyDown={handleGlobalSearch}
+            />
+            <Search className="search-icon h-4 w-4" />
           </div>
         </div>
-      </div>
-
-      <div className="container max-w-md mx-auto p-4 pb-20 md:pb-4 mt-4">
-        <h1 className="text-2xl font-bold mb-4 mt-24 text-center">Community</h1>
 
         {/* Icons below Community header */}
-        <div className="flex justify-center mb-6 overflow-x-auto py-2">
+        <div className="flex justify-center mb-6 overflow-x-auto py-2 icon-nav">
           <div className="flex space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
             <button
               onClick={() => setActiveSection("home")}
-              className={`md:ml-4 ml-40 px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              className={`icon-button md:ml-4 ml-52 px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "home"
                   ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-gray-200 hover:text-indigo-600"
               }`}
               title="Home"
             >
-              <Home size={20} />
+              <Home size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Home</span>
             </button>
 
             <button
               onClick={() => setActiveSection("topCoins")}
-              className={`p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "topCoins"
                   ? "bg-gradient-to-br from-yellow-400 to-yellow-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-yellow-100 hover:text-yellow-600"
               }`}
               title="Top Coins"
             >
-              <Coins size={20} />
+              <Coins size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Coins</span>
             </button>
 
             <button
               onClick={() => setActiveSection("topFollowers")}
-              className={`p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "topFollowers"
                   ? "bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-blue-100 hover:text-blue-600"
               }`}
               title="Top Followers"
             >
-              <Users size={20} />
-              <span className="text-xs mt-1 font-medium">Top Followers</span>
+              <Users size={20} className="transition-transform duration-300" />
+              <span className="text-xs mt-1 font-medium">Followers</span>
             </button>
 
             <button
               onClick={() => setActiveSection("achievements")}
-              className={`p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "achievements"
                   ? "bg-gradient-to-br from-green-400 to-green-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-green-100 hover:text-green-600"
               }`}
               title="Achievements"
             >
-              <Award size={20} />
+              <Award size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Awards</span>
             </button>
 
             <button
-              onClick={() => setActiveSection("messages")}
-              className={`p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              onClick={() =>{setShowUserList(false); setActiveSection("messages")}}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "messages"
                   ? "bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-pink-100 hover:text-pink-600"
               }`}
               title="Messages"
             >
-              <MessageSquare size={20} />
+              <MessageSquare size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Chat</span>
             </button>
 
             <button
-              onClick={() => setShowUserList(!showUserList)}
-              className={`p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              onClick={() =>{setActiveSection("users"); setShowUserList(true)}}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 showUserList
                   ? "bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-purple-100 hover:text-purple-600"
               }`}
               title="Users"
             >
-              <Users size={20} />
+              <Users size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Players</span>
             </button>
 
             <button
-              onClick={() => setActiveSection("settings")}
-              className={`p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all ${
+              onClick={() =>{setShowUserList(false); setActiveSection("settings")}}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "settings"
                   ? "bg-gradient-to-br from-gray-400 to-gray-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-gray-100 hover:text-gray-600"
               }`}
               title="Settings"
             >
-              <Settings size={20} />
+              <Settings size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Settings</span>
             </button>
           </div>
         </div>
 
         {/* Create Post Section - Always at the top */}
-        <div className="bg-white rounded-xl shadow-md p-3 mb-4 hover:shadow-lg transition-all duration-300 border border-indigo-100">
-          <h2 className="font-semibold text-indigo-700 mb-1 text-sm">Create Post</h2>
-          <textarea
-            value={newPostContent}
-            onChange={(e) => setNewPostContent(e.target.value)}
-            placeholder="What's on your mind?"
-            className="w-full p-2 border border-indigo-200 rounded-lg text-sm mb-2 min-h-[60px] focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
-          />
+        <div className="create-post-card mb-4 text-black">
+          <div className="create-post-header">
+            <PlusCircle size={18} />
+            <span>Create Post</span>
+          </div>
+          <div className="create-post-body">
+            <textarea
+              value={newPostContent}
+              onChange={(e) => setNewPostContent(e.target.value)}
+              placeholder="What's on your mind?"
+              className="create-post-textarea"
+            />
 
-          {/* Attachment Preview */}
-          {selectedFile && (
-            <div className="mb-3 p-2 bg-gray-50 rounded-lg flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="mr-2 text-indigo-500">
-                  {selectedFile.type.includes("image") ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                  )}
+            {/* Attachment Preview */}
+            {selectedFile && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg flex items-center justify-between fade-in">
+                <div className="flex items-center">
+                  <div className="mr-2 text-indigo-500">
+                    {selectedFile.type.includes("image") ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium truncate max-w-[200px]">{selectedFile.name}</p>
+                    <p className="text-xs text-gray-500">{formatFileSize(selectedFile.size)}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium truncate max-w-[200px]">{selectedFile.name}</p>
-                  <p className="text-xs text-gray-500">{formatFileSize(selectedFile.size)}</p>
-                </div>
-              </div>
-              <button onClick={() => setSelectedFile(null)} className="text-gray-500 hover:text-red-500">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          )}
-
-          {/* Screenshot Preview */}
-          {screenshotPreview && (
-            <div className="mb-3 p-2 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Screenshot Preview</span>
-                <button onClick={() => setScreenshotPreview(null)} className="text-gray-500 hover:text-red-500">
+                <button
+                  onClick={() => setSelectedFile(null)}
+                  className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              <div className="bg-black rounded-lg overflow-hidden">
-                <img
-                  src={screenshotPreview || "/placeholder.svg"}
-                  alt="Screenshot"
-                  className="w-full object-contain max-h-[200px]"
-                />
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Post Options */}
-          <div className="flex flex-wrap gap-2 mb-3 border-t border-b py-3">
-            {/* Live Stream */}
-            <button
-              onClick={() => alert("Live streaming feature coming soon!")}
-              className="flex items-center text-gray-600 hover:text-red-600 text-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
-                <polyline points="17 2 12 7 7 2" />
-                <circle cx="12" cy="15" r="3" fill="currentColor" />
-              </svg>
-              Go Live
-            </button>
-
-            {/* Share Gameplay */}
-            <button
-              onClick={() => alert("Gameplay sharing feature coming soon!")}
-              className="flex items-center text-gray-600 hover:text-green-600 text-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-                <line x1="6" y1="1" x2="6" y2="4" />
-                <line x1="10" y1="1" x2="10" y2="4" />
-                <line x1="14" y1="1" x2="14" y2="4" />
-              </svg>
-              Share Gameplay
-            </button>
-
-            {/* Create Poll */}
-            <button
-              onClick={() => setShowPollCreator(!showPollCreator)}
-              className="flex items-center text-gray-600 hover:text-indigo-600 text-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="20" x2="18" y2="10" />
-                <line x1="12" y1="20" x2="12" y2="4" />
-                <line x1="6" y1="20" x2="6" y2="14" />
-              </svg>
-              Create Poll
-            </button>
-
-            {/* Tag People */}
-            <button
-              onClick={() => setShowTagPeople(!showTagPeople)}
-              className="flex items-center text-gray-600 hover:text-indigo-600 text-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                <path d="M21 20.75v-1.5a4 4 0 0 0-3-3.85" />
-              </svg>
-              Tag People
-            </button>
-
-            {/* Schedule Game */}
-            <button
-              onClick={() => setShowScheduler(!showScheduler)}
-              className="flex items-center text-gray-600 hover:text-purple-600 text-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-              Schedule Game
-            </button>
-          </div>
-
-          {/* Post Actions */}
-          <div className="flex justify-between items-center">
-            {isScheduled && scheduleDate && scheduleTime && (
-              <div className="flex items-center text-sm text-indigo-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            {/* Screenshot Preview */}
+            {screenshotPreview && (
+              <div className="mb-3 p-2 bg-gray-50 rounded-lg fade-in">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Screenshot Preview</span>
+                  <button
+                    onClick={() => setScreenshotPreview(null)}
+                    className="text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="bg-black rounded-lg overflow-hidden">
+                  <img
+                    src={screenshotPreview || "/placeholder.svg"}
+                    alt="Screenshot"
+                    className="w-full object-contain max-h-[200px]"
                   />
-                </svg>
-                Scheduled for {scheduleDate} at {scheduleTime}
-                <button onClick={() => setIsScheduled(false)} className="ml-1 text-gray-500 hover:text-red-500">
-                  <X className="h-4 w-4" />
-                </button>
+                </div>
               </div>
             )}
-            <div className={isScheduled ? "" : "ml-auto"}>
-              <button
-                onClick={createPost}
-                disabled={!newPostContent.trim() && !selectedFile && !screenshotPreview && !hasPoll}
-                className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm font-medium hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
-              >
-                {isScheduled ? "Schedule Post" : "Post"}
+
+            {/* Post Options */}
+            <div className="post-options">
+              <button onClick={() => alert("Live streaming feature coming soon!")} className="post-option">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+                  <polyline points="17 2 12 7 7 2" />
+                  <circle cx="12" cy="15" r="3" fill="currentColor" />
+                </svg>
+                Go Live
               </button>
+
+              <button onClick={() => alert("Gameplay sharing feature coming soon!")} className="post-option">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                  <line x1="6" y1="1" x2="6" y2="4" />
+                  <line x1="10" y1="1" x2="10" y2="4" />
+                  <line x1="14" y1="1" x2="14" y2="4" />
+                </svg>
+                Share Game
+              </button>
+
+              <button onClick={() => setShowPollCreator(!showPollCreator)} className="post-option">
+                <BarChart2 className="h-4 w-4" />
+                Create Poll
+              </button>
+
+              <button onClick={() => setShowTagPeople(!showTagPeople)} className="post-option">
+                <Tag className="h-4 w-4" />
+                Tag People
+              </button>
+
+              <button onClick={() => setShowScheduler(!showScheduler)} className="post-option">
+                <Calendar className="h-4 w-4" />
+                Schedule
+              </button>
+            </div>
+
+            {/* Post Actions */}
+            <div className="flex justify-between items-center mt-3">
+              {isScheduled && scheduleDate && scheduleTime && (
+                <div className="flex items-center text-sm text-indigo-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Scheduled for {scheduleDate} at {scheduleTime}
+                  <button
+                    onClick={() => setIsScheduled(false)}
+                    className="ml-1 text-gray-500 hover:text-red-500 transition-colors duration-300"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+              <div className={isScheduled ? "" : "ml-auto"}>
+                <button
+                  onClick={createPost}
+                  disabled={!newPostContent.trim() && !selectedFile && !screenshotPreview && !hasPoll}
+                  className="post-button"
+                >
+                  <Send className="h-3 w-3" />
+                  {isScheduled ? "Schedule Post" : "Post"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1568,7 +1738,15 @@ export default function CommunityPage() {
           <>
             {/* Posts Feed */}
             <div className="space-y-4 mb-6">
-              <h2 className="font-semibold text-gray-700">Recent Posts</h2>
+              <div className="recent-posts-header">
+                <MessageCircle size={18} />
+                <span>Recent Posts</span>
+                <div className="ml-auto flex items-center ">
+                  <span className="bg-white text-black text-xs font-bold px-2 py-1 rounded-full">
+                    {posts.length}
+                  </span>
+                </div>
+              </div>
               {posts.length > 0 ? (
                 posts.map((post) => {
                   const author = users.find((u) => u.id === post.userId) || {
@@ -1576,47 +1754,42 @@ export default function CommunityPage() {
                     avatar: "/placeholder.svg",
                   }
                   return (
-                    <div key={post.id} className="bg-white rounded-xl shadow-md p-4">
+                    <div key={post.id} className="post-card mt-4 text-black">
                       {/* Post header */}
-                      <div className="flex items-center mb-3">
+                      <div className="post-header">
                         <img
                           src={author.avatar || "/placeholder.svg"}
                           alt={`${author.name}'s avatar`}
-                          className="w-10 h-10 rounded-full mr-3 cursor-pointer"
+                          className="post-avatar"
                           onClick={() => handleProfileClick(author.id)}
                         />
                         <div>
-                          <h3 className="font-medium">{author.name}</h3>
-                          <p className="text-xs text-gray-500">{formatDate(post.timestamp)}</p>
+                          <h3 className="post-author">{author.name}</h3>
+                          <p className="post-time">{formatDate(post.timestamp)}</p>
                         </div>
                       </div>
 
                       {/* Post content */}
-                      <p className="text-gray-800 mb-4">{post.content}</p>
+                      <p className="post-content">{post.content}</p>
 
                       {/* Post actions */}
-                      <div className="flex items-center justify-between border-t border-b py-2 mb-3">
+                      <div className="post-actions">
                         <button
                           onClick={() => toggleLikePost(post.id)}
-                          className={`flex items-center space-x-1 ${
-                            post.likes.includes(1) ? "text-red-500" : "text-gray-500"
-                          } hover:text-red-500 transition-all duration-300 hover:scale-110`}
+                          className={`post-action ${post.likes.includes(1) ? "liked" : ""}`}
                         >
                           <Heart className="h-5 w-5" fill={post.likes.includes(1) ? "currentColor" : "none"} />
                           <span>{post.likes.length}</span>
                         </button>
 
-                        <button
-                          onClick={() => startChat(post.userId)}
-                          className="flex items-center space-x-1 text-gray-500 hover:text-indigo-500 transition-all duration-300 hover:scale-110"
-                        >
+                        <button onClick={() => startChat(post.userId)} className="post-action">
                           <MessageCircle className="h-5 w-5" />
                           <span>Chat</span>
                         </button>
                       </div>
 
                       {/* Comments section */}
-                      <div className="space-y-3">
+                      <div className="post-comments">
                         {/* Comment list */}
                         {postComments[post.id] && postComments[post.id].length > 0 && (
                           <div className="space-y-2 mb-3">
@@ -1629,14 +1802,14 @@ export default function CommunityPage() {
                                 avatar: "/placeholder.svg",
                               }
                               return (
-                                <div key={comment.id} className="flex space-x-2">
+                                <div key={comment.id} className="flex space-x-2 fade-in">
                                   <img
                                     src={commentAuthor.avatar || "/placeholder.svg"}
                                     alt=""
-                                    className="w-8 h-8 rounded-full"
+                                    className="w-8 h-8 rounded-full transition-transform duration-300 hover:scale-110"
                                     onClick={() => handleProfileClick(commentAuthor.id)}
                                   />
-                                  <div className="flex-1 bg-gray-50 rounded-lg p-2">
+                                  <div className="flex-1 bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors duration-300">
                                     <div className="flex justify-between items-start">
                                       <h5 className="text-sm font-medium">{commentAuthor.name}</h5>
                                       <span className="text-xs text-gray-500">{formatDate(comment.timestamp)}</span>
@@ -1650,13 +1823,13 @@ export default function CommunityPage() {
                         )}
 
                         {/* Add comment */}
-                        <div className="flex space-x-2">
+                        <div className="comment-form">
                           <input
                             type="text"
                             value={newPostComment[post.id] || ""}
                             onChange={(e) => setNewPostComment({ ...newPostComment, [post.id]: e.target.value })}
                             placeholder="Write a comment..."
-                            className="flex-1 p-2 border rounded-lg text-sm"
+                            className="comment-input"
                             onKeyDown={(e) => {
                               if (e.key === "Enter" && newPostComment[post.id]?.trim()) {
                                 addPostComment(post.id)
@@ -1666,9 +1839,9 @@ export default function CommunityPage() {
                           <button
                             onClick={() => addPostComment(post.id)}
                             disabled={!newPostComment[post.id]?.trim()}
-                            className="px-3 py-1 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="comment-button"
                           >
-                            Comment
+                            <Send size={16} />
                           </button>
                         </div>
                       </div>
@@ -1676,7 +1849,7 @@ export default function CommunityPage() {
                   )
                 })
               ) : (
-                <div className="text-center py-8 bg-white rounded-lg shadow">
+                <div className="text-center py-8 bg-white rounded-lg shadow card-hover">
                   <p className="text-gray-500">No posts yet</p>
                 </div>
               )}
@@ -1685,29 +1858,34 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "topCoins" && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-            <div className="bg-indigo-50 px-4 py-2 border-b">
-              <h2 className="font-semibold text-indigo-800">Top Coins</h2>
+          <div className="bg-white text-black rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-yellow-200">
+            <div className="bg-gradient-to-r from-yellow-50 to-amber-50 px-4 py-2 border-b">
+              <h2 className="font-semibold text-amber-800">Top Coins</h2>
             </div>
             <div className="divide-y">
               {users.slice(0, 5).map((user, index) => (
-                <div key={user.id} className="flex items-center px-4 py-2 hover:bg-gray-50">
-                  <div className="w-8 text-center font-bold text-gray-500">#{index + 1}</div>
+                <div
+                  key={user.id}
+                  className="flex items-center px-4 py-2 hover:bg-yellow-50 transition-colors duration-300"
+                >
+                  <div className="w-8 text-center font-bold text-amber-500">
+                    {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`}
+                  </div>
                   <div className="flex items-center flex-1">
                     <div className="relative flex-shrink-0">
                       <img
                         src={user.avatar || "/placeholder.svg"}
                         alt=""
-                        className="w-8 h-8 rounded-full mr-3 cursor-pointer"
+                        className="w-8 h-8 rounded-full mr-3 cursor-pointer transition-transform duration-300 hover:scale-110 border-2 border-transparent hover:border-amber-300"
                         onClick={() => handleProfileClick(user.id)}
                       />
                       {user.isOnline && (
-                        <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
+                        <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white pulse"></div>
                       )}
                     </div>
                     <span className="font-medium">{user.name}</span>
                   </div>
-                  <div className="text-yellow-500 font-bold flex items-center">
+                  <div className="text-amber-500 font-bold flex items-center">
                     {user.coins.toLocaleString()} <span className="ml-1">🪙</span>
                   </div>
                 </div>
@@ -1717,8 +1895,8 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "topFollowers" && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-            <div className="bg-purple-50 px-4 py-2 border-b">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-blue-200">
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 px-4 py-2 border-b">
               <h2 className="font-semibold text-purple-800">Top Followers</h2>
             </div>
             <div className="divide-y">
@@ -1726,18 +1904,23 @@ export default function CommunityPage() {
                 .sort((a, b) => b.followers - a.followers)
                 .slice(0, 5)
                 .map((user, index) => (
-                  <div key={user.id} className="flex items-center px-4 py-2 hover:bg-gray-50">
-                    <div className="w-8 text-center font-bold text-gray-500">#{index + 1}</div>
+                  <div
+                    key={user.id}
+                    className="flex items-center px-4 py-2 hover:bg-purple-50 transition-colors duration-300"
+                  >
+                    <div className="w-8 text-center font-bold text-purple-500">
+                      {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`}
+                    </div>
                     <div className="flex items-center flex-1">
                       <div className="relative flex-shrink-0">
                         <img
                           src={user.avatar || "/placeholder.svg"}
                           alt=""
-                          className="w-8 h-8 rounded-full mr-3 cursor-pointer"
+                          className="w-8 h-8 rounded-full mr-3 cursor-pointer transition-transform duration-300 hover:scale-110 border-2 border-transparent hover:border-purple-300"
                           onClick={() => handleProfileClick(user.id)}
                         />
                         {user.isOnline && (
-                          <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
+                          <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white pulse"></div>
                         )}
                       </div>
                       <span className="font-medium">{user.name}</span>
@@ -1752,17 +1935,20 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "achievements" && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-            <div className="p-3 bg-indigo-50 border-b">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-green-200">
+            <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 border-b">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-indigo-800">Achievements</h3>
+                <h3 className="font-semibold text-emerald-800">Achievements</h3>
               </div>
             </div>
             <div className="p-4">
               {achievements.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {achievements.map((achievement) => (
-                    <div key={achievement.id} className="bg-white rounded-lg shadow-md p-3 flex items-center space-x-3">
+                    <div
+                      key={achievement.id}
+                      className="bg-white rounded-lg shadow-md p-3 flex items-center space-x-3 hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                    >
                       <div
                         className={`${achievementCategories.find((c) => c.id === achievement.category)?.color} w-10 h-10 rounded-full flex items-center justify-center text-white text-xl`}
                       >
@@ -1785,16 +1971,27 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "messages" && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-            <h2 className="font-semibold text-gray-700 mb-4">Messages</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover border-2 border-pink-200">
+            <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600 mb-4">
+              Messages
+            </h2>
             {users.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between py-3 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer"
+                className="flex items-center justify-between py-3 border-b last:border-b-0 hover:bg-pink-50 cursor-pointer transition-all duration-300"
                 onClick={() => startChat(user.id)}
               >
                 <div className="flex items-center space-x-3">
-                  <img src={user.avatar || "/placeholder.svg"} alt="" className="w-10 h-10 rounded-full" />
+                  <div className="relative">
+                    <img
+                      src={user.avatar || "/placeholder.svg"}
+                      alt=""
+                      className="w-10 h-10 rounded-full transition-transform duration-300 hover:scale-110 border-2 border-transparent hover:border-pink-300"
+                    />
+                    {user.isOnline && (
+                      <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white pulse"></div>
+                    )}
+                  </div>
                   <div>
                     <h3 className="font-medium">{user.name}</h3>
                     <p className="text-sm text-gray-500">Last message: Hi there!</p>
@@ -1807,16 +2004,20 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "settings" && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-            <h2 className="font-semibold text-gray-700 mb-4">Settings</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover border-2 border-gray-200">
+            <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-gray-600 to-slate-600 mb-4">
+              Settings
+            </h2>
             <p className="text-gray-600">Account settings and preferences will be available here.</p>
           </div>
         )}
 
         {/* User List */}
         {showUserList && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-            <h2 className="font-semibold text-gray-700 mb-4">User List</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover fade-in border-2 border-purple-200">
+            <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 mb-4">
+              User List
+            </h2>
             {users.map((user) => (
               <div
                 key={user.id}
@@ -1853,7 +2054,7 @@ export default function CommunityPage() {
                       e.stopPropagation()
                       startChat(user.id)
                     }}
-                    className="px-2 py-1 bg-green-500 text-white rounded-lg text-xs hover:bg-green-600 transition-colors"
+                    className="px-2 py-1 bg-green-500 text-white rounded-lg text-xs hover:bg-green-600 transition-colors duration-300 hover:scale-110"
                   >
                     <MessageCircle className="h-3 w-3" />
                   </button>
@@ -1865,30 +2066,37 @@ export default function CommunityPage() {
 
         {/* Chat Modal */}
         {activeChatUser && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
+          <div className="modal-container fade-in">
+            <div className="modal-content glass slide-down">
+              <div className="modal-header">
                 <div className="flex items-center space-x-3">
                   <img
                     src={users.find((u) => u.id === activeChatUser)?.avatar || "/placeholder.svg"}
                     alt=""
-                    className="w-8 h-8 rounded-full"
+                    className="w-8 h-8 rounded-full transition-transform duration-300 hover:scale-110"
                   />
                   <h3 className="font-semibold text-indigo-800">
                     {users.find((u) => u.id === activeChatUser)?.name || "Unknown User"}
                   </h3>
                 </div>
-                <button onClick={closeChat} className="text-gray-500 hover:text-red-500">
+                <button
+                  onClick={closeChat}
+                  className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="p-4 max-h-80 overflow-y-auto">
+              <div className="modal-body">
                 {chatMessages[activeChatUser] &&
                   chatMessages[activeChatUser].map((message) => (
                     <div
                       key={message.id}
-                      className={`mb-3 p-2 rounded-lg ${message.sender === "me" ? "bg-indigo-100 ml-auto text-right" : "bg-gray-100 mr-auto"}`}
+                      className={`mb-3 p-2 rounded-lg ${
+                        message.sender === "me"
+                          ? "bg-gradient-to-r from-indigo-100 to-purple-100 ml-auto text-right transform hover:scale-105"
+                          : "bg-gray-100 mr-auto transform hover:scale-105"
+                      } transition-all duration-300`}
                       style={{ maxWidth: "80%" }}
                     >
                       <p className="text-sm">{message.content}</p>
@@ -1898,14 +2106,14 @@ export default function CommunityPage() {
                 <div ref={chatEndRef} />
               </div>
 
-              <div className="p-4 border-t">
-                <div className="flex space-x-2">
+              <div className="modal-footer">
+                <div className="flex space-x-2 w-full">
                   <input
                     type="text"
                     value={currentMessage}
                     onChange={(e) => setCurrentMessage(e.target.value)}
                     placeholder="Write a message..."
-                    className="flex-1 p-2 border rounded-lg text-sm"
+                    className="flex-1 p-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && currentMessage.trim()) {
                         sendChatMessage()
@@ -1915,9 +2123,9 @@ export default function CommunityPage() {
                   <button
                     onClick={sendChatMessage}
                     disabled={!currentMessage.trim()}
-                    className="px-3 py-1 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
                   >
-                    Send
+                    <Send className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -1927,29 +2135,29 @@ export default function CommunityPage() {
 
         {/* Profile Modal */}
         {viewingProfile && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
+          <div className="modal-container fade-in">
+            <div className="modal-content glass slide-down">
+              <div className="modal-header">
                 <h3 className="font-semibold text-indigo-800">Profile</h3>
                 <button
                   onClick={closeProfileModal}
-                  className="text-gray-500 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="text-gray-500 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors duration-300"
                   aria-label="Close profile"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="p-4 overflow-y-auto max-h-[80vh]">
+              <div className="modal-body">
                 {/* User Info */}
                 <div className="flex items-center space-x-4 mb-6 relative">
                   <img
                     src={users.find((u) => u.id === viewingProfile)?.avatar || "/placeholder.svg"}
                     alt=""
-                    className="w-16 h-16 rounded-full border-2 border-indigo-100"
+                    className="w-16 h-16 rounded-full border-2 border-indigo-100 glow transition-all duration-300 hover:scale-110"
                   />
                   <div>
-                    <h3 className="font-bold text-lg">
+                    <h3 className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
                       {users.find((u) => u.id === viewingProfile)?.name || "Unknown User"}
                     </h3>
                     <p className="text-indigo-600 font-medium">Level: {getUserLevel(getUserXP(viewingProfile))}</p>
@@ -1977,27 +2185,27 @@ export default function CommunityPage() {
                   </h4>
                   {playerStats[viewingProfile] ? (
                     <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="bg-gray-50 p-3 rounded-lg">
+                      <div className="bg-gray-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-gray-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Matches Played</div>
                         <div className="font-bold text-lg">{playerStats[viewingProfile].matchesPlayed}</div>
                       </div>
-                      <div className="bg-green-50 p-3 rounded-lg">
+                      <div className="bg-green-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-green-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Wins</div>
                         <div className="font-bold text-lg text-green-600">{playerStats[viewingProfile].wins}</div>
                       </div>
-                      <div className="bg-red-50 p-3 rounded-lg">
+                      <div className="bg-red-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-red-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Losses</div>
                         <div className="font-bold text-lg text-red-600">{playerStats[viewingProfile].losses}</div>
                       </div>
-                      <div className="bg-indigo-50 p-3 rounded-lg">
+                      <div className="bg-indigo-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-indigo-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Win Rate</div>
                         <div className="font-bold text-lg text-indigo-600">{playerStats[viewingProfile].winRate}</div>
                       </div>
-                      <div className="bg-yellow-50 p-3 rounded-lg">
+                      <div className="bg-yellow-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-yellow-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Best Score</div>
                         <div className="font-bold text-lg text-yellow-600">{playerStats[viewingProfile].bestScore}</div>
                       </div>
-                      <div className="bg-purple-50 p-3 rounded-lg">
+                      <div className="bg-purple-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-purple-100 transform hover:scale-105">
                         <div className="text-xs text-gray-500 mb-1">Rank</div>
                         <div className="font-bold text-lg text-purple-600">{playerStats[viewingProfile].rank}</div>
                       </div>
@@ -2034,7 +2242,7 @@ export default function CommunityPage() {
                           achievement && (
                             <div
                               key={achievement.id}
-                              className="bg-gray-50 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition-colors"
+                              className="bg-gray-50 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition-all duration-300 transform hover:scale-110 hover:shadow-md"
                             >
                               <div
                                 className={`text-2xl mb-2 ${achievementCategories.find((c) => c.id === achievement.category)?.color.replace("bg-", "text-")}`}
@@ -2073,7 +2281,7 @@ export default function CommunityPage() {
                     Recent Activity
                   </h4>
                   <div className="space-y-3">
-                    <div className="bg-gray-50 p-3 rounded-lg flex justify-between items-center">
+                    <div className="bg-gray-50 p-3 rounded-lg flex justify-between items-center hover:shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-green-50">
                       <div>
                         <div className="text-sm font-medium">Chess Match</div>
                         <div className="text-xs text-gray-500">
@@ -2082,7 +2290,7 @@ export default function CommunityPage() {
                       </div>
                       <div className="text-sm font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full">Won</div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg flex justify-between items-center">
+                    <div className="bg-gray-50 p-3 rounded-lg flex justify-between items-center hover:shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-amber-50">
                       <div>
                         <div className="text-sm font-medium">Poker Tournament</div>
                         <div className="text-xs text-gray-500">8 players</div>
@@ -2091,7 +2299,7 @@ export default function CommunityPage() {
                         3rd Place
                       </div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg flex justify-between items-center">
+                    <div className="bg-gray-50 p-3 rounded-lg flex justify-between items-center hover:shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-blue-50">
                       <div>
                         <div className="text-sm font-medium">Racing Challenge</div>
                         <div className="text-xs text-gray-500">Time Trial</div>
@@ -2107,16 +2315,16 @@ export default function CommunityPage() {
                 <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
                   <button
                     onClick={() => startChat(viewingProfile)}
-                    className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors flex items-center"
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
                   >
                     <MessageCircle className="h-4 w-4 mr-1" /> Chat
                   </button>
                   <button
                     onClick={() => toggleFollow(viewingProfile)}
-                    className={`px-4 py-2 rounded-lg text-sm transition-colors flex items-center ${
+                    className={`px-4 py-2 rounded-lg text-sm transition-all duration-300 flex items-center transform hover:scale-105 ${
                       isFollowing(viewingProfile)
                         ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        : "bg-indigo-500 text-white hover:bg-indigo-600"
+                        : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600"
                     }`}
                   >
                     {isFollowing(viewingProfile) ? (
@@ -2131,7 +2339,7 @@ export default function CommunityPage() {
                   </button>
                   <button
                     onClick={() => inviteToGame(viewingProfile)}
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition-colors flex items-center"
+                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
                   >
                     <Trophy className="h-4 w-4 mr-1" /> Invite
                   </button>
@@ -2143,16 +2351,19 @@ export default function CommunityPage() {
 
         {/* Game Invite Modal */}
         {showGameInvite && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
-                <h3 className="font-semibold text-indigo-800">Invite to Game</h3>
-                <button onClick={() => setShowGameInvite(false)} className="text-gray-500 hover:text-red-500">
+          <div className="modal-container fade-in">
+            <div className="modal-content glass slide-down">
+              <div className="modal-header">
+                <h3 className="font-semibold text-emerald-800">Invite to Game</h3>
+                <button
+                  onClick={() => setShowGameInvite(false)}
+                  className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="p-4">
+              <div className="modal-body">
                 <div className="mb-4">
                   <label htmlFor="game" className="block text-gray-700 text-sm font-bold mb-2">
                     Select Game
@@ -2160,7 +2371,7 @@ export default function CommunityPage() {
                   <div className="relative">
                     <select
                       id="game"
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-green-300 focus:border-green-300 transition-all duration-300"
                       value={selectedGame || ""}
                       onChange={(e) => setSelectedGame(Number.parseInt(e.target.value))}
                     >
@@ -2184,7 +2395,7 @@ export default function CommunityPage() {
                 <button
                   onClick={sendGameInvite}
                   disabled={!inviteUserId || !selectedGame}
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm hover:from-green-600 hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
                 >
                   Send Invite
                 </button>
@@ -2195,16 +2406,19 @@ export default function CommunityPage() {
 
         {/* Poll Creator Modal */}
         {showPollCreator && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
+          <div className="modal-container fade-in">
+            <div className="modal-content glass slide-down">
+              <div className="modal-header">
                 <h3 className="font-semibold text-indigo-800">Create Poll</h3>
-                <button onClick={() => setShowPollCreator(false)} className="text-gray-500 hover:text-red-500">
+                <button
+                  onClick={() => setShowPollCreator(false)}
+                  className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="p-4">
+              <div className="modal-body">
                 <div className="mb-4">
                   <label htmlFor="pollQuestion" className="block text-gray-700 text-sm font-bold mb-2">
                     Question
@@ -2212,7 +2426,7 @@ export default function CommunityPage() {
                   <input
                     type="text"
                     id="pollQuestion"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
                     placeholder="Enter your question"
                     value={pollQuestion}
                     onChange={(e) => setPollQuestion(e.target.value)}
@@ -2225,7 +2439,7 @@ export default function CommunityPage() {
                     <div key={index} className="flex items-center mb-2">
                       <input
                         type="text"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300 mr-2"
                         placeholder={`Option ${index + 1}`}
                         value={option}
                         onChange={(e) => {
@@ -2241,7 +2455,7 @@ export default function CommunityPage() {
                             newOptions.splice(index, 1)
                             setPollOptions(newOptions)
                           }}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 transition-colors duration-300 p-1 rounded-full hover:bg-red-50"
                         >
                           <X className="h-5 w-5" />
                         </button>
@@ -2250,8 +2464,20 @@ export default function CommunityPage() {
                   ))}
                   <button
                     onClick={() => setPollOptions([...pollOptions, ""])}
-                    className="text-indigo-500 hover:text-indigo-700"
+                    className="text-indigo-500 hover:text-indigo-700 transition-colors duration-300 flex items-center"
                   >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-1"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                     Add Option
                   </button>
                 </div>
@@ -2260,7 +2486,7 @@ export default function CommunityPage() {
                   <label className="inline-flex items-center">
                     <input
                       type="checkbox"
-                      className="form-checkbox h-5 w-5 text-indigo-600"
+                      className="form-checkbox h-5 w-5 text-indigo-600 transition-colors duration-300"
                       checked={allowMultipleVotes}
                       onChange={() => setAllowMultipleVotes(!allowMultipleVotes)}
                     />
@@ -2271,7 +2497,7 @@ export default function CommunityPage() {
                 <button
                   onClick={addPollToPost}
                   disabled={!pollQuestion.trim() || pollOptions.some((opt) => !opt.trim())}
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
                 >
                   Add Poll
                 </button>
@@ -2282,16 +2508,19 @@ export default function CommunityPage() {
 
         {/* Tag People Modal */}
         {showTagPeople && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
-                <h3 className="font-semibold text-indigo-800">Tag People</h3>
-                <button onClick={() => setShowTagPeople(false)} className="text-gray-500 hover:text-red-500">
+          <div className="modal-container fade-in">
+            <div className="modal-content glass slide-down text-black">
+              <div className="modal-header">
+                <h3 className="font-semibold text-blue-800">Tag People</h3>
+                <button
+                  onClick={() => setShowTagPeople(false)}
+                  className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="p-4">
+              <div className="modal-body">
                 <div className="mb-4">
                   <label htmlFor="tagSearch" className="block text-gray-700 text-sm font-bold mb-2">
                     Search Users
@@ -2299,7 +2528,7 @@ export default function CommunityPage() {
                   <input
                     type="text"
                     id="tagSearch"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-300"
                     placeholder="Search for users"
                     value={tagSearchQuery}
                     onChange={(e) => setTagSearchQuery(e.target.value)}
@@ -2308,54 +2537,65 @@ export default function CommunityPage() {
 
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">Suggested Users</label>
-                  {users
-                    .filter((user) => user.name.toLowerCase().includes(tagSearchQuery.toLowerCase()))
-                    .map((user) => (
-                      <div
-                        key={user.id}
-                        className="flex items-center justify-between py-2 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer"
-                        onClick={() => {
-                          if (!taggedPeople.find((tagged) => tagged.id === user.id)) {
-                            setTaggedPeople([...taggedPeople, user])
-                          }
-                        }}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <img src={user.avatar || "/placeholder.svg"} alt="" className="w-8 h-8 rounded-full" />
-                          <h4 className="font-medium">{user.name}</h4>
+                  <div className="max-h-40 overflow-y-auto rounded-lg border">
+                    {users
+                      .filter((user) => user.name.toLowerCase().includes(tagSearchQuery.toLowerCase()))
+                      .map((user) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center justify-between py-2 px-3 border-b last:border-b-0 hover:bg-blue-50 cursor-pointer transition-all duration-300"
+                          onClick={() => {
+                            if (!taggedPeople.find((tagged) => tagged.id === user.id)) {
+                              setTaggedPeople([...taggedPeople, user])
+                            }
+                          }}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <img
+                              src={user.avatar || "/placeholder.svg"}
+                              alt=""
+                              className="w-8 h-8 rounded-full transition-transform duration-300 hover:scale-110"
+                            />
+                            <h4 className="font-medium">{user.name}</h4>
+                          </div>
+                          <button className="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs hover:bg-blue-600 transition-colors duration-300 transform hover:scale-110">
+                            Tag
+                          </button>
                         </div>
-                        <button className="px-3 py-1 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors">
-                          Tag
-                        </button>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
 
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">Tagged People</label>
                   {taggedPeople.length > 0 ? (
-                    taggedPeople.map((user) => (
-                      <div key={user.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
-                        <div className="flex items-center space-x-3">
-                          <img src={user.avatar || "/placeholder.svg"} alt="" className="w-8 h-8 rounded-full" />
-                          <h4 className="font-medium">{user.name}</h4>
-                        </div>
-                        <button
-                          onClick={() => setTaggedPeople(taggedPeople.filter((tagged) => tagged.id !== user.id))}
-                          className="text-red-500 hover:text-red-700"
+                    <div className="space-y-2">
+                      {taggedPeople.map((user) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center justify-between py-2 px-3 bg-blue-50 rounded-lg"
                         >
-                          <X className="h-5 w-5" />
-                        </button>
-                      </div>
-                    ))
+                          <div className="flex items-center space-x-3">
+                            <img src={user.avatar || "/placeholder.svg"} alt="" className="w-8 h-8 rounded-full" />
+                            <h4 className="font-medium">{user.name}</h4>
+                          </div>
+                          <button
+                            onClick={() => setTaggedPeople(taggedPeople.filter((tagged) => tagged.id !== user.id))}
+                            className="text-red-500 hover:text-red-700 transition-colors duration-300 p-1 rounded-full hover:bg-red-50"
+                          >
+                            <X className="h-5 w-5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
-                    <p className="text-gray-500">No one tagged yet</p>
+                    <p className="text-gray-500 text-center py-4 bg-gray-50 rounded-lg">No one tagged yet</p>
                   )}
                 </div>
 
                 <button
                   onClick={() => setShowTagPeople(false)}
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg text-sm hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-105 btn-animated"
                 >
                   Done
                 </button>
@@ -2366,16 +2606,19 @@ export default function CommunityPage() {
 
         {/* Game Scheduler Modal */}
         {showScheduler && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-purple-50 border-b flex items-center justify-between">
+          <div className="modal-container fade-in">
+            <div className="modal-content glass slide-down">
+              <div className="modal-header">
                 <h3 className="font-semibold text-purple-800">Schedule Game Session</h3>
-                <button onClick={() => setShowScheduler(false)} className="text-gray-500 hover:text-red-500">
+                <button
+                  onClick={() => setShowScheduler(false)}
+                  className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="p-4">
+              <div className="modal-body">
                 <div className="mb-4">
                   <label htmlFor="gameSelect" className="block text-gray-700 text-sm font-bold mb-2">
                     Select Game
@@ -2383,7 +2626,7 @@ export default function CommunityPage() {
                   <div className="relative">
                     <select
                       id="gameSelect"
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all duration-300"
                       value={selectedGame || ""}
                       onChange={(e) => setSelectedGame(Number.parseInt(e.target.value))}
                     >
@@ -2408,11 +2651,14 @@ export default function CommunityPage() {
                   <label className="block text-gray-700 text-sm font-bold mb-2">Invite Players</label>
                   <div className="max-h-32 overflow-y-auto mb-2 border rounded-lg">
                     {users.map((user) => (
-                      <div key={user.id} className="flex items-center p-2 hover:bg-gray-50 border-b last:border-b-0">
+                      <div
+                        key={user.id}
+                        className="flex items-center p-2 hover:bg-purple-50 border-b last:border-b-0 transition-colors duration-300"
+                      >
                         <input
                           type="checkbox"
                           id={`user-${user.id}`}
-                          className="mr-2 h-4 w-4 text-purple-600"
+                          className="mr-2 h-4 w-4 text-purple-600 transition-colors duration-300"
                           onChange={(e) => {
                             if (e.target.checked) {
                               setTaggedPeople([...taggedPeople, user])
@@ -2423,10 +2669,16 @@ export default function CommunityPage() {
                           checked={taggedPeople.some((p) => p.id === user.id)}
                         />
                         <label htmlFor={`user-${user.id}`} className="flex items-center cursor-pointer flex-1">
-                          <img src={user.avatar || "/placeholder.svg"} alt="" className="w-6 h-6 rounded-full mr-2" />
+                          <img
+                            src={user.avatar || "/placeholder.svg"}
+                            alt=""
+                            className="w-6 h-6 rounded-full mr-2 transition-transform duration-300 hover:scale-110"
+                          />
                           <span className="text-sm">{user.name}</span>
                         </label>
-                        {user.isOnline && <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>}
+                        {user.isOnline && (
+                          <span className="inline-block w-2 h-2 bg-green-500 rounded-full pulse"></span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -2443,7 +2695,7 @@ export default function CommunityPage() {
                     <input
                       type="date"
                       id="scheduleDate"
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all duration-300"
                       value={scheduleDate}
                       onChange={(e) => setScheduleDate(e.target.value)}
                     />
@@ -2456,7 +2708,7 @@ export default function CommunityPage() {
                     <input
                       type="time"
                       id="scheduleTime"
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all duration-300"
                       value={scheduleTime}
                       onChange={(e) => setScheduleTime(e.target.value)}
                     />
@@ -2469,7 +2721,7 @@ export default function CommunityPage() {
                   </label>
                   <textarea
                     id="sessionNotes"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all duration-300"
                     placeholder="Add notes about the game session..."
                     rows={3}
                   ></textarea>
@@ -2478,7 +2730,7 @@ export default function CommunityPage() {
                 <div className="flex justify-between">
                   <button
                     onClick={() => setShowScheduler(false)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-400 transition-colors"
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-400 transition-all duration-300 transform hover:scale-105"
                   >
                     Cancel
                   </button>
@@ -2525,182 +2777,11 @@ export default function CommunityPage() {
                       }
                     }}
                     disabled={!selectedGame || taggedPeople.length === 0 || !scheduleDate || !scheduleTime}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
                   >
                     Schedule Game
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Poll Creator Modal */}
-        {showPollCreator && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
-                <h3 className="font-semibold text-indigo-800">Create Poll</h3>
-                <button onClick={() => setShowPollCreator(false)} className="text-gray-500 hover:text-red-500">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="p-4">
-                <div className="mb-4">
-                  <label htmlFor="pollQuestion" className="block text-gray-700 text-sm font-bold mb-2">
-                    Question
-                  </label>
-                  <input
-                    type="text"
-                    id="pollQuestion"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Enter your question"
-                    value={pollQuestion}
-                    onChange={(e) => setPollQuestion(e.target.value)}
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Options</label>
-                  {pollOptions.map((option, index) => (
-                    <div key={index} className="flex items-center mb-2">
-                      <input
-                        type="text"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
-                        placeholder={`Option ${index + 1}`}
-                        value={option}
-                        onChange={(e) => {
-                          const newOptions = [...pollOptions]
-                          newOptions[index] = e.target.value
-                          setPollOptions(newOptions)
-                        }}
-                      />
-                      {index > 1 && (
-                        <button
-                          onClick={() => {
-                            const newOptions = [...pollOptions]
-                            newOptions.splice(index, 1)
-                            setPollOptions(newOptions)
-                          }}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-5 w-5" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => setPollOptions([...pollOptions, ""])}
-                    className="text-indigo-500 hover:text-indigo-700"
-                  >
-                    Add Option
-                  </button>
-                </div>
-
-                <div className="mb-4">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox h-5 w-5 text-indigo-600"
-                      checked={allowMultipleVotes}
-                      onChange={() => setAllowMultipleVotes(!allowMultipleVotes)}
-                    />
-                    <span className="ml-2 text-gray-700 text-sm">Allow Multiple Votes</span>
-                  </label>
-                </div>
-
-                <button
-                  onClick={addPollToPost}
-                  disabled={!pollQuestion.trim() || pollOptions.some((opt) => !opt.trim())}
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Add Poll
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tag People Modal */}
-        {showTagPeople && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
-              <div className="p-4 bg-indigo-50 border-b flex items-center justify-between">
-                <h3 className="font-semibold text-indigo-800">Tag People</h3>
-                <button onClick={() => setShowTagPeople(false)} className="text-gray-500 hover:text-red-500">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="p-4">
-                <div className="mb-4">
-                  <label htmlFor="tagSearch" className="block text-gray-700 text-sm font-bold mb-2">
-                    Search Users
-                  </label>
-                  <input
-                    type="text"
-                    id="tagSearch"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Search for users"
-                    value={tagSearchQuery}
-                    onChange={(e) => setTagSearchQuery(e.target.value)}
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Suggested Users</label>
-                  {users
-                    .filter((user) => user.name.toLowerCase().includes(tagSearchQuery.toLowerCase()))
-                    .map((user) => (
-                      <div
-                        key={user.id}
-                        className="flex items-center justify-between py-2 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer"
-                        onClick={() => {
-                          if (!taggedPeople.find((tagged) => tagged.id === user.id)) {
-                            setTaggedPeople([...taggedPeople, user])
-                          }
-                        }}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <img src={user.avatar || "/placeholder.svg"} alt="" className="w-8 h-8 rounded-full" />
-                          <h4 className="font-medium">{user.name}</h4>
-                        </div>
-                        <button className="px-3 py-1 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors">
-                          Tag
-                        </button>
-                      </div>
-                    ))}
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Tagged People</label>
-                  {taggedPeople.length > 0 ? (
-                    taggedPeople.map((user) => (
-                      <div key={user.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
-                        <div className="flex items-center space-x-3">
-                          <img src={user.avatar || "/placeholder.svg"} alt="" className="w-8 h-8 rounded-full" />
-                          <h4 className="font-medium">{user.name}</h4>
-                        </div>
-                        <button
-                          onClick={() => setTaggedPeople(taggedPeople.filter((tagged) => tagged.id !== user.id))}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-5 w-5" />
-                        </button>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500">No one tagged yet</p>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => setShowTagPeople(false)}
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors"
-                >
-                  Done
-                </button>
               </div>
             </div>
           </div>

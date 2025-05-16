@@ -4,6 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const { Server } = require('socket.io');
 const gameRoutes = require('./routes/gameRoutes');
+const postRoutes = require('./routes/postRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,7 +27,8 @@ require('./config/db')();
 
 // API Routes
 app.use('/api/games', gameRoutes);
-
+app.use('/api/post', postRoutes);
+app.use('/api/users', userRoutes);
 // Socket.IO Connection
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);

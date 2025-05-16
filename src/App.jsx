@@ -1,17 +1,28 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Common Components
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import GameSection from './components/GameSection';
+import GameSection from './pages/games';
 import Community from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
+
+// Pages / Other Components
 import Wallet from './components/Wallet';
-// import GameSection from './components/GameSection';
 import CommunityPage from './components/Vinit/Community';
+import SPS from './components/Stone-Paper/SPS';
+import MemoryMatchGame from './components/Memory/MemoryMatchGame';
+import DiceDuel from './components/Dice/DiceDuel';
+import CoinFlipBet from './components/Coinflip/CoinFlipBet';
+import Games from './pages/games';
+import Rewards from './components/rewards';
+import History from './components/history';
+
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
   const canvasRef = useRef(null);
@@ -26,9 +37,8 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    // Particle system setup
     const canvas = canvasRef.current;
-    if (!canvas) return; // Guard against null canvas
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     let animationFrameId;
@@ -51,7 +61,6 @@ function HomePage() {
       constructor() {
         this.reset();
       }
-
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
@@ -62,9 +71,7 @@ function HomePage() {
         this.color = `hsl(${Math.random() * 60 + 200}, 70%, 50%)`;
         this.originalSize = this.size;
       }
-
       update() {
-        // Mouse interaction
         const dx = mouseX - this.x;
         const dy = mouseY - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -77,11 +84,9 @@ function HomePage() {
           this.size = this.originalSize * (1 + force);
         }
 
-        // Normal movement
         this.x += this.speedX;
         this.y += this.speedY;
 
-        // Boundary check with bounce
         if (this.x < 0 || this.x > canvas.width) {
           this.speedX *= -0.8;
           this.x = Math.max(0, Math.min(this.x, canvas.width));
@@ -91,23 +96,18 @@ function HomePage() {
           this.y = Math.max(0, Math.min(this.y, canvas.height));
         }
 
-        // Friction
         this.speedX *= 0.99;
         this.speedY *= 0.99;
 
-        // Opacity fade
         if (this.opacity > 0.1) this.opacity -= 0.001;
         else this.reset();
       }
-
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.globalAlpha = this.opacity;
         ctx.fill();
-
-        // Glow effect
         ctx.shadowBlur = 15;
         ctx.shadowColor = this.color;
         ctx.fill();
@@ -121,18 +121,14 @@ function HomePage() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw particles and connections
       particles.forEach((particle, i) => {
         particle.update();
         particle.draw();
 
-        // Connect nearby particles
         particles.slice(i + 1).forEach(p2 => {
           const dx = particle.x - p2.x;
           const dy = particle.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-
           if (dist < 100) {
             ctx.beginPath();
             const opacity = 0.2 * (1 - dist / 100);
@@ -144,16 +140,13 @@ function HomePage() {
           }
         });
       });
-
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Initialize and start animation
     resizeCanvas();
     initParticles();
     animate();
 
-    // Event listeners
     window.addEventListener('resize', resizeCanvas);
     canvas.addEventListener('mousemove', handleMouseMove);
 
@@ -166,14 +159,11 @@ function HomePage() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Interactive Background Canvas */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 w-full h-full z-0"
         style={{ opacity: 0.7 }}
       />
-
-      {/* Dynamic Gradient Overlay */}
       <div
         className="fixed inset-0 z-0"
         style={{
@@ -186,11 +176,8 @@ function HomePage() {
           animation: 'gradientShift 15s ease infinite'
         }}
       />
-
-      {/* Content Container */}
       <div className="relative z-10">
-        {/* Splash Screen */}
-        {showSplash && (
+        {showSplash ? (
           <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center">
             <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
             <div className="relative z-10 flex flex-col items-center justify-center">
@@ -204,9 +191,7 @@ function HomePage() {
               </h1>
             </div>
           </div>
-        )}
-
-        {!showSplash && (
+        ) : (
           <>
             <Navbar />
             <main className="flex-1 pb-16 md:pb-0">
@@ -226,26 +211,17 @@ function HomePage() {
           50% { background-position: 100% 100%; }
           100% { background-position: 0% 0%; }
         }
-
         @keyframes float-slow {
           0%, 100% { transform: translateY(0) scale(1); }
           50% { transform: translateY(-20px) scale(1.05); }
         }
-
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.5; transform: scale(1); }
-          50% { opacity: 0.7; transform: scale(1.1); }
-        }
-
         @keyframes pulse-glow {
           0%, 100% { text-shadow: 0 0 20px rgba(162, 89, 255, 0.5); }
           50% { text-shadow: 0 0 30px rgba(162, 89, 255, 0.8); }
         }
-
         .animate-float {
           animation: float-slow 3s ease-in-out infinite;
         }
-
         .animate-pulse-glow {
           animation: pulse-glow 2s ease-in-out infinite;
         }
@@ -260,9 +236,18 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/wallet" element={<Wallet />} />
-        <Route path="/Community" element={<Community/>} />
-        <Route path="/Games" element={<GameSection/>} />
+        <Route path="/community" element={<CommunityPage />} />
 
+        {/* Games routes */}
+        <Route path="/games/sps" element={<SPS />} />
+        <Route path="/games/memory" element={<MemoryMatchGame />} />
+        <Route path="/games/dice" element={<DiceDuel />} />
+        <Route path="/games/coinflip" element={<CoinFlipBet />} />
+
+        {/* Additional routes */}
+        <Route path="/games" element={<Games />} />
+        <Route path="/rewards" element={<Rewards />} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </Router>
   );
