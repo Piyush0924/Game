@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import GameSection from './pages/games';
+import GameSection from './components/GameSection';
 import Community from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
