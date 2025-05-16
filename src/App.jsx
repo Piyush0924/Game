@@ -11,7 +11,8 @@ import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
-
+import MiniBattleship from './components/MiniBattleship/MiniBattleship';
+import RunnerDuel from './components/RunnerDuel/RunnerDuel';
 // Pages / Other Components
 import Wallet from './components/Wallet';
 import CommunityPage from './components/Vinit/Community';
@@ -243,6 +244,8 @@ function App() {
         <Route path="/games/memory" element={<MemoryMatchGame />} />
         <Route path="/games/dice" element={<DiceDuel />} />
         <Route path="/games/coinflip" element={<CoinFlipBet />} />
+        <Route path="/games/minibattleship" element={<MiniBattleship />} />
+        <Route path="/games/runnerDuel" element={<RunnerDuel />} />
 
         {/* Additional routes */}
         <Route path="/games" element={<Games />} />
