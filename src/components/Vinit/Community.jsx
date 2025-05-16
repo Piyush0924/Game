@@ -1,8 +1,28 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { Users, Coins, Award, MessageSquare, Trophy, Heart, MessageCircle, Home, Settings, X, Search, Send, PlusCircle, Calendar, Tag, BarChart2, Menu } from 'lucide-react'
-import { Music, ImageIcon, Film, Palette, GiftIcon as Gif } from 'lucide-react'
+import {
+  Users,
+  Coins,
+  Award,
+  MessageSquare,
+  Trophy,
+  Heart,
+  MessageCircle,
+  Home,
+  Settings,
+  X,
+  Search,
+  Send,
+  PlusCircle,
+  Calendar,
+  Tag,
+  BarChart2,
+  Menu,
+} from "lucide-react"
+import { Music, ImageIcon, Film, Palette, GiftIcon as Gif } from "lucide-react"
+import axios from "axios"
+import { CalendarIcon, Megaphone, Upload } from "lucide-react"
 
 export default function CommunityPage() {
   const [users, setUsers] = useState([])
@@ -27,7 +47,7 @@ export default function CommunityPage() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [userFiles, setUserFiles] = useState({})
   const [uploadProgress, setUploadProgress] = useState(0)
-  
+
   const fileInputRef = useRef(null)
 
   // New state variables for notifications, emails, and game invitations
@@ -62,6 +82,10 @@ export default function CommunityPage() {
   // Active section state
   const [activeSection, setActiveSection] = useState("home")
 
+    // News and blogs sections
+  const [showNews, setShowNews] = useState(false)
+  const [showBlogs, setShowBlogs] = useState(false)
+
   // Gift options
   const gifts = [
     { id: 1, name: "Trophy", emoji: "🏆", value: 50 },
@@ -86,6 +110,143 @@ export default function CommunityPage() {
   const [isScheduled, setIsScheduled] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showUserList, setShowUserList] = useState(false)
+  const [showEvents, setShowEvents] = useState(false)
+  const [events, setEvents] = useState([
+    {
+      id: 1,
+      title: "Community Tournament",
+      date: "2025-05-20",
+      time: "18:00",
+      description: "Join our monthly gaming tournament with prizes!",
+      participants: [1, 3, 5, 7],
+      location: "Virtual Arena",
+    },
+    {
+      id: 2,
+      title: "Game Launch Party",
+      date: "2025-05-25",
+      time: "20:00",
+      description: "Celebrating the launch of the new RPG expansion",
+      participants: [2, 4, 6],
+      location: "Main Lobby",
+    },
+    {
+      id: 3,
+      title: "Developer Q&A",
+      date: "2025-06-01",
+      time: "19:00",
+      description: "Ask questions directly to our game developers",
+      participants: [1, 8, 10],
+      location: "Dev Channel",
+    },
+  ])
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    date: "",
+    time: "",
+    description: "",
+    location: "",
+  })
+  const [newsItems, setNewsItems] = useState([
+    {
+      id: 1,
+      title: "New Battle Royale Game Announced",
+      date: "2025-05-15",
+      content:
+        "A major studio has announced a new battle royale game that promises to revolutionize the genre with innovative mechanics and stunning visuals.",
+      imageUrl: "/placeholder.svg?height=300&width=500",
+      source: "GameNews",
+      youtubeUrl: "https://www.youtube.com/embed/0E44DClsX5Q",
+    },
+    {
+      id: 2,
+      title: "Esports Championship Results",
+      date: "2025-05-10",
+      content:
+        "The world championship concluded with an unexpected winner taking home the $1 million prize pool after an intense final match.",
+      imageUrl: "/placeholder.svg?height=300&width=500",
+      source: "Esports Today",
+      youtubeUrl: "",
+    },
+    {
+      id: 3,
+      title: "Major Update Coming to Popular MMORPG",
+      date: "2025-05-05",
+      content:
+        "The developers announced a massive content update including new zones, raids, and character classes coming next month.",
+      imageUrl: "/placeholder.svg?height=300&width=500",
+      source: "MMO Insider",
+      youtubeUrl: "https://www.youtube.com/embed/s4gBChg6AII",
+    },
+  ])
+
+   const [blogPosts, setBlogPosts] = useState([
+    {
+      id: 1,
+      title: "Top 10 Gaming Strategies for Beginners",
+      author: "ProGamer123",
+      date: "2025-05-12",
+      content:
+        "If you're new to competitive gaming, these ten strategies will help you improve your skills and climb the ranks faster...",
+      imageUrl: "/placeholder.svg?height=300&width=500",
+      tags: ["beginner", "tips", "competitive"],
+    },
+    {
+      id: 2,
+      title: "The Evolution of RPG Games: From Tabletop to Virtual Reality",
+      author: "GameHistorian",
+      date: "2025-05-08",
+      content:
+        "Role-playing games have come a long way from their tabletop origins. This article explores the fascinating evolution of the genre...",
+      imageUrl: "/placeholder.svg?height=300&width=500",
+      tags: ["rpg", "history", "vr"],
+    },
+    {
+      id: 3,
+      title: "Building the Perfect Gaming Setup: A Comprehensive Guide",
+      author: "TechWizard",
+      date: "2025-05-03",
+      content:
+        "From selecting the right hardware to optimizing your space, this guide covers everything you need to create your dream gaming setup...",
+      imageUrl: "/placeholder.svg?height=300&width=500",
+      tags: ["hardware", "setup", "guide"],
+    },
+  ])
+
+
+  
+  const [showCreateEvent, setShowCreateEvent] = useState(false)
+
+  const [showAnnouncements, setShowAnnouncements] = useState(false)
+  const [announcements, setAnnouncements] = useState([
+    {
+      id: 1,
+      title: "Important System Update",
+      content: "We'll be performing maintenance on May 21st from 2-4 AM UTC.",
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+      createdBy: 1,
+      isPinned: true,
+      imageUrl: "/placeholder.svg?height=300&width=500",
+    },
+    {
+      id: 2,
+      title: "New Game Features Released",
+      content: "Check out the latest features including custom avatars and improved matchmaking!",
+      createdAt: new Date(Date.now() - 172800000).toISOString(),
+      createdBy: 4,
+      isPinned: false,
+      imageUrl: null,
+    },
+  ])
+  const [newAnnouncement, setNewAnnouncement] = useState({
+    title: "",
+    content: "",
+    isPinned: false,
+    imageUrl: null,
+  })
+  const [showCreateAnnouncement, setShowCreateAnnouncement] = useState(false)
+  const [announcementImage, setAnnouncementImage] = useState(null)
+  const announcementImageRef = useRef(null)
 
   const [mediaType, setMediaType] = useState(null)
   const [backgroundOptions, setBackgroundOptions] = useState([
@@ -104,8 +265,37 @@ export default function CommunityPage() {
   const imageInputRef = useRef(null)
   const videoInputRef = useRef(null)
   const musicInputRef = useRef(null)
+  const [selectedGif, setSelectedGif] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [gifs, setGifs] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const timezoneInputRef = useRef(null)
+
+  // GIF
+  useEffect(() => {
+    const fetchGifs = async () => {
+      const endpoint = searchTerm
+        ? `https://api.giphy.com/v1/gifs/search?api_key=O11aOeloY0YJEKSPPXYEuLKLT5Lr1yKW&q=${searchTerm}&limit=12`
+        : `https://api.giphy.com/v1/gifs/trending?api_key=O11aOeloY0YJEKSPPXYEuLKLT5Lr1yKW&limit=12`
+
+      try {
+        const res = await axios.get(endpoint)
+        setGifs(res.data.data)
+      } catch (err) {
+        console.error("Error fetching GIFs", err)
+      }
+    }
+
+    const delayDebounce = setTimeout(() => {
+      fetchGifs()
+    }, 500)
+
+    return () => clearTimeout(delayDebounce)
+  }, [searchTerm])
 
   // Dummy function for toggleLikePost
+
   const toggleLikePost = (postId) => {
     setPosts((prevPosts) =>
       prevPosts.map((post) => {
@@ -1492,7 +1682,7 @@ export default function CommunityPage() {
           </h1>
 
           {/* Search Bar */}
-          <div className="search-container w-full mt-3">
+          <div className=" text-black search-container w-full mt-3">
             <input
               type="text"
               className="search-input"
@@ -1508,7 +1698,7 @@ export default function CommunityPage() {
           <div className="flex space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
             <button
               onClick={() => setActiveSection("home")}
-              className={`icon-button px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+              className={`icon-button  md:ml-36  px-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "home"
                   ? "bg-gradient-to-r from-blue-900 to-slate-800 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-gray-200 hover:text-pink-600"
@@ -1573,6 +1763,106 @@ export default function CommunityPage() {
               <MessageSquare size={20} className="transition-transform duration-300" />
               <span className="text-xs mt-1 font-medium">Chat</span>
             </button>
+            <button
+              onClick={() => {
+                setShowUserList(false)
+                setActiveSection("events")
+                setShowEvents(true)
+              }}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+                activeSection === "events"
+                  ? "bg-gradient-to-r from-orange-400 to-orange-600 text-white shadow-md transform scale-110"
+                  : "text-gray-500 hover:bg-orange-100 hover:text-orange-600"
+              }`}
+              title="Events"
+            >
+              <CalendarIcon size={20} className="transition-transform duration-300" />
+              <span className="text-xs mt-1 font-medium">Events</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setShowUserList(false)
+                setActiveSection("announcements")
+                setShowAnnouncements(true)
+              }}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+                activeSection === "announcements"
+                  ? "bg-gradient-to-r from-red-400 to-red-600 text-white shadow-md transform scale-110"
+                  : "text-gray-500 hover:bg-red-100 hover:text-red-600"
+              }`}
+              title="Announcements"
+            >
+              <Megaphone size={20} className="transition-transform duration-300" />
+              <span className="text-xs mt-1 font-medium">Announce</span>
+            </button>
+            <button
+              onClick={() => {
+                setShowUserList(false)
+                setActiveSection("news")
+                setShowNews(true)
+                setShowBlogs(false)
+                setShowEvents(false)
+                setShowAnnouncements(false)
+              }}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+                activeSection === "news"
+                  ? "bg-gradient-to-r from-blue-400 to-cyan-600 text-white shadow-md transform scale-110"
+                  : "text-gray-500 hover:bg-blue-100 hover:text-blue-600"
+              }`}
+              title="News"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 transition-transform duration-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+                <path d="M18 14h-8" />
+                <path d="M15 18h-5" />
+                <path d="M10 6h8v4h-8V6Z" />
+              </svg>
+              <span className="text-xs mt-1 font-medium">News</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setShowUserList(false)
+                setActiveSection("blogs")
+                setShowBlogs(true)
+                setShowNews(false)
+                setShowEvents(false)
+                setShowAnnouncements(false)
+              }}
+              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+                activeSection === "blogs"
+                  ? "bg-gradient-to-r from-green-400 to-teal-600 text-white shadow-md transform scale-110"
+                  : "text-gray-500 hover:bg-green-100 hover:text-green-600"
+              }`}
+              title="Blogs"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 transition-transform duration-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                <path d="m15 5 4 4" />
+              </svg>
+              <span className="text-xs mt-1 font-medium">Blogs</span>
+            </button>
+
+
 
             <button
               onClick={() => {
@@ -1786,14 +2076,53 @@ export default function CommunityPage() {
                     <Palette size={16} />
                     <span>Background</span>
                   </button>
+                  <div className="p-4">
+                    <button
+                      onClick={() => setMediaType(mediaType === "gif" ? "" : "gif")}
+                      className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${
+                        mediaType === "gif" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"
+                      }`}
+                    >
+                      <Gif size={16} />
+                      <span>GIF</span>
+                    </button>
 
-                  <button
-                    onClick={() => setMediaType("gif")}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all ${mediaType === "gif" ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 hover:bg-gray-200"}`}
-                  >
-                    <Gif size={16} />
-                    <span>GIF</span>
-                  </button>
+                    {mediaType === "gif" && (
+                      <div className="mt-3 p-3 bg-white rounded-lg shadow-md w-[300px]">
+                        <input
+                          type="text"
+                          placeholder="Search GIFs"
+                          className="w-full px-2 py-1 mb-2 border rounded"
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
+                          {gifs.map((gif) => (
+                            <img
+                              key={gif.id}
+                              src={gif.images.fixed_width_small.url || "/placeholder.svg"}
+                              alt={gif.title}
+                              className="cursor-pointer rounded hover:scale-105 transition"
+                              onClick={() => {
+                                setSelectedGif(gif.images.original.url)
+                                setMediaType("")
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedGif && (
+                      <div className="mt-4">
+                        <p className="mb-2 font-semibold">Selected GIF:</p>
+                        <img
+                          src={selectedGif || "/placeholder.svg"}
+                          alt="Selected GIF"
+                          className="rounded-lg max-w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Hidden file inputs */}
@@ -2366,6 +2695,124 @@ export default function CommunityPage() {
           </div>
         )}
 
+        {activeSection === "events" && (
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-orange-200">
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 px-4 py-2 border-b flex justify-between items-center">
+              <h2 className="font-semibold text-orange-800">Upcoming Events</h2>
+              <button
+                onClick={() => setShowCreateEvent(true)}
+                className="px-2 py-1 bg-orange-500 text-white rounded-lg text-xs hover:bg-orange-600 transition-colors duration-300 flex items-center"
+              >
+                <PlusCircle size={14} className="mr-1" /> Create
+              </button>
+            </div>
+            <div className="divide-y">
+              {events.length > 0 ? (
+                events.map((event) => (
+                  <div key={event.id} className="p-4 hover:bg-orange-50 transition-colors duration-300">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-bold text-orange-800">{event.title}</h3>
+                      <div className="bg-orange-100 text-orange-800 px-2 py-1 rounded-md text-xs font-medium">
+                        {new Date(event.date).toLocaleDateString()} at {event.time}
+                      </div>
+                    </div>
+                    <p className="text-gray-600 mb-2">{event.description}</p>
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm text-gray-500">Location: {event.location}</div>
+                      <div className="flex -space-x-2">
+                        {event.participants.map((userId) => (
+                          <img
+                            key={userId}
+                            src={users.find((u) => u.id === userId)?.avatar || "/placeholder.svg"}
+                            alt="Participant"
+                            className="w-6 h-6 rounded-full border border-white"
+                          />
+                        ))}
+                        <div className="w-6 h-6 rounded-full bg-orange-200 flex items-center justify-center text-xs text-orange-800 border border-white">
+                          +{event.participants.length}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-gray-500">No upcoming events. Create one!</div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeSection === "announcements" && (
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-red-200">
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 px-4 py-2 border-b flex justify-between items-center">
+              <h2 className="font-semibold text-red-800">Important Announcements</h2>
+              <button
+                onClick={() => setShowCreateAnnouncement(true)}
+                className="px-2 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 transition-colors duration-300 flex items-center"
+              >
+                <PlusCircle size={14} className="mr-1" /> Create
+              </button>
+            </div>
+            <div className="divide-y">
+              {announcements.length > 0 ? (
+                announcements.map((announcement) => (
+                  <div
+                    key={announcement.id}
+                    className={`p-4 ${announcement.isPinned ? "bg-red-50" : ""} hover:bg-red-50 transition-colors duration-300`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center">
+                        {announcement.isPinned && (
+                          <span className="mr-2 text-red-500">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        )}
+                        <h3 className="font-bold text-red-800">{announcement.title}</h3>
+                      </div>
+                      <div className="text-xs text-gray-500">{formatDate(announcement.createdAt)}</div>
+                    </div>
+                    <p className="text-gray-600 mb-3">{announcement.content}</p>
+                    {announcement.imageUrl && (
+                      <div className="mb-3 rounded-lg overflow-hidden">
+                        <img
+                          src={announcement.imageUrl || "/placeholder.svg"}
+                          alt={announcement.title}
+                          className="w-full object-cover h-40"
+                        />
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <img
+                          src={users.find((u) => u.id === announcement.createdBy)?.avatar || "/placeholder.svg"}
+                          alt="Author"
+                          className="w-6 h-6 rounded-full mr-2"
+                        />
+                        <span className="text-sm text-gray-500">
+                          Posted by {users.find((u) => u.id === announcement.createdBy)?.name || "Unknown"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-gray-500">No announcements yet.</div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* User List */}
         {showUserList && (
           <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover fade-in border-2 border-purple-200">
@@ -2489,19 +2936,18 @@ export default function CommunityPage() {
 
         {/* Profile Modal */}
         {viewingProfile && (
-         <div className="modal-container fixed inset-0 bg-black/50 flex items-center justify-center z-50 fade-in">
-      <div className="modal-content glass slide-down bg-white/90 backdrop-blur-md rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-        <div className="modal-header flex justify-between items-center p-4 border-b">
-          <h3 className="font-semibold text-indigo-800">Profile</h3>
-          <button
-            onClick={closeProfileModal}
-            className="text-gray-500 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors duration-300"
-            aria-label="Close profile"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        
+          <div className="modal-container fixed inset-0 bg-black/50 flex items-center justify-center z-50 fade-in">
+            <div className="modal-content glass slide-down bg-white/90 backdrop-blur-md rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+              <div className="modal-header flex justify-between items-center p-4 border-b">
+                <h3 className="font-semibold text-indigo-800">Profile</h3>
+                <button
+                  onClick={closeProfileModal}
+                  className="text-gray-500 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors duration-300"
+                  aria-label="Close profile"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
               <div className="modal-body">
                 {/* User Info */}
@@ -2538,7 +2984,7 @@ export default function CommunityPage() {
                     </svg>
                     Player Statistics
                   </h4>
-                   <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
+                  <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
                     <button
                       onClick={() => startChat(viewingProfile)}
                       className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
@@ -2571,39 +3017,38 @@ export default function CommunityPage() {
                     </button>
                   </div>
                 </div>
-                  {playerStats[viewingProfile] ? (
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="bg-gray-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-gray-100 transform hover:scale-105">
-                        <div className="text-xs text-gray-500 mb-1">Matches Played</div>
-                        <div className="font-bold text-lg">{playerStats[viewingProfile].matchesPlayed}</div>
-                      </div>
-                      
-                      <div className="bg-green-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-green-100 transform hover:scale-105">
-                        <div className="text-xs text-gray-500 mb-1">Wins</div>
-                        <div className="font-bold text-lg text-green-600">{playerStats[viewingProfile].wins}</div>
-                      </div>
-                      <div className="bg-red-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-red-100 transform hover:scale-105">
-                        <div className="text-xs text-gray-500 mb-1">Losses</div>
-                        <div className="font-bold text-lg text-red-600">{playerStats[viewingProfile].losses}</div>
-                      </div>
-                      <div className="bg-indigo-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-indigo-100 transform hover:scale-105">
-                        <div className="text-xs text-gray-500 mb-1">Win Rate</div>
-                        <div className="font-bold text-lg text-indigo-600">{playerStats[viewingProfile].winRate}</div>
-                      </div>
-                      <div className="bg-yellow-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-yellow-100 transform hover:scale-105">
-                        <div className="text-xs text-gray-500 mb-1">Best Score</div>
-                        <div className="font-bold text-lg text-yellow-600">{playerStats[viewingProfile].bestScore}</div>
-                      </div>
-                      <div className="bg-purple-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-purple-100 transform hover:scale-105">
-                        <div className="text-xs text-gray-500 mb-1">Rank</div>
-                        <div className="font-bold text-lg text-purple-600">{playerStats[viewingProfile].rank}</div>
-                      </div>
+                {playerStats[viewingProfile] ? (
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-gray-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-gray-100 transform hover:scale-105">
+                      <div className="text-xs text-gray-500 mb-1">Matches Played</div>
+                      <div className="font-bold text-lg">{playerStats[viewingProfile].matchesPlayed}</div>
                     </div>
-                  ) : (
-                    <p className="text-gray-500">No stats available</p>
-                  )}
-                  {/* Actions */}
-                 
+
+                    <div className="bg-green-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-green-100 transform hover:scale-105">
+                      <div className="text-xs text-gray-500 mb-1">Wins</div>
+                      <div className="font-bold text-lg text-green-600">{playerStats[viewingProfile].wins}</div>
+                    </div>
+                    <div className="bg-red-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-red-100 transform hover:scale-105">
+                      <div className="text-xs text-gray-500 mb-1">Losses</div>
+                      <div className="font-bold text-lg text-red-600">{playerStats[viewingProfile].losses}</div>
+                    </div>
+                    <div className="bg-indigo-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-indigo-100 transform hover:scale-105">
+                      <div className="text-xs text-gray-500 mb-1">Win Rate</div>
+                      <div className="font-bold text-lg text-indigo-600">{playerStats[viewingProfile].winRate}</div>
+                    </div>
+                    <div className="bg-yellow-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-yellow-100 transform hover:scale-105">
+                      <div className="text-xs text-gray-500 mb-1">Best Score</div>
+                      <div className="font-bold text-lg text-yellow-600">{playerStats[viewingProfile].bestScore}</div>
+                    </div>
+                    <div className="bg-purple-50 p-3 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-purple-100 transform hover:scale-105">
+                      <div className="text-xs text-gray-500 mb-1">Rank</div>
+                      <div className="font-bold text-lg text-purple-600">{playerStats[viewingProfile].rank}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No stats available</p>
+                )}
+                {/* Actions */}
 
                 {/* Achievements */}
                 <div className="mb-6">
@@ -2702,38 +3147,6 @@ export default function CommunityPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-wrap gap-2 justify-between mt-6 border-t pt-4">
-                  <button
-                    onClick={() => startChat(viewingProfile)}
-                    className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg text-sm hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
-                  >
-                    <MessageCircle className="h-4 w-4 mr-1" /> Chat
-                  </button>
-                  <button
-                    onClick={() => toggleFollow(viewingProfile)}
-                    className={`px-4 py-2 rounded-lg text-sm transition-all duration-300 flex items-center transform hover:scale-105 ${
-                      isFollowing(viewingProfile)
-                        ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600"
-                    }`}
-                  >
-                    {isFollowing(viewingProfile) ? (
-                      <>
-                        <X className="h-4 w-4 mr-1" /> Unfollow
-                      </>
-                    ) : (
-                      <>
-                        <Heart className="h-4 w-4 mr-1" /> Follow
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => inviteToGame(viewingProfile)}
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center transform hover:scale-105 btn-animated"
-                  >
-                    <Trophy className="h-4 w-4 mr-1" /> Invite
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -2741,7 +3154,6 @@ export default function CommunityPage() {
 
         {/* Game Invite Modal */}
         {showGameInvite && (
-          
           <div className="modal-container fade-in">
             <div className="modal-content glass slide-down">
               <div className="modal-header">
@@ -3178,6 +3590,288 @@ export default function CommunityPage() {
           </div>
         )}
       </div>
+      {/* Create Event Modal */}
+      {showCreateEvent && (
+        <div className="modal-container fade-in">
+          <div className="modal-content glass slide-down">
+            <div className="modal-header">
+              <h3 className="font-semibold text-orange-800">Create New Event</h3>
+              <button
+                onClick={() => setShowCreateEvent(false)}
+                className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="mb-4">
+                <label htmlFor="eventTitle" className="block text-gray-700 text-sm font-bold mb-2">
+                  Event Title
+                </label>
+                <input
+                  type="text"
+                  id="eventTitle"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition-all duration-300"
+                  placeholder="Enter event title"
+                  value={newEvent.title}
+                  onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="eventDate" className="block text-gray-700 text-sm font-bold mb-2">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    id="eventDate"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition-all duration-300"
+                    value={newEvent.date}
+                    onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="eventTime" className="block text-gray-700 text-sm font-bold mb-2">
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    id="eventTime"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition-all duration-300"
+                    value={newEvent.time}
+                    onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="eventLocation" className="block text-gray-700 text-sm font-bold mb-2">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  id="eventLocation"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition-all duration-300"
+                  placeholder="Enter event location"
+                  value={newEvent.location}
+                  onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="eventDescription" className="block text-gray-700 text-sm font-bold mb-2">
+                  Description
+                </label>
+                <textarea
+                  id="eventDescription"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition-all duration-300"
+                  placeholder="Describe your event"
+                  rows={3}
+                  value={newEvent.description}
+                  onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                ></textarea>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Invite Participants</label>
+                <div className="max-h-32 overflow-y-auto mb-2 border rounded-lg">
+                  {users.map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex items-center p-2 hover:bg-orange-50 border-b last:border-b-0 transition-colors duration-300"
+                    >
+                      <input
+                        type="checkbox"
+                        id={`event-user-${user.id}`}
+                        className="mr-2 h-4 w-4 text-orange-600 transition-colors duration-300"
+                      />
+                      <label htmlFor={`event-user-${user.id}`} className="flex items-center cursor-pointer flex-1">
+                        <img
+                          src={user.avatar || "/placeholder.svg"}
+                          alt=""
+                          className="w-6 h-6 rounded-full mr-2 transition-transform duration-300 hover:scale-110"
+                        />
+                        <span className="text-sm">{user.name}</span>
+                      </label>
+                      {user.isOnline && <span className="inline-block w-2 h-2 bg-green-500 rounded-full pulse"></span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  if (newEvent.title && newEvent.date && newEvent.time) {
+                    const createdEvent = {
+                      id: events.length + 1,
+                      ...newEvent,
+                      participants: [1, 2, 3].sort(() => Math.random() - 0.5),
+                    }
+                    setEvents([...events, createdEvent])
+                    setNewEvent({
+                      title: "",
+                      date: "",
+                      time: "",
+                      description: "",
+                      location: "",
+                    })
+                    setShowCreateEvent(false)
+                    alert("Event created successfully!")
+                  } else {
+                    alert("Please fill in all required fields")
+                  }
+                }}
+                disabled={!newEvent.title || !newEvent.date || !newEvent.time}
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg text-sm hover:from-orange-600 hover:to-amber-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
+              >
+                Create Event
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Announcement Modal */}
+      {showCreateAnnouncement && (
+        <div className="modal-container fade-in">
+          <div className="modal-content glass slide-down">
+            <div className="modal-header">
+              <h3 className="font-semibold text-red-800">Create Announcement</h3>
+              <button
+                onClick={() => setShowCreateAnnouncement(false)}
+                className="text-gray-500 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-gray-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="mb-4">
+                <label htmlFor="announcementTitle" className="block text-gray-700 text-sm font-bold mb-2">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="announcementTitle"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-red-300 focus:border-red-300 transition-all duration-300"
+                  placeholder="Enter announcement title"
+                  value={newAnnouncement.title}
+                  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="announcementContent" className="block text-gray-700 text-sm font-bold mb-2">
+                  Content
+                </label>
+                <textarea
+                  id="announcementContent"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-red-300 focus:border-red-300 transition-all duration-300"
+                  placeholder="Write your announcement"
+                  rows={4}
+                  value={newAnnouncement.content}
+                  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
+                ></textarea>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Image (Optional)</label>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => announcementImageRef.current?.click()}
+                    className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition-all duration-300"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Image
+                  </button>
+                  <input
+                    type="file"
+                    ref={announcementImageRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setAnnouncementImage(e.target.files[0])
+                        setNewAnnouncement({
+                          ...newAnnouncement,
+                          imageUrl: URL.createObjectURL(e.target.files[0]),
+                        })
+                      }
+                    }}
+                  />
+                  {announcementImage && (
+                    <span className="ml-2 text-sm text-gray-600">
+                      {announcementImage.name} ({formatFileSize(announcementImage.size)})
+                    </span>
+                  )}
+                </div>
+                {newAnnouncement.imageUrl && (
+                  <div className="mt-2 relative">
+                    <img
+                      src={newAnnouncement.imageUrl || "/placeholder.svg"}
+                      alt="Preview"
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                    <button
+                      onClick={() => {
+                        setAnnouncementImage(null)
+                        setNewAnnouncement({ ...newAnnouncement, imageUrl: null })
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors duration-300"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-red-600 transition-colors duration-300"
+                    checked={newAnnouncement.isPinned}
+                    onChange={() => setNewAnnouncement({ ...newAnnouncement, isPinned: !newAnnouncement.isPinned })}
+                  />
+                  <span className="ml-2 text-gray-700 text-sm">Pin this announcement</span>
+                </label>
+              </div>
+
+              <button
+                onClick={() => {
+                  if (newAnnouncement.title && newAnnouncement.content) {
+                    const createdAnnouncement = {
+                      id: announcements.length + 1,
+                      ...newAnnouncement,
+                      createdAt: new Date().toISOString(),
+                      createdBy: 1, // Current user
+                    }
+                    setAnnouncements([createdAnnouncement, ...announcements])
+                    setNewAnnouncement({
+                      title: "",
+                      content: "",
+                      isPinned: false,
+                      imageUrl: null,
+                    })
+                    setAnnouncementImage(null)
+                    setShowCreateAnnouncement(false)
+                    alert("Announcement created successfully!")
+                  } else {
+                    alert("Please fill in all required fields")
+                  }
+                }}
+                disabled={!newAnnouncement.title || !newAnnouncement.content}
+                className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg text-sm hover:from-red-600 hover:to-pink-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 btn-animated"
+              >
+                Post Announcement
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Mobile menu toggle */}
       <button
         onClick={() => setShowMobileMenu(!showMobileMenu)}
