@@ -1,54 +1,89 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import { Users, Trophy, Wallet } from 'lucide-react';
-import LudoDashboard from './LudoDashboard';
-import ChessDashboard from './ChessDashboard';
-import CarromDashboard from './CarromDashboard';
-import BGMIDashboard from './BGMIDashboard';
-import FreefireDashboard from './FreeFireDashboard';
-import TicTacToeDashboard from './TicTacToeDashboard'; // Add this import
+import { useState } from "react"
+import GameDashboard from "./GameDashboard"
+import CarromDashboard from "./CarromDashboard"
 
 export default function GameSection() {
-  const [activeTab, setActiveTab] = useState('All');
-  const [activeDashboard, setActiveDashboard] = useState(null);
+  const [activeTab, setActiveTab] = useState("All")
+  const [activeDashboard, setActiveDashboard] = useState(null)
 
   const games = {
-    All: ['Ludo', 'Carrom', 'Chess', 'BGMI', 'Freefire', 'TicTacToe', 'RockPaperScissor', 'Uno'],
-    Board: ['Ludo', 'Carrom', 'Chess', 'TicTacToe', 'RockPaperScissor'],
-    Action: ['BGMI', 'Freefire'],
-    Card: ['Uno'],
-  };
+    All: ["Ludo", "Carrom", "Chess", "BGMI", "Freefire", "TicTacToe", "RockPaperScissor", "Uno"],
+    Board: ["Ludo", "Carrom", "Chess", "TicTacToe", "RockPaperScissor"],
+    Action: ["BGMI", "Freefire"],
+    Card: ["Uno"],
+  }
+const gameLinks = {
+  TicTacToe: "/games/tictactoe",
+  RockPaperScissor: "/games/sps",
+  Uno: "/games/uno",
+  Ludo: "/games/ludo",
+  Carrom: "/games/carrom",
+  Chess: "/games/chess",
+  BGMI: "/games/bgmi",
+  Freefire: "/games/freefire",
+}
 
   const gameImages = {
-    TicTacToe: '/tictactoe.jpg',
-    RockPaperScissor: '/rock.png',
-    Uno: '/uno.jpg',
-    Ludo: '/ludo.jpeg',
-    Carrom: '/carrom.jpg',
-    Chess: '/chess.jpg',
-    BGMI: '/bgmi.jpg',
-    Freefire: '/freefire.jpg',
-  };
+    TicTacToe: "/tictactoe.jpg",
+    RockPaperScissor: "/rock.png",
+    Uno: "/uno.jpg",
+    Ludo: "/ludo.jpeg",
+    Carrom: "/carrom.jpg",
+    Chess: "/chess.jpg",
+    BGMI: "/bgmi.jpg",
+    Freefire: "/freefire.jpg",
+  }
+
+  const gameCategories = {
+    TicTacToe: "Board",
+    RockPaperScissor: "Board",
+    Uno: "Card",
+    Ludo: "Board",
+    Carrom: "Board",
+    Chess: "Board",
+    BGMI: "Action",
+    Freefire: "Action",
+  }
+
+  // Default entry fees for all games (can be customized per game if needed)
+  const defaultEntryFees = {
+    classic: "₹10 - ₹50",
+    quick: "₹5 - ₹25",
+    tournament: "₹20 - ₹100",
+    private: "Custom",
+  }
+
+  // Custom entry fees for specific games (if needed)
+  const gameEntryFees = {
+    BGMI: {
+      classic: "₹15 - ₹75",
+      quick: "₹10 - ₹30",
+      tournament: "₹50 - ₹200",
+      private: "Custom",
+    },
+    Freefire: {
+      classic: "₹15 - ₹75",
+      quick: "₹10 - ₹30",
+      tournament: "₹50 - ₹200",
+      private: "Custom",
+    },
+    // Add other custom entry fees as needed
+  }
 
   const handleGameClick = (game) => {
-    const dashboardMap = {
-      Ludo: 'ludo',
-      Chess: 'chess',
-      Carrom: 'carrom',
-      BGMI: 'bgmi',
-      Freefire: 'freefire',
-      TicTacToe: 'tictactoe', // Add TicTacToe mapping
-      RockPaperScissor: null,
-      Uno: null,
-    };
-    const dashboard = dashboardMap[game];
-    if (dashboard) {
-      setActiveDashboard(dashboard);
+    // Check if the game is implemented
+    if (games.All.includes(game)) {
+      setActiveDashboard(game)
     } else {
-      console.log(`${game} dashboard not implemented yet`);
+      console.log(`${game} dashboard not implemented yet`)
     }
-  };
+  }
+
+  const getEntryFees = (game) => {
+    return gameEntryFees[game] || defaultEntryFees
+  }
 
   return (
     <div className="relative bg-gray-900 min-h-screen overflow-hidden">
@@ -64,14 +99,14 @@ export default function GameSection() {
         <div className="mt-12">
           {/* Tabs */}
           <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {['All', 'Board', 'Card', 'Action'].map((tab) => (
+            {["All", "Board", "Card", "Action"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-sm sm:text-base font-semibold rounded-lg transition-all duration-200 min-w-[80px] ${
                   activeTab === tab
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                    : 'text-white bg-white/10 hover:bg-white/20'
+                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                    : "text-white bg-white/10 hover:bg-white/20"
                 }`}
               >
                 {tab}
@@ -91,11 +126,11 @@ export default function GameSection() {
                 <div className="flex-[0.7] p-3">
                   <div className="relative w-full h-full aspect-[3/4]">
                     <img
-                      src={gameImages[game]}
+                      src={gameImages[game] || "/placeholder.svg"}
                       alt={game}
                       className="absolute inset-0 w-full h-full object-cover rounded-md border border-gray-700"
                       onError={(e) => {
-                        e.target.src = '/fallback.jpg'; // Fallback image
+                        e.target.src = "/fallback.jpg" // Fallback image
                       }}
                     />
                   </div>
@@ -103,9 +138,7 @@ export default function GameSection() {
                 {/* Text Section (30%) */}
                 <div className="flex-[0.3] flex flex-col items-center justify-center text-sm sm:text-base">
                   <span className="font-medium">{game}</span>
-                  {game === 'Ludo' && (
-                    <span className="text-xs text-green-400 mt-1">Popular</span>
-                  )}
+                  {game === "Ludo" && <span className="text-xs text-green-400 mt-1">Popular</span>}
                 </div>
               </div>
             ))}
@@ -116,22 +149,21 @@ export default function GameSection() {
       {/* Game Dashboard Modal */}
       {activeDashboard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/70"
-            onClick={() => setActiveDashboard(null)}
-          ></div>
+          <div className="absolute inset-0 bg-black/70" onClick={() => setActiveDashboard(null)}></div>
           <div className="relative w-full max-w-4xl px-4">
             <div className="bg-gray-800 rounded-xl p-6 border-4 border-gradient-to-r from-purple-600 to-blue-600">
-              {activeDashboard === 'ludo' && <LudoDashboard />}
-              {activeDashboard === 'chess' && <ChessDashboard />}
-              {activeDashboard === 'carrom' && <CarromDashboard />}
-              {activeDashboard === 'bgmi' && <BGMIDashboard />}
-              {activeDashboard === 'freefire' && <FreefireDashboard />}
-              {activeDashboard === 'tictactoe' && <TicTacToeDashboard />} {/* Add TicTacToe dashboard */}
+              <GameDashboard
+                gameTitle={activeDashboard}
+                gameImage={gameImages[activeDashboard]}
+                gameCategory={gameCategories[activeDashboard]}
+                entryFees={getEntryFees(activeDashboard)}
+                onClose={() => setActiveDashboard(null)}
+                 link={gameLinks[activeDashboard] || "#"}
+              />
             </div>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
