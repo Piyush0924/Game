@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Common Components
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import GameSection from './pages/games';
+import Community from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';

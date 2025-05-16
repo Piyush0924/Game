@@ -1,6 +1,6 @@
 import React from 'react';
-import { GameSection, BottomNav } from '../components/GameSection';
-
+import GameSection  from '../components/GameSection';
+import BottomNav  from '../components/BottomNav';
 const Games = () => {
   return (
     <div className="min-h-screen bg-gray-900">
