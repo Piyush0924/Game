@@ -1682,7 +1682,7 @@ export default function CommunityPage() {
           </h1>
 
           {/* Search Bar */}
-          <div className=" text-black search-container w-full mt-3">
+          <div className=" text-black search-container w-full mt-4">
             <input
               type="text"
               className="search-input"
@@ -1694,7 +1694,7 @@ export default function CommunityPage() {
         </div>
 
         {/* Icons below Community header */}
-        <div className="flex justify-center mb-6 overflow-x-auto py-2 icon-nav">
+        <div className="flex justify-center  overflow-x-auto  icon-nav">
           <div className="flex space-x-6 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-2xl shadow-sm">
             <button
               onClick={() => setActiveSection("home")}
@@ -1780,87 +1780,9 @@ export default function CommunityPage() {
               <span className="text-xs mt-1 font-medium">Events</span>
             </button>
 
-            <button
-              onClick={() => {
-                setShowUserList(false)
-                setActiveSection("announcements")
-                setShowAnnouncements(true)
-              }}
-              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
-                activeSection === "announcements"
-                  ? "bg-gradient-to-r from-red-400 to-red-600 text-white shadow-md transform scale-110"
-                  : "text-gray-500 hover:bg-red-100 hover:text-red-600"
-              }`}
-              title="Announcements"
-            >
-              <Megaphone size={20} className="transition-transform duration-300" />
-              <span className="text-xs mt-1 font-medium">Announce</span>
-            </button>
-            <button
-              onClick={() => {
-                setShowUserList(false)
-                setActiveSection("news")
-                setShowNews(true)
-                setShowBlogs(false)
-                setShowEvents(false)
-                setShowAnnouncements(false)
-              }}
-              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
-                activeSection === "news"
-                  ? "bg-gradient-to-r from-blue-400 to-cyan-600 text-white shadow-md transform scale-110"
-                  : "text-gray-500 hover:bg-blue-100 hover:text-blue-600"
-              }`}
-              title="News"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 transition-transform duration-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-                <path d="M18 14h-8" />
-                <path d="M15 18h-5" />
-                <path d="M10 6h8v4h-8V6Z" />
-              </svg>
-              <span className="text-xs mt-1 font-medium">News</span>
-            </button>
+          
 
-            <button
-              onClick={() => {
-                setShowUserList(false)
-                setActiveSection("blogs")
-                setShowBlogs(true)
-                setShowNews(false)
-                setShowEvents(false)
-                setShowAnnouncements(false)
-              }}
-              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
-                activeSection === "blogs"
-                  ? "bg-gradient-to-r from-green-400 to-teal-600 text-white shadow-md transform scale-110"
-                  : "text-gray-500 hover:bg-green-100 hover:text-green-600"
-              }`}
-              title="Blogs"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 transition-transform duration-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                <path d="m15 5 4 4" />
-              </svg>
-              <span className="text-xs mt-1 font-medium">Blogs</span>
-            </button>
+         
 
 
 
