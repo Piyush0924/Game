@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import GameSection from './pages/games';
-import Community from './pages/community';
+// import CommunityPage from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
@@ -15,10 +15,10 @@ import BottomNav from './components/BottomNav';
 // Pages / Other Components
 import Wallet from './components/Wallet';
 import CommunityPage from './components/Vinit/Community';
-import SPS from './components/Stone-Paper/SPS';
-import MemoryMatchGame from './components/Memory/MemoryMatchGame';
-import DiceDuel from './components/Dice/DiceDuel';
-import CoinFlipBet from './components/Coinflip/CoinFlipBet';
+import SPS from './games/Stone-Paper/SPS';
+import MemoryMatchGame from './games/Memory/MemoryMatchGame';
+import DiceDuel from './games/Dice/DiceDuel';
+import CoinFlipBet from './games/Coinflip/CoinFlipBet';
 import Games from './pages/games';
 import Rewards from './components/rewards';
 import History from './components/history';
@@ -239,10 +239,10 @@ function App() {
         <Route path="/community" element={<CommunityPage />} />
 
         {/* Games routes */}
-        <Route path="/games/sps" element={<SPS />} />
+        {/* <Route path="/games/sps" element={<SPS />} />
         <Route path="/games/memory" element={<MemoryMatchGame />} />
         <Route path="/games/dice" element={<DiceDuel />} />
-        <Route path="/games/coinflip" element={<CoinFlipBet />} />
+        <Route path="/games/coinflip" element={<CoinFlipBet />} /> */}
 
         {/* Additional routes */}
         <Route path="/games" element={<Games />} />

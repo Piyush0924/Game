@@ -9,31 +9,37 @@ export default function GameSection() {
   const [activeDashboard, setActiveDashboard] = useState(null)
 
   const games = {
-    All: ["Ludo", "Carrom", "Chess", "BGMI", "Freefire", "TicTacToe", "RockPaperScissor", "Uno"],
-    Board: ["Ludo", "Carrom", "Chess", "TicTacToe", "RockPaperScissor"],
+    All: ["Ludo", "Carrom", "Chess", "BGMI", "Freefire", "TicTacToe", , "Uno","CoinFlip","Dice","MemoryMatch","StonePaper"],
+    Board: ["Ludo", "Carrom", "Chess", "TicTacToe", ],
     Action: ["BGMI", "Freefire"],
     Card: ["Uno"],
   }
 const gameLinks = {
   TicTacToe: "/games/tictactoe",
-  RockPaperScissor: "/games/sps",
   Uno: "/games/uno",
   Ludo: "/games/ludo",
   Carrom: "/games/carrom",
   Chess: "/games/chess",
   BGMI: "/games/bgmi",
   Freefire: "/games/freefire",
+  CoinFlip: "/games/coinFlip",
+  Dice: "/games/dice",
+  MemoryMatch: "/games/memorymatch",
+  StonePaper:"/games/stonePaper",
 }
 
   const gameImages = {
     TicTacToe: "/tictactoe.jpg",
-    RockPaperScissor: "/rock.png",
     Uno: "/uno.jpg",
     Ludo: "/ludo.jpeg",
     Carrom: "/carrom.jpg",
     Chess: "/chess.jpg",
     BGMI: "/bgmi.jpg",
     Freefire: "/freefire.jpg",
+      CoinFlip: "/coinflip.jpg",
+  Dice: "/dice.png",
+  MemoryMatch: "/memorymatch.png",
+  StonePaper:"/stonepaper.jpg",
   }
 
   const gameCategories = {
@@ -86,12 +92,12 @@ const gameLinks = {
   }
 
   return (
-    <div className="relative bg-gray-900 min-h-screen overflow-hidden">
+    <div className="relative bg-gray-900 min-h-screen overflow-hidden mb-36 pb-5">
       {/* Background gradient and blur effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-blue-900/50 animate-gradient" />
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl animate-float-delayed" />
+        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-float pb-3" />
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl animate-float-delayed pb-3" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
