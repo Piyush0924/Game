@@ -1104,7 +1104,7 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-200 via-cyan-100 to-white transition-all duration-500">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-200 to-white transition-all duration-500">
       {/* Animated background particles */}
       {/* <div className="gaming-particles"></div> */}
 

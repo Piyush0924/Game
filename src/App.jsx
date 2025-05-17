@@ -14,7 +14,7 @@ import BottomNav from './components/BottomNav';
 import MiniBattleship from './components/MiniBattleship/MiniBattleship';
 // Pages / Other Components
 import Wallet from './components/Wallet';
-import CommunityPage from './components/Vinit/Community';
+import CommunityPage from './components/community/community-page';
 import SPS from './games/Stone-Paper/SPS';
 import MemoryMatchGame from './games/Memory/MemoryMatchGame';
 import DiceDuel from './games/Dice/DiceDuel';
