@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Home, Gamepad2, Users, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
+import { Link, useLocation } from 'react-router-dom';
 
 const navigation = [
   { name: 'Home', icon: Home, href: '/' },
@@ -11,40 +10,36 @@ const navigation = [
 ];
 
 export default function BottomNav() {
-  const [active, setActive] = useState('Home');
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999]">
       <div className="mx-auto max-w-2xl">
         <div className="glass-effect bg-gradient-to-tr from-gray-900/95 via-purple-900/90 to-gray-900/95 backdrop-blur-xl border-t border-gray-800/50 shadow-2xl rounded-t-2xl flex justify-around items-center h-20 px-2">
+          
           {/* Left Navigation Items */}
           <div className="flex-1 flex justify-around">
             {navigation.slice(0, 2).map((item) => {
-              const isActive = active === item.name;
+              const isActive = currentPath === item.href;
               return (
                 <Link
-                to={item.href}
+                  to={item.href}
                   key={item.name}
-                  onClick={() => setActive(item.name)}
-                  className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
+                  className={`flex flex-col items-center justify-center w-full h-full group transition-all duration-200 ${
                     isActive ? 'text-purple-400' : 'text-gray-400 hover:text-purple-400'
                   }`}
-                  style={{ minWidth: 0 }}
                 >
                   <span
-                    className={`flex items-center justify-center rounded-full transition-all duration-200 ${
+                    className={`flex items-center justify-center rounded-full p-2 transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110'
+                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-105'
                         : 'hover:bg-gray-800/50'
-                    } p-2`}
-                  >
-                    <item.icon className={`h-6 w-6 transition-all duration-200 ${isActive ? 'text-white' : ''}`} />
-                  </span>
-                  <span
-                    className={`text-xs mt-1 font-medium transition-all duration-200 ${
-                      isActive ? 'text-purple-400' : ''
                     }`}
                   >
+                    <item.icon className="h-6 w-6 transition-all duration-200 text-white" />
+                  </span>
+                  <span className="text-xs mt-1 font-medium">
                     {item.name}
                   </span>
                 </Link>
@@ -52,53 +47,51 @@ export default function BottomNav() {
             })}
           </div>
 
-          {/* Center Logo */}
-          <div className="flex items-center justify-center px-4">
-            <div className="bg-gradient-to-br from-purple-600 to-blue-600 p-1 rounded-2xl shadow-lg">
+          {/* Center Logo - navigates to /play */}
+          <div className="flex items-center justify-center px-4 -mt-10">
+            <Link
+              to="#"
+              className="bg-gradient-to-br from-purple-600 to-blue-600 p-1 rounded-2xl shadow-xl hover:scale-105 transition"
+            >
               <img
                 src="/images/logo.png"
                 alt="BoostNow Games Logo"
-                className="h-12 w-12 rounded-xl bg-white/95 shadow-md"
+                className="h-14 w-14 rounded-2xl bg-white/90 shadow-md"
               />
-            </div>
+            </Link>
           </div>
 
           {/* Right Navigation Items */}
           <div className="flex-1 flex justify-around">
             {navigation.slice(2).map((item) => {
-            const isActive = active === item.name;
-            return (
-              <Link
-              to={item.href}
-                key={item.name}
-                onClick={() => setActive(item.name)}
-                  className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
+              const isActive = currentPath === item.href;
+              return (
+                <Link
+                  to={item.href}
+                  key={item.name}
+                  className={`flex flex-col items-center justify-center w-full h-full group transition-all duration-200 ${
                     isActive ? 'text-purple-400' : 'text-gray-400 hover:text-purple-400'
                   }`}
-                style={{ minWidth: 0 }}
-              >
+                >
                   <span
-                    className={`flex items-center justify-center rounded-full transition-all duration-200 ${
+                    className={`flex items-center justify-center rounded-full p-2 transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110'
+                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-105'
                         : 'hover:bg-gray-800/50'
-                    } p-2`}
-                  >
-                    <item.icon className={`h-6 w-6 transition-all duration-200 ${isActive ? 'text-white' : ''}`} />
-                  </span>
-                  <span
-                    className={`text-xs mt-1 font-medium transition-all duration-200 ${
-                      isActive ? 'text-purple-400' : ''
                     }`}
                   >
+                    <item.icon className="h-6 w-6 transition-all duration-200 text-white" />
+                  </span>
+                  <span className="text-xs mt-1 font-medium">
                     {item.name}
-                </span>
-              </Link>
-            );
-          })}
+                  </span>
+                </Link>
+              );
+            })}
           </div>
+
         </div>
       </div>
     </div>
   );
-} 
+}

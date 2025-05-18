@@ -4,9 +4,9 @@ import CommunityPage from '../components/community/community-page';
 
 const community = () => {
   return (
-    <div>
-        <CommunityPage/>
-      <BottomNav/>
+    <div className="min-h-screen bg-gray-900">
+      <CommunityPage />
+      <BottomNav />
     </div>
   );
 }
