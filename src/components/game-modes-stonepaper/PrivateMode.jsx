@@ -4,48 +4,45 @@ import React from "react"
 import GameModeTemplate from "../GameModeTemplate"
 import { useNavigate } from "react-router-dom"
 
-export default function PrivateMode({ onBack, gameTitle = "Chess" }) {
+export default function PrivateMode({ onBack, gameTitle = "StonePaper" }) {
   const navigate = useNavigate()
   
-  // Private room data for Chess
+  // Private room data for Stone-Paper-Scissors
   const privateOptions = [
     {
       id: 1,
       name: "Create Private Room",
       prize: "Custom",
-      entryFee: "₹15",
+      entryFee: "₹5",
       players: "2 Players",
-      playerCount: "62",
-      liveCount: "28",
-      coinCost: "1.5 Coin",
+      playerCount: "82",
+      liveCount: "41",
       winners: "1 Winner",
-      xp: 6,
+      xp: 3,
       timeRemaining: "Custom"
     },
     {
       id: 2,
       name: "Premium Room",
-      prize: "₹750",
-      entryFee: "₹75",
+      prize: "₹300",
+      entryFee: "₹200",
       players: "2 Players",
-      playerCount: "42",
-      liveCount: "22",
-      coinCost: "7.5 Coin",
+      playerCount: "38",
+      liveCount: "19",
       winners: "1 Winner",
-      xp: 18,
-      isQuick: true,
+      xp: 10,
       timeRemaining: "Custom"
     },
     {
       id: 3,
       name: "Friend Battle",
-      prize: "₹150",
+      prize: "₹45",
       entryFee: "Free",
       players: "2 Players",
-      playerCount: "56",
+      playerCount: "64",
       liveCount: "32",
       winners: "1 Winner",
-      xp: 4,
+      xp: 2,
       timeRemaining: "Custom"
     }
   ]
@@ -56,7 +53,7 @@ export default function PrivateMode({ onBack, gameTitle = "Chess" }) {
       gameTitle={gameTitle}
       modeType="Private"
       gameOptions={privateOptions}
-      logoSrc="/chess-private.jpg"
+      logoSrc="/stonepaper-private.jpg"
     />
   )
-}
+} 

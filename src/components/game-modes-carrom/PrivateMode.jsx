@@ -47,27 +47,24 @@ export default function PrivateMode({ onBack }) {
   return (
     <GameModeLayout title="Private Room" onBack={onBack}>
       {/* Tab Navigation */}
-      <div className="flex space-x-4 mb-6 border-b border-gray-700 pb-2">
+      <div className="flex space-x-4 mb-6 border-b border-purple-900/40 pb-2">
         {filters.map((filter) => (
           <button
             key={filter}
             className={`relative min-w-[100px] px-4 py-2 text-lg font-medium rounded-md transition-all duration-200 text-center ${
               activeFilter === filter
                 ? "text-white"
-                : "text-gray-400 hover:text-gray-200 hover:bg-gray-700/50"
+                : "text-gray-400 hover:text-gray-200 hover:bg-purple-900/30"
             }`}
             onClick={() => setActiveFilter(filter)}
           >
             {filter}
             {activeFilter === filter && (
-              <span className="absolute bottom-0 left-0 w-full h-1 bg-blue-500 rounded-t-md" />
+              <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-500 rounded-t-md" />
             )}
           </button>
         ))}
       </div>
-
-      {/* Heading */}
-   
 
       {/* Scrollable Room List Container */}
       <div
@@ -77,11 +74,11 @@ export default function PrivateMode({ onBack }) {
           filteredRooms.map((room) => (
             <div
               key={room.id}
-              className="bg-gray-800/80 rounded-xl shadow-lg p-4 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 min-h-[188px]"
+              className="bg-purple-900/20 rounded-xl shadow-lg p-4 border border-purple-700/30 transition-all hover:shadow-xl hover:bg-purple-900/30 min-h-[188px]"
             >
               <div className="flex items-center mb-3">
                 <Lock className="h-5 w-5 text-purple-400 mr-2" />
-                <span className="text-blue-500 font-medium">{room.name}</span>
+                <span className="text-blue-400 font-medium">{room.name}</span>
                 {room.isRegistered && (
                   <span className="ml-2 text-xs bg-gradient-to-r from-green-500 to-green-600 text-white px-2 py-px rounded-md shadow-sm">
                     JOINED
@@ -91,8 +88,8 @@ export default function PrivateMode({ onBack }) {
 
               <div className="flex items-center h-24">
                 <div className="w-24 h-24 bg-transparent rounded-lg flex justify-center items-center p-2 shadow-md">
-                  <div className="w-20 h-20 bg-gray-600 rounded-lg border border-gray-500 flex items-center justify-center">
-                    <span className="text-gray-200 text-sm">Image</span>
+                  <div className="w-20 h-20 bg-purple-800/50 rounded-lg border border-purple-700/50 flex items-center justify-center">
+                    <span className="text-gray-300 text-sm">Image</span>
                   </div>
                 </div>
 
@@ -133,7 +130,7 @@ export default function PrivateMode({ onBack }) {
                   <input
                     type="text"
                     placeholder="Enter code to join"
-                    className="w-full px-4 py-2 bg-gray-700/50 text-white placeholder-gray-400 rounded-lg border border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full px-4 py-2 bg-purple-900/30 text-white placeholder-gray-400 rounded-lg border border-purple-700/50 focus:outline-none focus:ring-2 focus:ring-purple-400"
                   />
                 </div>
               )}

@@ -4,51 +4,49 @@ import React from "react"
 import GameModeTemplate from "../GameModeTemplate"
 import { useNavigate } from "react-router-dom"
 
-export default function TournamentMode({ onBack, gameTitle = "TicTacToe" }) {
+export default function TournamentMode({ onBack, gameTitle = "MemoryMatch" }) {
   const navigate = useNavigate()
   
-  // Tournament data
+  // Tournament data for MemoryMatch
   const tournamentOptions = [
     {
       id: 1,
-      name: "Daily Battle",
-      prize: "₹500",
-      entryFee: "₹25",
+      name: "Daily Tournament",
+      prize: "₹1,200",
+      entryFee: "₹40",
       players: "2 Players",
-      playerCount: "236",
-      liveCount: "98",
-      coinCost: "2.50 Coin",
+      playerCount: "145",
+      liveCount: "72",
       winners: "3 Winners",
-      xp: 10,
-      startTime: "Daily 8:00 PM",
-      timeRemaining: "03h 45m"
+      xp: 15,
+      startTime: "Daily 6:00 PM",
+      timeRemaining: "02h 45m"
     },
     {
       id: 2,
       name: "Weekend Special",
-      prize: "₹2,500",
+      prize: "₹4,000",
       entryFee: "₹100",
       players: "2 Players",
-      playerCount: "152",
-      liveCount: "65",
-      coinCost: "10 Coin",
-      winners: "2 Winners",
+      playerCount: "110",
+      liveCount: "55",
+      winners: "4 Winners",
       xp: 25,
-      startTime: "Saturday, 8:00 PM",
-      timeRemaining: "28h 15m",
+      startTime: "Saturday, 4:00 PM",
+      timeRemaining: "22h 15m",
       isQuick: true
     },
     {
       id: 3,
       name: "Free Tournament",
-      prize: "₹300",
+      prize: "₹400",
       entryFee: "Free",
       players: "2 Players",
-      playerCount: "450",
-      liveCount: "220",
-      winners: "5 Winners",
-      xp: 5,
-      startTime: "Friday, 7:00 PM",
+      playerCount: "280",
+      liveCount: "140",
+      winners: "8 Winners",
+      xp: 6,
+      startTime: "Friday, 8:00 PM",
       timeRemaining: "4h 30m"
     }
   ]
@@ -59,7 +57,7 @@ export default function TournamentMode({ onBack, gameTitle = "TicTacToe" }) {
       gameTitle={gameTitle}
       modeType="Tournament"
       gameOptions={tournamentOptions}
-      logoSrc="/tictactoe-tournament.png"
+      logoSrc="/memorymatch-tournament.png"
     />
   )
-}
+} 

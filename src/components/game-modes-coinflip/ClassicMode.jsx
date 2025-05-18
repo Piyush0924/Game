@@ -4,23 +4,23 @@ import React from "react"
 import GameModeTemplate from "../GameModeTemplate"
 import { useNavigate } from "react-router-dom"
 
-export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
+export default function ClassicMode({ onBack, gameTitle = "CoinFlip" }) {
   const navigate = useNavigate()
   
-  // Game data for multiplayer battles with updated prize calculations
+  // Game data for multiplayer battles
   const gameOptions = [
     {
       id: 1,
       name: "Multiplayer Battle",
-      prize: "₹8",
-      entryFee: "₹5",
+      prize: "₹3",
+      entryFee: "₹2",
       players: "2 Players",
-      playerCount: "238",
-      liveCount: "94", 
-      coinCost: "0.50 Coin",
+      playerCount: "350",
+      liveCount: "124", 
+      coinCost: "0.20 Coin",
       winners: "1 Winner",
-      xp: 2,
-      timeRemaining: "00m 30s"
+      xp: 1,
+      timeRemaining: "00m 29s"
     },
     {
       id: 2,
@@ -28,26 +28,25 @@ export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
       prize: "₹15",
       entryFee: "₹10",
       players: "2 Players",
-      playerCount: "102",
-      liveCount: "45",
+      playerCount: "216",
+      liveCount: "78",
       coinCost: "1 Coin",
       winners: "1 Winner", 
-      xp: 3,
-      isQuick: true,
-      timeRemaining: "01m 30s"
+      xp: 4,
+      timeRemaining: "01m 15s"
     },
     {
       id: 3,
-      name: "Advanced Game",
-      prize: "₹23",
-      entryFee: "₹15",
+      name: "Free Game",
+      prize: "₹3",
+      entryFee: "Free",
       players: "2 Players",
-      playerCount: "48",
-      liveCount: "22",
-      coinCost: "1.50 Coin",
+      playerCount: "412",
+      liveCount: "180",
+      coinCost: "0",
       winners: "1 Winner", 
-      xp: 8,
-      timeRemaining: "02m 00s"
+      xp: 1,
+      timeRemaining: "00m 45s"
     }
   ]
   
@@ -57,7 +56,7 @@ export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
       gameTitle={gameTitle}
       modeType="Classic"
       gameOptions={gameOptions}
-      logoSrc="/tictactoe.png"
+      logoSrc="/coinflip.png"
     />
   )
-}
+} 

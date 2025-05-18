@@ -1,31 +1,36 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Common Components
+// Pages
+import Home from './pages/home';
+import GamesPage from './pages/games';
+
+// Components
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import GameSection from './pages/games';
-import CommunityWrapper from './pages/community';
-// import CommunityPage from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
-import MiniBattleship from './components/MiniBattleship/MiniBattleship';
-// Pages / Other Components
+import GameCatalog from './components/GameCatalog';
+import GameDetailPage from './components/GameDetailPage';
+import GameLobby from './components/GameLobby';
+import ComingSoonPage from './components/ComingSoonPage';
 import Wallet from './components/Wallet';
-import CommunityPage from './components/community/community-page';
+import ProfilePage from './pages/ProfilePage';
+import NotificationsPage from './pages/notifications';
+import Rewards from './components/rewards';
+import History from './components/history';
+import CommunityWrapper from './pages/community';
+import GameDashboard from './components/GameDashboard';
+
+// Games
 import SPS from './games/Stone-Paper/SPS';
 import MemoryMatchGame from './games/Memory/MemoryMatchGame';
 import DiceDuel from './games/Dice/DiceDuel';
 import CoinFlipBet from './games/Coinflip/CoinFlipBet';
-import Games from './pages/games';
-import Rewards from './components/rewards';
-import History from './components/history';
-import ProfilePage from './pages/ProfilePage';
-import LoginSignup from './pages/login_signup';
-import GameLobby from './components/GameLobbyTwo'
+import TicTacToe from './games/Tictactoe/Tictactoe';
 
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -239,23 +244,73 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/games" element={<Games />} />
+        <Route path="/games" element={<GamesPage />} />
+        
+        {/* Game Detail and Lobby */}
+        <Route path="/game/:gameId" element={<GameDetailPage />} />
+        <Route path="/game/:gameId/lobby" element={<GameLobby />} />
+        
+        {/* Game Dashboard Routes for all implemented games */}
+        <Route path="/games/tictactoe" element={
+          <GameDashboard 
+            gameTitle="TicTacToe" 
+            gameImage="/tictactoe.jpg"
+            gameCategory="Board"
+          />
+        } />
+        <Route path="/games/stonepaper" element={
+          <GameDashboard 
+            gameTitle="StonePaper" 
+            gameImage="/stonepaper.jpg"
+            gameCategory="Casino"
+          />
+        } />
+        <Route path="/games/memorymatch" element={
+          <GameDashboard 
+            gameTitle="MemoryMatch" 
+            gameImage="/memorymatch.png"
+            gameCategory="Casino"
+          />
+        } />
+        <Route path="/games/dice" element={
+          <GameDashboard 
+            gameTitle="Dice" 
+            gameImage="/dice.png"
+            gameCategory="Casino"
+          />
+        } />
+        <Route path="/games/coinflip" element={
+          <GameDashboard 
+            gameTitle="CoinFlip" 
+            gameImage="/coinflip.jpg"
+            gameCategory="Casino"
+          />
+        } />
+        
+        {/* Direct game routes (accessible after selecting mode in dashboard) */}
+        <Route path="/games/tictactoe/play" element={<TicTacToe />} />
+        <Route path="/games/stonepaper/play" element={<SPS />} />
+        <Route path="/games/memorymatch/play" element={<MemoryMatchGame />} />
+        <Route path="/games/dice/play" element={<DiceDuel />} />
+        <Route path="/games/coinflip/play" element={<CoinFlipBet />} />
+        
+        {/* Coming Soon Games */}
+        <Route path="/games/ludo" element={<ComingSoonPage />} />
+        <Route path="/games/carrom" element={<ComingSoonPage />} />
+        <Route path="/games/chess" element={<ComingSoonPage />} />
+        <Route path="/games/uno" element={<ComingSoonPage />} />
+        <Route path="/games/bgmi" element={<ComingSoonPage />} />
+        <Route path="/games/freefire" element={<ComingSoonPage />} />
+        
+        {/* Other App Routes */}
         <Route path="/community" element={<CommunityWrapper />} />
         <Route path="/profile" element={<ProfilePage />} />
-
-        {/* Games routes */}
-        {/* <Route path="/games/sps" element={<SPS />} />
-        <Route path="/games/memory" element={<MemoryMatchGame />} />
-        <Route path="/games/dice" element={<DiceDuel />} />
-        <Route path="/games/coinflip" element={<CoinFlipBet />} />
-
-        {/* Additional routes */}
-        
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/history" element={<History />} />
-        <Route path="/login" element={<LoginSignup />} />
-        <Route path="/game-lobby" element={<GameLobby />} />
+        
+        <Route path="*" element={<GamesPage />} />
       </Routes>
     </Router>
   );
