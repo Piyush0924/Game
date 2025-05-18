@@ -6,8 +6,9 @@ import ClassicMode from "./game-modes-tictactoe/ClassicMode";
 import TournamentMode from "./game-modes-tictactoe/TournamentMode";
 import QuickMode from "./game-modes-tictactoe/QuickMode";
 import PrivateMode from "./game-modes-tictactoe/PrivateMode";
+import TicTacToe from "../games/Tictactoe/Tictactoe";
 
-export default function LudoDashboard() {
+export default function TicTacToeDashboard() {
   const [currentView, setCurrentView] = useState("main");
   const [showDashboard, setShowDashboard] = useState(true);
 
@@ -29,19 +30,8 @@ export default function LudoDashboard() {
       case "playNow":
         return (
           <div className="relative w-full h-screen bg-black text-white overflow-hidden">
-            {/* Iframe for Tic-Tac-Toe Game (Full Screen) */}
-            <iframe
-              src="/tic-tac-toe/index.html"
-              title="Tic-Tac-Toe Game"
-              className="w-full h-full border-0"
-            />
+            <TicTacToe onBack={() => setCurrentView("main")} />
           </div>
-
-          // <div>
-          //   <a href="games/tic-tac-toe/index.html"></a>
-
-          // </div>
-          // <a href="/tic-tac-toe/index.html" title="Play Tic-Tac-Toe" target="_blank" rel="noopener noreferrer">Play Tic-Tac-Toe</a>
         );
       case "practice":
         return <div>Practice Page (Placeholder)</div>;
@@ -52,7 +42,7 @@ export default function LudoDashboard() {
             <div className="absolute inset-0 z-0">
               <img
                 src="/tictactoe.jpg"
-                alt="Ludo Background"
+                alt="Tic-Tac-Toe Background"
                 className="w-full h-full object-cover opacity-100 blur-lg"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/90 to-transparent" />
@@ -77,12 +67,12 @@ export default function LudoDashboard() {
               <div className="text-center mb-4">
                 <div className="w-16 h-16 mx-auto rounded-full bg-purple-500 overflow-hidden shadow-lg mb-3">
                   <img
-                    src="/ludo.jpeg"
-                    alt="Ludo Logo"
+                    src="/tictactoe.jpeg"
+                    alt="Tic-Tac-Toe Logo"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h1 className="text-3xl font-bold tracking-tight">Ludo</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Tic-Tac-Toe</h1>
                 <div className="flex justify-center gap-2 text-base text-gray-300 mt-1">
                   <span>Board</span>
                   <span>•</span>

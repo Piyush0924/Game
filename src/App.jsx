@@ -5,20 +5,20 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import GameSection from './pages/games';
-import Community from './pages/community';
+// import CommunityPage from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
 import GameStats from './components/GameStats';
 import SpinToWin from './components/SpinToWin';
 import BottomNav from './components/BottomNav';
-
+import MiniBattleship from './components/MiniBattleship/MiniBattleship';
 // Pages / Other Components
 import Wallet from './components/Wallet';
-import CommunityPage from './components/Vinit/Community';
-import SPS from './components/Stone-Paper/SPS';
-import MemoryMatchGame from './components/Memory/MemoryMatchGame';
-import DiceDuel from './components/Dice/DiceDuel';
-import CoinFlipBet from './components/Coinflip/CoinFlipBet';
+import CommunityPage from './components/community/community-page';
+import SPS from './games/Stone-Paper/SPS';
+import MemoryMatchGame from './games/Memory/MemoryMatchGame';
+import DiceDuel from './games/Dice/DiceDuel';
+import CoinFlipBet from './games/Coinflip/CoinFlipBet';
 import Games from './pages/games';
 import Rewards from './components/rewards';
 import History from './components/history';
@@ -239,7 +239,7 @@ function App() {
         <Route path="/community" element={<CommunityPage />} />
 
         {/* Games routes */}
-        <Route path="/games/sps" element={<SPS />} />
+        {/* <Route path="/games/sps" element={<SPS />} />
         <Route path="/games/memory" element={<MemoryMatchGame />} />
         <Route path="/games/dice" element={<DiceDuel />} />
         <Route path="/games/coinflip" element={<CoinFlipBet />} />
