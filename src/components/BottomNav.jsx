@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Home, Gamepad2, Users, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 
 const navigation = [
   { name: 'Home', icon: Home, href: '/' },
@@ -20,7 +22,8 @@ export default function BottomNav() {
             {navigation.slice(0, 2).map((item) => {
               const isActive = active === item.name;
               return (
-                <button
+                <Link
+                to={item.href}
                   key={item.name}
                   onClick={() => setActive(item.name)}
                   className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
@@ -44,7 +47,7 @@ export default function BottomNav() {
                   >
                     {item.name}
                   </span>
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -65,7 +68,8 @@ export default function BottomNav() {
             {navigation.slice(2).map((item) => {
             const isActive = active === item.name;
             return (
-              <button
+              <Link
+              to={item.href}
                 key={item.name}
                 onClick={() => setActive(item.name)}
                   className={`flex flex-col items-center justify-center w-full h-full group focus:outline-none transition-all duration-200 ${
@@ -89,7 +93,7 @@ export default function BottomNav() {
                   >
                     {item.name}
                 </span>
-              </button>
+              </Link>
             );
           })}
           </div>
