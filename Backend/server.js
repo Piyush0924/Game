@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const { Server } = require('socket.io');
 const gameRoutes = require('./routes/gameRoutes');
 const postRoutes = require('./routes/postRoutes');
-const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/auth');
+const protected = require('./routes/protected');
 
 const app = express();
 const server = http.createServer(app);
@@ -28,7 +29,10 @@ require('./config/db')();
 // API Routes
 app.use('/api/games', gameRoutes);
 app.use('/api/post', postRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+// app.use('/api/protected', require('./routes/protected')); // secured routes
+app.use('/api/protected', protected); // secured routes
+
 // Socket.IO Connection
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
