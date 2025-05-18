@@ -6,7 +6,6 @@ import {
   FaPhoneAlt,
   FaChevronRight,
   FaLock,
-  FaEnvelope,
   FaUser,
   FaEye,
   FaEyeSlash,
@@ -225,34 +224,34 @@ const GamingLoginMobile = () => {
 
   // Form states
   const [loginForm, setLoginForm] = useState({
-    email: "",
+    phone: "",
     password: "",
     touched: {
-      email: false,
+      phone: false,
       password: false,
     },
     errors: {
-      email: "",
+      phone: "",
       password: "",
     },
   })
 
   const [signupForm, setSignupForm] = useState({
     name: "",
-    email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
     touched: {
       name: false,
-      email: false,
       phone: false,
       password: false,
+      confirmPassword: false,
     },
     errors: {
       name: "",
-      email: "",
       phone: "",
       password: "",
+      confirmPassword: "",
     },
   })
 
@@ -286,21 +285,21 @@ const GamingLoginMobile = () => {
 
   // Validate login form
   useEffect(() => {
-    if (loginForm.touched.email) {
-      if (!loginForm.email) {
+    if (loginForm.touched.phone) {
+      if (!loginForm.phone) {
         setLoginForm((prev) => ({
           ...prev,
           errors: {
             ...prev.errors,
-            email: "Email is required",
+            phone: "Phone number is required",
           },
         }))
-      } else if (!validateEmail(loginForm.email)) {
+      } else if (!validatePhone(loginForm.phone)) {
         setLoginForm((prev) => ({
           ...prev,
           errors: {
             ...prev.errors,
-            email: "Invalid email format",
+            phone: "Invalid phone number (10 digits starting with 6-9)",
           },
         }))
       } else {
@@ -308,7 +307,7 @@ const GamingLoginMobile = () => {
           ...prev,
           errors: {
             ...prev.errors,
-            email: "",
+            phone: "",
           },
         }))
       }
@@ -333,7 +332,7 @@ const GamingLoginMobile = () => {
         }))
       }
     }
-  }, [loginForm.email, loginForm.password, loginForm.touched])
+  }, [loginForm.phone, loginForm.password, loginForm.touched])
 
   // Validate signup form
   useEffect(() => {
@@ -360,34 +359,6 @@ const GamingLoginMobile = () => {
           errors: {
             ...prev.errors,
             name: "",
-          },
-        }))
-      }
-    }
-
-    if (signupForm.touched.email) {
-      if (!signupForm.email) {
-        setSignupForm((prev) => ({
-          ...prev,
-          errors: {
-            ...prev.errors,
-            email: "Email is required",
-          },
-        }))
-      } else if (!validateEmail(signupForm.email)) {
-        setSignupForm((prev) => ({
-          ...prev,
-          errors: {
-            ...prev.errors,
-            email: "Invalid email format",
-          },
-        }))
-      } else {
-        setSignupForm((prev) => ({
-          ...prev,
-          errors: {
-            ...prev.errors,
-            email: "",
           },
         }))
       }
@@ -448,12 +419,40 @@ const GamingLoginMobile = () => {
         }))
       }
     }
-  }, [signupForm.name, signupForm.email, signupForm.phone, signupForm.password, signupForm.touched])
+
+    if (signupForm.touched.confirmPassword) {
+      if (!signupForm.confirmPassword) {
+        setSignupForm((prev) => ({
+          ...prev,
+          errors: {
+            ...prev.errors,
+            confirmPassword: "Confirm password is required",
+          },
+        }))
+      } else if (signupForm.password !== signupForm.confirmPassword) {
+        setSignupForm((prev) => ({
+          ...prev,
+          errors: {
+            ...prev.errors,
+            confirmPassword: "Passwords do not match",
+          },
+        }))
+      } else {
+        setSignupForm((prev) => ({
+          ...prev,
+          errors: {
+            ...prev.errors,
+            confirmPassword: "",
+          },
+        }))
+      }
+    }
+  }, [signupForm.name, signupForm.phone, signupForm.password, signupForm.confirmPassword, signupForm.touched])
 
   // Check if login form is valid
   const isLoginFormValid = () => {
     return (
-      loginForm.email && loginForm.password && !loginForm.errors.email && !loginForm.errors.password && termsAccepted
+      loginForm.phone && loginForm.password && !loginForm.errors.phone && !loginForm.errors.password && termsAccepted
     )
   }
 
@@ -461,18 +460,18 @@ const GamingLoginMobile = () => {
   const isSignupFormValid = () => {
     return (
       signupForm.name &&
-      signupForm.email &&
       signupForm.phone &&
       signupForm.password &&
+      signupForm.confirmPassword &&
       !signupForm.errors.name &&
-      !signupForm.errors.email &&
       !signupForm.errors.phone &&
       !signupForm.errors.password &&
+      !signupForm.errors.confirmPassword &&
       termsAccepted
     )
   }
 
-  // Canvas animation for background particles (simplified for mobile)
+  // Canvas animation for background
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -481,63 +480,128 @@ const GamingLoginMobile = () => {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    // Fewer particles for mobile performance
+    // Create gradient particles
     const particles = []
-    for (let i = 0; i < 20; i++) {
+    const particleCount = 30
+    const colors = ["#8b5cf6", "#3b82f6", "#ec4899", "#10b981"]
+
+    for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: Math.random() * 1.5 + 0.5, // Smaller particles
-        color: `rgba(${Math.floor(Math.random() * 100 + 100)}, ${Math.floor(
-          Math.random() * 100 + 100,
-        )}, ${Math.floor(Math.random() * 200 + 55)}, ${Math.random() * 0.4 + 0.1})`,
-        speedX: Math.random() * 0.3 - 0.15, // Slower movement
-        speedY: Math.random() * 0.3 - 0.15,
+        radius: Math.random() * 2 + 1,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        speedX: Math.random() * 0.5 - 0.25,
+        speedY: Math.random() * 0.5 - 0.25,
+        opacity: 0.1 + Math.random() * 0.2,
+        pulse: Math.random() * 0.1,
+        pulseSpeed: 0.01 + Math.random() * 0.02,
+        angle: Math.random() * 360,
+        angleSpeed: 0.2 + Math.random() * 0.5,
+        distance: 50 + Math.random() * 100,
       })
     }
 
-    const connectParticles = () => {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const distance = Math.sqrt(dx * dx + dy * dy)
+    // Create floating light effects
+    const lightSpots = []
+    const lightCount = 5
 
-          if (distance < 80) {
-            // Shorter connection distance
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(130, 100, 255, ${0.1 - distance / 800})`
-            ctx.lineWidth = 0.5
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
-          }
-        }
-      }
+    for (let i = 0; i < lightCount; i++) {
+      lightSpots.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: 50 + Math.random() * 100,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: 0.05 + Math.random() * 0.05,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        pulse: 0,
+        pulseSpeed: 0.005 + Math.random() * 0.01,
+      })
     }
 
     const animate = () => {
       requestAnimationFrame(animate)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      particles.forEach((particle) => {
-        particle.x += particle.speedX
-        particle.y += particle.speedY
+      // Draw light spots
+      lightSpots.forEach((spot) => {
+        spot.x += spot.speedX
+        spot.y += spot.speedY
 
-        if (particle.x < 0 || particle.x > canvas.width) {
-          particle.speedX = -particle.speedX
-        }
-        if (particle.y < 0 || particle.y > canvas.height) {
-          particle.speedY = -particle.speedY
-        }
+        // Bounce off edges
+        if (spot.x < -spot.radius) spot.x = canvas.width + spot.radius
+        if (spot.x > canvas.width + spot.radius) spot.x = -spot.radius
+        if (spot.y < -spot.radius) spot.y = canvas.height + spot.radius
+        if (spot.y > canvas.height + spot.radius) spot.y = -spot.radius
+
+        // Pulse effect
+        spot.pulse += spot.pulseSpeed
+        const pulseOpacity = spot.opacity + Math.sin(spot.pulse) * 0.03
+        const pulseSize = spot.radius + Math.sin(spot.pulse) * 10
+
+        // Draw gradient circle
+        const gradient = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, pulseSize)
+        gradient.addColorStop(
+          0,
+          `${spot.color}${Math.floor(pulseOpacity * 100)
+            .toString(16)
+            .padStart(2, "0")}`,
+        )
+        gradient.addColorStop(1, `${spot.color}00`)
 
         ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
-        ctx.fillStyle = particle.color
+        ctx.fillStyle = gradient
+        ctx.arc(spot.x, spot.y, pulseSize, 0, Math.PI * 2)
         ctx.fill()
       })
 
-      connectParticles()
+      // Draw particles
+      particles.forEach((particle) => {
+        // Orbital movement
+        particle.angle += particle.angleSpeed
+        const radian = (particle.angle * Math.PI) / 180
+
+        const centerX = canvas.width / 2
+        const centerY = canvas.height / 2
+
+        const orbitX = centerX + Math.cos(radian) * particle.distance
+        const orbitY = centerY + Math.sin(radian) * particle.distance
+
+        // Add some random movement
+        particle.x = orbitX + Math.sin(Date.now() * 0.001 + particle.angle) * 20
+        particle.y = orbitY + Math.cos(Date.now() * 0.002 + particle.angle) * 20
+
+        // Pulse opacity
+        particle.pulse += particle.pulseSpeed
+        const pulseOpacity = particle.opacity + Math.sin(particle.pulse) * 0.1
+
+        // Draw particle
+        ctx.beginPath()
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
+        ctx.fillStyle = `${particle.color}${Math.floor(pulseOpacity * 255)
+          .toString(16)
+          .padStart(2, "0")}`
+        ctx.fill()
+
+        // Draw connecting lines between nearby particles
+        particles.forEach((otherParticle) => {
+          const dx = particle.x - otherParticle.x
+          const dy = particle.y - otherParticle.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+
+          if (distance < 100) {
+            ctx.beginPath()
+            ctx.strokeStyle = `${particle.color}${Math.floor((1 - distance / 100) * pulseOpacity * 100)
+              .toString(16)
+              .padStart(2, "0")}`
+            ctx.lineWidth = 0.5
+            ctx.moveTo(particle.x, particle.y)
+            ctx.lineTo(otherParticle.x, otherParticle.y)
+            ctx.stroke()
+          }
+        })
+      })
     }
 
     animate()
@@ -559,7 +623,7 @@ const GamingLoginMobile = () => {
     setLoginForm((prev) => ({
       ...prev,
       touched: {
-        email: true,
+        phone: true,
         password: true,
       },
     }))
@@ -569,7 +633,7 @@ const GamingLoginMobile = () => {
       setIsLoading(true)
       setTimeout(() => {
         setIsLoading(false)
-        alert(`Login successful with email: ${loginForm.email}`)
+        alert(`Login successful with phone: ${loginForm.phone}`)
       }, 1500)
     }
   }
@@ -583,9 +647,9 @@ const GamingLoginMobile = () => {
       ...prev,
       touched: {
         name: true,
-        email: true,
         phone: true,
         password: true,
+        confirmPassword: true,
       },
     }))
 
@@ -594,9 +658,7 @@ const GamingLoginMobile = () => {
       setIsLoading(true)
       setTimeout(() => {
         setIsLoading(false)
-        alert(
-          `Account created successfully for ${signupForm.name} with email: ${signupForm.email} and phone: ${signupForm.phone}`,
-        )
+        alert(`Account created successfully for ${signupForm.name} with phone: ${signupForm.phone}`)
       }, 1500)
     }
   }
@@ -607,22 +669,22 @@ const GamingLoginMobile = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f1e] via-[#1a1a3a] to-[#0f0f1e] z-0" />
 
       {/* Canvas background */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+      {/* <canvas ref={canvasRef} className="absolute inset-0 z-0" /> */}
 
       {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden z-0">
+      {/* <div className="absolute inset-0 overflow-hidden z-0"> */}
         {/* Glowing orbs - positioned for mobile */}
-        <div className="absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-purple-600/20 blur-[80px]" />
+        {/* <div className="absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-purple-600/20 blur-[80px]" />
         <div className="absolute bottom-1/4 -right-20 w-40 h-40 rounded-full bg-blue-600/20 blur-[80px]" />
-        <div className="absolute top-3/4 left-1/3 w-40 h-40 rounded-full bg-red-600/20 blur-[80px]" />
-      </div>
+        <div className="absolute top-3/4 left-1/3 w-40 h-40 rounded-full bg-red-600/20 blur-[80px]" /> */}
+      {/* </div> */}
 
       {/* Main content - optimized for mobile */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative z-10 w-full max-w-[340px] mx-auto px-4 py-6"
+        className="relative z-10 w-full max-w-full mx-auto px-10 py-6"
       >
         {/* Logo and tagline */}
         <motion.div
@@ -700,16 +762,16 @@ const GamingLoginMobile = () => {
                 >
                   <div className="space-y-3">
                     <GlowInput
-                      type="email"
-                      name="email"
-                      placeholder="Email Address"
-                      icon={<FaEnvelope size={14} />}
-                      value={loginForm.email}
+                      type="tel"
+                      name="phone"
+                      placeholder="Phone Number"
+                      icon={<FaPhoneAlt size={14} />}
+                      value={loginForm.phone}
                       onChange={handleLoginChange}
-                      error={loginForm.errors.email}
-                      touched={loginForm.touched.email}
-                      valid={loginForm.touched.email && !loginForm.errors.email && loginForm.email}
-                      label="Email Address"
+                      error={loginForm.errors.phone}
+                      touched={loginForm.touched.phone}
+                      valid={loginForm.touched.phone && !loginForm.errors.phone && loginForm.phone}
+                      label="Phone Number"
                       required
                     />
 
@@ -812,20 +874,6 @@ const GamingLoginMobile = () => {
                     />
 
                     <GlowInput
-                      type="email"
-                      name="email"
-                      placeholder="Email Address"
-                      icon={<FaEnvelope size={14} />}
-                      value={signupForm.email}
-                      onChange={handleSignupChange}
-                      error={signupForm.errors.email}
-                      touched={signupForm.touched.email}
-                      valid={signupForm.touched.email && !signupForm.errors.email && signupForm.email}
-                      label="Email Address"
-                      required
-                    />
-
-                    <GlowInput
                       type="tel"
                       name="phone"
                       placeholder="Phone Number"
@@ -848,6 +896,22 @@ const GamingLoginMobile = () => {
                       touched={signupForm.touched.password}
                       valid={signupForm.touched.password && !signupForm.errors.password && signupForm.password}
                       label="Create Password"
+                      required
+                    />
+
+                    <PasswordInput
+                      name="confirmPassword"
+                      placeholder="Confirm Password"
+                      value={signupForm.confirmPassword}
+                      onChange={handleSignupChange}
+                      error={signupForm.errors.confirmPassword}
+                      touched={signupForm.touched.confirmPassword}
+                      valid={
+                        signupForm.touched.confirmPassword &&
+                        !signupForm.errors.confirmPassword &&
+                        signupForm.confirmPassword
+                      }
+                      label="Confirm Password"
                       required
                     />
                   </div>
@@ -933,12 +997,12 @@ const GamingLoginMobile = () => {
           </div>
         </motion.div>
 
-        {/* Footer text - simplified for mobile */}
+        {/* Footer text */}
         <motion.div
           className="mt-6 text-center text-[10px] text-white/50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
         >
           © 2023 Game Zone. All rights reserved.
         </motion.div>
