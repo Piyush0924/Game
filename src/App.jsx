@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { WalletProvider } from './context/WalletContext';
 
 // Pages
 import Home from './pages/home';
@@ -24,6 +25,11 @@ import Rewards from './components/rewards';
 import History from './components/history';
 import CommunityWrapper from './pages/community';
 import GameDashboard from './components/GameDashboard';
+import GameModeRouter from './components/game-modes-tictactoe/GameModeRouter';
+import GameConnector from './components/GameConnector';
+import EnhancedGameLobby from './components/EnhancedGameLobby';
+import MemoryMatchTestEntry from './components/debug/MemoryMatchTestEntry';
+import WalletTest from './components/debug/WalletTest';
 
 // Games
 import SPS from './games/Stone-Paper/SPS';
@@ -241,8 +247,9 @@ function HomePage() {
 
 function App() {
   return (
-    <Router>
-      <Routes>
+    <WalletProvider>
+      <Router>
+        <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/games" element={<GamesPage />} />
         
@@ -310,9 +317,64 @@ function App() {
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/history" element={<History />} />
         
+        {/* Game Modes */}
+        <Route 
+          path="/games/tictactoe/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} />} 
+        />
+        <Route 
+          path="/games/memorymatch/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="memorymatch" />} 
+        />
+        <Route 
+          path="/games/carrom/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="carrom" />} 
+        />
+        <Route 
+          path="/games/chess/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="chess" />} 
+        />
+        <Route 
+          path="/games/ludo/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="ludo" />} 
+        />
+        <Route 
+          path="/games/coinflip/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="coinflip" />} 
+        />
+        <Route 
+          path="/games/dice/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="dice" />} 
+        />
+        <Route 
+          path="/games/stonepaper/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="stonepaper" />} 
+        />
+        <Route 
+          path="/games/bgmi/*" 
+          element={<GameModeRouter onBack={() => window.history.back()} gameType="bgmi" />} 
+        />
+        
+        {/* Game Connector for all games */}
+        <Route 
+          path="/games/:gameId/play/:modeType" 
+          element={<GameConnector />} 
+        />
+        
+        {/* Direct game lobby route (for testing) */}
+        <Route 
+          path="/lobby/:gameId" 
+          element={<EnhancedGameLobby />} 
+        />
+        
+        {/* Debug Routes */}
+        <Route path="/debug/memory-game" element={<MemoryMatchTestEntry />} />
+        <Route path="/debug/wallet-test" element={<WalletTest />} />
+        
         <Route path="*" element={<GamesPage />} />
       </Routes>
     </Router>
+    </WalletProvider>
   );
 }
 

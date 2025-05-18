@@ -88,7 +88,8 @@ export default function GameDashboard({
                 navigate(getGamePath())
                 return null
             case "practice":
-                return <div>Practice Page (Placeholder)</div>
+                navigate(getGamePath())
+                return null
             default:
                 return (
                     <div className="relative w-full h-screen bg-black text-white overflow-hidden">
@@ -156,13 +157,16 @@ export default function GameDashboard({
                             <div className="flex gap-4 w-full max-w-md mx-auto mb-5">
                                 <button
                                     className="flex-1 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-lg hover:brightness-110 transition-all active:scale-95"
-                                    onClick={() => setCurrentView("playNow")}
+                                    onClick={(e) => {
+                                        // Do nothing - disabled button
+                                        e.preventDefault();
+                                    }}
                                 >
                                     Play Now
                                 </button>
                                 <button
                                     className="flex-1 py-3 rounded-lg border border-blue-500 text-blue-400 font-medium bg-blue-500/10 shadow-lg hover:bg-blue-500/20 transition-all active:scale-95"
-                                    onClick={() => setCurrentView("practice")}
+                                    onClick={() => navigate(getGamePath())}
                                 >
                                     Practice
                                 </button>
@@ -175,7 +179,7 @@ export default function GameDashboard({
                                     {/* Classic Mode - Show for all games */}
                                     <div
                                         className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
-                                        onClick={() => setCurrentView("classicMode")}
+                                        onClick={() => navigate(`/games/${gameTitle.toLowerCase()}/select/classic`)}
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex flex-col gap-0.5">
@@ -186,7 +190,7 @@ export default function GameDashboard({
                                                 className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
                                                 onClick={(e) => {
                                                     e.stopPropagation()
-                                                    setCurrentView("classicMode")
+                                                    navigate(`/games/${gameTitle.toLowerCase()}/select/classic`)
                                                 }}
                                             >
                                                 <div className="flex flex-col items-center justify-center gap-0 h-full">
@@ -201,7 +205,7 @@ export default function GameDashboard({
                                     {isActionGame && (
                                         <div
                                             className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
-                                            onClick={() => setCurrentView("quickMode")}
+                                            onClick={() => navigate(`/games/${gameTitle.toLowerCase()}/select/quick`)}
                                         >
                                             <div className="flex items-start justify-between">
                                                 <div className="flex flex-col gap-0.5">
@@ -212,7 +216,7 @@ export default function GameDashboard({
                                                     className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
                                                     onClick={(e) => {
                                                         e.stopPropagation()
-                                                        setCurrentView("quickMode")
+                                                        navigate(`/games/${gameTitle.toLowerCase()}/select/quick`)
                                                     }}
                                                 >
                                                     <div className="flex flex-col items-center justify-center gap-0 h-full">
@@ -227,7 +231,7 @@ export default function GameDashboard({
                                     {/* Tournament Mode - Show for all games */}
                                     <div
                                         className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
-                                        onClick={() => setCurrentView("tournament")}
+                                        onClick={() => navigate(`/games/${gameTitle.toLowerCase()}/select/tournament`)}
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex flex-col gap-0.5">
@@ -238,7 +242,7 @@ export default function GameDashboard({
                                                 className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
                                                 onClick={(e) => {
                                                     e.stopPropagation()
-                                                    setCurrentView("tournament")
+                                                    navigate(`/games/${gameTitle.toLowerCase()}/select/tournament`)
                                                 }}
                                             >
                                                 <div className="flex flex-col items-center justify-center gap-0 h-full">
@@ -253,7 +257,7 @@ export default function GameDashboard({
                                     {isActionGame ? (
                                         <div
                                             className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
-                                            onClick={() => setCurrentView("privateRoom")}
+                                            onClick={() => navigate(`/games/${gameTitle.toLowerCase()}/select/private`)}
                                         >
                                             <div className="flex items-start justify-between">
                                                 <div className="flex flex-col gap-0.5">
@@ -264,7 +268,7 @@ export default function GameDashboard({
                                                     className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
                                                     onClick={(e) => {
                                                         e.stopPropagation()
-                                                        setCurrentView("privateRoom")
+                                                        navigate(`/games/${gameTitle.toLowerCase()}/select/private`)
                                                     }}
                                                 >
                                                     <div className="flex flex-col items-center justify-center gap-0 h-full">

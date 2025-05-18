@@ -1,9 +1,7 @@
-"use client"
-
 import React from 'react';
 import { ChevronLeft } from 'lucide-react';
 
-export default function GameModeLayout({ title, children, onBack, gameMode = "Classic Mode" }) {
+export default function MemoryMatchLayout({ title, children, onBack }) {
   return (
     <div className="flex flex-col h-full min-h-screen bg-[#31036e]">
       {/* Header */}
@@ -25,16 +23,16 @@ export default function GameModeLayout({ title, children, onBack, gameMode = "Cl
       <div className="flex flex-col items-center pt-4 pb-2">
         <div className="w-14 h-14 bg-purple-800/50 rounded-lg border border-purple-700/50 flex items-center justify-center mb-1">
           <img 
-            src="/coinflip.png" 
-            alt="Coinflip Logo" 
+            src="/memorymatch.png" 
+            alt="Memory Match Logo" 
             className="w-12 h-12 object-contain"
             onError={(e) => {
               e.target.src = "/placeholder.png";
             }}
           />
         </div>
-        <h2 className="text-xl text-white font-medium">Coinflip</h2>
-        <p className="text-sm text-white/70">{gameMode}</p>
+        <h2 className="text-xl text-white font-medium">MemoryMatch</h2>
+        <p className="text-sm text-white/70">Classic Mode</p>
       </div>
 
       {/* Content */}

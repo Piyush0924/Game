@@ -69,8 +69,16 @@ export default function GameCatalog() {
   const handleGameClick = (game) => {
     if (!games.All.includes(game)) return;
     
-    // All games now go through their respective routes, which will show GameDashboard
+    // Only navigate if clicking on the game card, not the Play Now button
+    // The Play Now button will be handled separately
     navigate(gameLinks[game]);
+  }
+  
+  // This function will do nothing - to make the Play Now button non-functional
+  const handlePlayNowClick = (e) => {
+    // Stop event propagation to prevent navigating
+    e.stopPropagation();
+    // Do nothing
   }
 
   return (
@@ -141,8 +149,11 @@ export default function GameCatalog() {
               </div>
             </div>
             
-            {/* Play Button Always Visible */}
-            <button className="w-full py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium flex items-center justify-center">
+            {/* Play Button Always Visible - Now non-functional */}
+            <button 
+              onClick={handlePlayNowClick}
+              className="w-full py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium flex items-center justify-center"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
               </svg>

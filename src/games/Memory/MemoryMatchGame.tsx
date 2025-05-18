@@ -24,9 +24,21 @@ interface Player {
   moves: number;
 }
 
-export default function MemoryMatchGame() {
-  const [cards, setCards] = useState([]);
-  const [flippedCards, setFlippedCards] = useState([]);
+interface MemoryMatchGameProps {
+  onGameEnd?: (result: { winner: string; score: { player: number; opponent: number } }) => void;
+  isMultiplayer?: boolean;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  onBack?: () => void;
+}
+
+const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({ 
+  onGameEnd, 
+  isMultiplayer = false, 
+  difficulty = 'medium',
+  onBack
+}) => {
+  const [cards, setCards] = useState<Card[]>([]);
+  const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [players, setPlayers] = useState([
     { id: 1, score: 0, isActive: true, matches: 0, moves: 0 },
     { id: 2, score: 0, isActive: false, matches: 0, moves: 0 }
@@ -34,18 +46,18 @@ export default function MemoryMatchGame() {
   const [gameComplete, setGameComplete] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(!isMultiplayer);
   const [gameTime, setGameTime] = useState(0);
   const [bestTime, setBestTime] = useState(Infinity);
 
   // Initialize game
   useEffect(() => {
     initializeGame();
-  }, []);
+  }, [difficulty]);
 
   // Timer effect
   useEffect(() => {
-    let timer;
+    let timer: NodeJS.Timeout;
     if (!gameComplete && !showInstructions) {
       timer = setInterval(() => {
         setGameTime(prev => prev + 1);
@@ -54,9 +66,41 @@ export default function MemoryMatchGame() {
     return () => clearInterval(timer);
   }, [gameComplete, showInstructions]);
 
+  // Effect to handle game completion and trigger the onGameEnd callback
+  useEffect(() => {
+    if (gameComplete) {
+      if (onGameEnd) {
+        // For multiplayer mode, call the onGameEnd callback
+        const winner = getWinner();
+        onGameEnd({
+          winner: winner === 1 ? 'player' : winner === 2 ? 'opponent' : 'draw',
+          score: {
+            player: players[0].score,
+            opponent: players[1].score
+          }
+        });
+      }
+      // In single player mode, show confetti
+      if (!isMultiplayer) {
+        setShowConfetti(true);
+      }
+    }
+  }, [gameComplete, players, onGameEnd, isMultiplayer]);
+
   const initializeGame = () => {
+    // Get card set based on difficulty
+    let gameCards = [...cardEmojis];
+    
+    if (difficulty === 'easy') {
+      gameCards = gameCards.slice(0, 12); // 6 pairs
+    } else if (difficulty === 'hard') {
+      // Add more cards for hard difficulty
+      const extraCards = ['🍎', '🍊', '🍇', '🍓', '🍎', '🍊', '🍇', '🍓'];
+      gameCards = [...gameCards, ...extraCards];
+    }
+    
     // Shuffle cards
-    const shuffledCards = [...cardEmojis]
+    const shuffledCards = [...gameCards]
       .sort(() => Math.random() - 0.5)
       .map((emoji, index) => ({
         id: index,
@@ -132,14 +176,20 @@ export default function MemoryMatchGame() {
           });
 
           // Check if game is complete
-          if (updatedCards.every(card => card.isMatched)) {
+          const allMatched = updatedCards.every(card => card.isMatched);
+          if (allMatched) {
             setGameComplete(true);
             setShowConfetti(true);
             if (gameTime < bestTime) {
               setBestTime(gameTime);
             }
+            
+            // In multiplayer mode, trigger game end immediately 
+            if (isMultiplayer) {
+              // The onGameEnd will be called by the useEffect we added
+            }
           }
-        }, 1000);
+        }, isMultiplayer ? 500 : 1000); // Faster animations for multiplayer
       } else {
         // No match
         setTimeout(() => {
@@ -160,7 +210,7 @@ export default function MemoryMatchGame() {
               isActive: !player.isActive
             }));
           });
-        }, 1500);
+        }, isMultiplayer ? 800 : 1500); // Faster animations for multiplayer
       }
     }
   };
@@ -213,7 +263,7 @@ export default function MemoryMatchGame() {
         ))}
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10 pt-16">
         {/* Game Header */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {/* Player 1 Score */}
@@ -222,7 +272,7 @@ export default function MemoryMatchGame() {
           }`}>
             <div className="flex items-center justify-center gap-2 mb-2">
               <Users className="h-5 w-5 text-blue-400" />
-              <span className="font-bold">Player 1</span>
+              <span className="font-bold">You</span>
             </div>
             <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {players[0].score}
@@ -245,11 +295,6 @@ export default function MemoryMatchGame() {
               <Clock className="h-4 w-4" />
               {formatTime(gameTime)}
             </div>
-            {bestTime !== Infinity && (
-              <div className="text-xs text-white/40 mt-1">
-                Best Time: {formatTime(bestTime)}
-              </div>
-            )}
           </div>
 
           {/* Player 2 Score */}
@@ -258,7 +303,7 @@ export default function MemoryMatchGame() {
           }`}>
             <div className="flex items-center justify-center gap-2 mb-2">
               <Users className="h-5 w-5 text-blue-400" />
-              <span className="font-bold">Player 2</span>
+              <span className="font-bold">Opponent</span>
             </div>
             <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {players[1].score}
@@ -269,8 +314,8 @@ export default function MemoryMatchGame() {
           </div>
         </div>
 
-        {/* Game Board */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        {/* Game Board - Centered and responsive */}
+        <div className="grid grid-cols-4 gap-3 mx-auto max-w-md mb-6">
           {cards.map((card) => (
             <div
               key={card.id}
@@ -297,27 +342,29 @@ export default function MemoryMatchGame() {
           ))}
         </div>
 
-        {/* Game Controls */}
-        <div className="flex justify-center gap-4">
-          <button
-            onClick={() => setShowInstructions(true)}
-            className="group relative flex items-center gap-2 bg-white/10 text-white font-bold py-3 px-8 rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            <Info className="h-5 w-5" />
-            How to Play
-          </button>
-          <button
-            onClick={initializeGame}
-            className="group relative flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-3 px-8 rounded-xl hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            <RefreshCw className="h-5 w-5 transform group-hover:rotate-180 transition-transform duration-500" />
-            {gameComplete ? 'Play Again' : 'Restart Game'}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300 -z-10" />
-          </button>
-        </div>
+        {/* Only show game controls for non-multiplayer mode */}
+        {!isMultiplayer && (
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => setShowInstructions(true)}
+              className="group relative flex items-center gap-2 bg-white/10 text-white font-bold py-3 px-8 rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <Info className="h-5 w-5" />
+              How to Play
+            </button>
+            <button
+              onClick={initializeGame}
+              className="group relative flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-3 px-8 rounded-xl hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <RefreshCw className="h-5 w-5 transform group-hover:rotate-180 transition-transform duration-500" />
+              {gameComplete ? 'Play Again' : 'Restart Game'}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300 -z-10" />
+            </button>
+          </div>
+        )}
 
         {/* Instructions Modal */}
-        {showInstructions && (
+        {showInstructions && !isMultiplayer && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 scale-100 animate-modal-in">
               <div className="text-center">
@@ -358,7 +405,7 @@ export default function MemoryMatchGame() {
         )}
 
         {/* Game Complete Modal */}
-        {gameComplete && (
+        {gameComplete && !isMultiplayer && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 scale-100 animate-modal-in">
               <div className="text-center">
@@ -432,57 +479,61 @@ export default function MemoryMatchGame() {
         )}
       </div>
 
-      <style jsx>{`
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-        .transform-style-3d {
-          transform-style: preserve-3d;
-        }
-        .backface-hidden {
-          backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-          transform: rotateY(180deg);
-        }
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-35px) scale(1.12); }
-        }
-        @keyframes float-slow-delayed {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-35px) scale(1.12); }
-        }
-        @keyframes modal-in {
-          0% { transform: scale(0.8); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes float-particle {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          25% { transform: translateY(-20px) translateX(10px); }
-          50% { transform: translateY(-40px) translateX(-10px); }
-          75% { transform: translateY(-20px) translateX(10px); }
-        }
-        @keyframes confetti {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        .animate-float-slow {
-          animation: float-slow 12s ease-in-out infinite;
-        }
-        .animate-float-slow-delayed {
-          animation: float-slow-delayed 12s ease-in-out infinite 2s;
-        }
-        .animate-modal-in {
-          animation: modal-in 0.5s ease-out forwards;
-        }
-        .animate-float-particle {
-          animation: float-particle 5s ease-in-out infinite;
-        }
-        .animate-confetti {
-          animation: confetti 5s linear forwards;
-        }
-      `}</style>
+      <style>
+        {`
+          .perspective-1000 {
+            perspective: 1000px;
+          }
+          .transform-style-3d {
+            transform-style: preserve-3d;
+          }
+          .backface-hidden {
+            backface-visibility: hidden;
+          }
+          .rotate-y-180 {
+            transform: rotateY(180deg);
+          }
+          @keyframes float-slow {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-35px) scale(1.12); }
+          }
+          @keyframes float-slow-delayed {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-35px) scale(1.12); }
+          }
+          @keyframes modal-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+          }
+          @keyframes float-particle {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-40px) translateX(-10px); }
+            75% { transform: translateY(-20px) translateX(10px); }
+          }
+          @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+          }
+          .animate-float-slow {
+            animation: float-slow 12s ease-in-out infinite;
+          }
+          .animate-float-slow-delayed {
+            animation: float-slow-delayed 12s ease-in-out infinite 2s;
+          }
+          .animate-modal-in {
+            animation: modal-in 0.5s ease-out forwards;
+          }
+          .animate-float-particle {
+            animation: float-particle 5s ease-in-out infinite;
+          }
+          .animate-confetti {
+            animation: confetti 5s linear forwards;
+          }
+        `}
+      </style>
     </div>
   );
-} 
+}
+
+export default MemoryMatchGame;

@@ -4,10 +4,11 @@ import { ArrowLeft, Wallet as WalletIcon, Plus, Minus, History } from 'lucide-re
 import Navbar from './Navbar';
 import BottomNav from './BottomNav';
 import { useNavigate } from 'react-router-dom';
+import { useWallet } from '../context/WalletContext';
 
 export default function Wallet() {
   const navigate = useNavigate();
-  const [balance] = React.useState(2500);
+  const { balance, transactions } = useWallet();
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex flex-col">

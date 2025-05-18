@@ -1,66 +1,109 @@
 "use client"
 
 import React from "react"
-import GameModeTemplate from "../GameModeTemplate"
 import { useNavigate } from "react-router-dom"
+import { Trophy, Users, Clock } from 'lucide-react'
+import MemoryMatchLayout from './MemoryMatchLayout'
 
-export default function TournamentMode({ onBack, gameTitle = "MemoryMatch" }) {
+export default function TournamentMode({ onBack }) {
   const navigate = useNavigate()
   
-  // Tournament data for MemoryMatch with prize pool information
+  // Tournament options with higher stakes
   const tournamentOptions = [
     {
       id: 1,
-      name: "Daily Tournament",
-      prize: "₹1,200",
-      prizePool: "₹1,200",
-      entryFee: "₹40",
-      players: "2 Players",
-      playerCount: "145",
-      liveCount: "72",
-      winners: "3 Winners",
-      xp: 15,
-      startTime: "Daily 6:00 PM",
-      timeRemaining: "02h 45m"
+      players: "4 Players",
+      winner: "1 Winner",
+      winAmount: "Best of 5",
+      entryFee: "₹50",
+      playersCount: "16 playing",
+      timeLimit: "10m 00s",
+      matches: 5
     },
     {
       id: 2,
-      name: "Weekend Special",
-      prize: "₹4,000",
-      prizePool: "₹4,000",
+      players: "8 Players",
+      winner: "1 Winner",
+      winAmount: "Best of 7",
       entryFee: "₹100",
-      players: "2 Players",
-      playerCount: "110",
-      liveCount: "55",
-      winners: "4 Winners",
-      xp: 25,
-      startTime: "Saturday, 4:00 PM",
-      timeRemaining: "22h 15m",
-      isQuick: true
+      playersCount: "24 playing",
+      timeLimit: "15m 00s",
+      matches: 7
     },
     {
       id: 3,
-      name: "Free Tournament",
-      prize: "₹400",
-      prizePool: "₹400",
-      entryFee: "Free",
-      players: "2 Players",
-      playerCount: "280",
-      liveCount: "140",
-      winners: "8 Winners",
-      xp: 6,
-      startTime: "Friday, 8:00 PM",
-      timeRemaining: "4h 30m"
+      players: "16 Players",
+      winner: "1 Winner",
+      winAmount: "Best of 9",
+      entryFee: "₹200",
+      playersCount: "48 playing",
+      timeLimit: "25m 00s",
+      matches: 9
     }
   ]
-  
+
+  // Handle play button click to go directly to game lobby in tournament mode
+  const handlePlay = (tournament) => {
+    // Extract numeric value from entry fee string (e.g., "₹50" -> 50)
+    const entryFee = parseInt(tournament.entryFee.replace(/[^\d]/g, ''))
+    const matches = tournament.matches
+    
+    // Navigate to tournament mode with proper parameters
+    navigate(`/games/memorymatch/play/tournament?price=${entryFee}&matches=${matches}`)
+  }
+
   return (
-    <GameModeTemplate
-      onBack={onBack}
-      gameTitle={gameTitle}
-      modeType="Tournament"
-      gameOptions={tournamentOptions}
-      logoSrc="/memorymatch.png"
-    />
+    <MemoryMatchLayout title="Tournament Mode" onBack={onBack}>
+      <div className="mb-4">
+        <div className="bg-purple-800/20 rounded-lg p-3 border border-purple-500/30">
+          <h3 className="text-center text-lg text-white mb-2">Tournament Rules</h3>
+          <ul className="text-sm text-white/80 space-y-1 list-disc pl-5">
+            <li>Pay once to enter the tournament</li>
+            <li>Play multiple matches against different opponents</li>
+            <li>Winner gets all prize pool at the end</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div className="space-y-4">
+        {tournamentOptions.map((option) => (
+          <div 
+            key={option.id}
+            className="bg-white rounded-lg p-4 shadow-md"
+          >
+            <div className="flex justify-between mb-2">
+              <div className="text-gray-800">{option.players}</div>
+              <div className="flex items-center text-amber-600">
+                <Trophy size={16} className="mr-1" />
+                <span>{option.winner}</span>
+              </div>
+            </div>
+            
+            <div className="flex justify-between items-center mb-2">
+              <div className="text-xl font-bold text-gray-800">
+                <span className="text-purple-600">{option.winAmount}</span>
+              </div>
+              <button 
+                onClick={() => handlePlay(option)}
+                className="bg-purple-600 text-white px-4 py-1 rounded-full font-medium hover:bg-purple-700"
+              >
+                Enter {option.entryFee}
+              </button>
+            </div>
+            
+            <div className="flex justify-between items-center text-xs text-gray-500">
+              <div className="flex items-center">
+                <Users size={12} className="mr-1" />
+                <span>{option.playersCount}</span>
+              </div>
+              <div className="flex items-center">
+                <Clock size={12} className="mr-1" />
+                <span>{option.timeLimit}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </MemoryMatchLayout>
   )
 } 
