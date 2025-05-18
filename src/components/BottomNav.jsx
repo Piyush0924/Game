@@ -33,13 +33,13 @@ export default function BottomNav() {
                   <span
                     className={`flex items-center justify-center rounded-full p-2 transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-105'
+                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110'
                         : 'hover:bg-gray-800/50'
                     }`}
                   >
-                    <item.icon className="h-6 w-6 transition-all duration-200 text-white" />
+                    <item.icon className={`h-6 w-6 transition-all duration-200 text-white ${isActive ? 'scale-110' : ''}`} />
                   </span>
-                  <span className="text-xs mt-1 font-medium">
+                  <span className={`text-xs mt-1 font-medium ${isActive ? 'font-semibold' : ''}`}>
                     {item.name}
                   </span>
                 </Link>
@@ -47,10 +47,10 @@ export default function BottomNav() {
             })}
           </div>
 
-          {/* Center Logo - navigates to /play */}
+          {/* Center Logo */}
           <div className="flex items-center justify-center px-4 -mt-10">
             <Link
-              to="#"
+              to="/"
               className="bg-gradient-to-br from-purple-600 to-blue-600 p-1 rounded-2xl shadow-xl hover:scale-105 transition"
             >
               <img
@@ -76,13 +76,13 @@ export default function BottomNav() {
                   <span
                     className={`flex items-center justify-center rounded-full p-2 transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-105'
+                        ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg scale-110'
                         : 'hover:bg-gray-800/50'
                     }`}
                   >
-                    <item.icon className="h-6 w-6 transition-all duration-200 text-white" />
+                    <item.icon className={`h-6 w-6 transition-all duration-200 text-white ${isActive ? 'scale-110' : ''}`} />
                   </span>
-                  <span className="text-xs mt-1 font-medium">
+                  <span className={`text-xs mt-1 font-medium ${isActive ? 'font-semibold' : ''}`}>
                     {item.name}
                   </span>
                 </Link>

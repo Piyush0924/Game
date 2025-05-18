@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import GameSection from './pages/games';
+import CommunityWrapper from './pages/community';
 // import CommunityPage from './pages/community';
 import PopularGames from './components/PopularGames';
 import FeaturedTournaments from './components/FeaturedTournaments';
@@ -239,7 +240,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/games" element={<Games />} />
-        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/community" element={<CommunityWrapper />} />
         <Route path="/profile" element={<ProfilePage />} />
 
         {/* Games routes */}
