@@ -19,7 +19,6 @@ export default function ClassicMode({ onBack, gameTitle = "StonePaper" }) {
       liveCount: "145", 
       coinCost: "0.5 Coin",
       winners: "1 Winner",
-      xp: 2,
       timeRemaining: "00m 20s"
     },
     {
@@ -32,7 +31,6 @@ export default function ClassicMode({ onBack, gameTitle = "StonePaper" }) {
       liveCount: "95",
       coinCost: "1 Coin",
       winners: "1 Winner", 
-      xp: 3,
       timeRemaining: "00m 30s"
     },
     {
@@ -45,7 +43,6 @@ export default function ClassicMode({ onBack, gameTitle = "StonePaper" }) {
       liveCount: "68",
       coinCost: "2.5 Coin",
       winners: "1 Winner", 
-      xp: 6,
       timeRemaining: "00m 45s"
     }
   ]
@@ -56,7 +53,7 @@ export default function ClassicMode({ onBack, gameTitle = "StonePaper" }) {
       gameTitle={gameTitle}
       modeType="Classic"
       gameOptions={gameOptions}
-      logoSrc="/stonepaper.jpg"
+      logoSrc="/images/games/stonepaper-logo.png"
     />
   )
 } 

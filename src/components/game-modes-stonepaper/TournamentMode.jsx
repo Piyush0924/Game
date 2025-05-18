@@ -57,7 +57,7 @@ export default function TournamentMode({ onBack, gameTitle = "StonePaper" }) {
       gameTitle={gameTitle}
       modeType="Tournament"
       gameOptions={tournamentOptions}
-      logoSrc="/stonepaper-tournament.jpg"
+      logoSrc="/stonepaper-tournament-hero.jpg"
     />
   )
 } 

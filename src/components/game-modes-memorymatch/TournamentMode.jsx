@@ -7,12 +7,13 @@ import { useNavigate } from "react-router-dom"
 export default function TournamentMode({ onBack, gameTitle = "MemoryMatch" }) {
   const navigate = useNavigate()
   
-  // Tournament data for MemoryMatch
+  // Tournament data for MemoryMatch with prize pool information
   const tournamentOptions = [
     {
       id: 1,
       name: "Daily Tournament",
       prize: "₹1,200",
+      prizePool: "₹1,200",
       entryFee: "₹40",
       players: "2 Players",
       playerCount: "145",
@@ -26,6 +27,7 @@ export default function TournamentMode({ onBack, gameTitle = "MemoryMatch" }) {
       id: 2,
       name: "Weekend Special",
       prize: "₹4,000",
+      prizePool: "₹4,000",
       entryFee: "₹100",
       players: "2 Players",
       playerCount: "110",
@@ -40,6 +42,7 @@ export default function TournamentMode({ onBack, gameTitle = "MemoryMatch" }) {
       id: 3,
       name: "Free Tournament",
       prize: "₹400",
+      prizePool: "₹400",
       entryFee: "Free",
       players: "2 Players",
       playerCount: "280",
@@ -57,7 +60,7 @@ export default function TournamentMode({ onBack, gameTitle = "MemoryMatch" }) {
       gameTitle={gameTitle}
       modeType="Tournament"
       gameOptions={tournamentOptions}
-      logoSrc="/memorymatch-tournament.png"
+      logoSrc="/memorymatch.png"
     />
   )
 } 

@@ -7,46 +7,39 @@ import { useNavigate } from "react-router-dom"
 export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
   const navigate = useNavigate()
   
-  // Game data for multiplayer battles with updated prize calculations
+  // Game data for TicTacToe classic mode precisely matching the screenshot
   const gameOptions = [
     {
       id: 1,
-      name: "Multiplayer Battle",
+      name: "Quick Match",
       prize: "₹8",
       entryFee: "₹5",
       players: "2 Players",
-      playerCount: "238",
-      liveCount: "94", 
-      coinCost: "0.50 Coin",
+      playerCount: "94",
+      liveCount: "34", 
       winners: "1 Winner",
-      xp: 2,
       timeRemaining: "00m 30s"
     },
     {
       id: 2,
-      name: "Special Event",
+      name: "Standard Match",
       prize: "₹15",
       entryFee: "₹10",
       players: "2 Players",
-      playerCount: "102",
-      liveCount: "45",
-      coinCost: "1 Coin",
+      playerCount: "45",
+      liveCount: "18",
       winners: "1 Winner", 
-      xp: 3,
-      isQuick: true,
       timeRemaining: "01m 30s"
     },
     {
       id: 3,
-      name: "Advanced Game",
+      name: "Expert Match",
       prize: "₹23",
       entryFee: "₹15",
       players: "2 Players",
-      playerCount: "48",
-      liveCount: "22",
-      coinCost: "1.50 Coin",
+      playerCount: "22",
+      liveCount: "11",
       winners: "1 Winner", 
-      xp: 8,
       timeRemaining: "02m 00s"
     }
   ]
@@ -57,7 +50,7 @@ export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
       gameTitle={gameTitle}
       modeType="Classic"
       gameOptions={gameOptions}
-      logoSrc="/tictactoe.png"
+      logoSrc="/tictactoe.jpg"
     />
   )
 }
