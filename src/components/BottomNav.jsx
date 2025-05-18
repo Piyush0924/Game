@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Home, Gamepad2, Users, User } from 'lucide-react';
 
 const navigation = [
-  { name: 'Home', icon: Home, href: '#' },
-  { name: 'Games', icon: Gamepad2, href: '#' },
-  { name: 'Community', icon: Users, href: '#' },
-  { name: 'Profile', icon: User, href: '#' },
+  { name: 'Home', icon: Home, href: '/' },
+  { name: 'Games', icon: Gamepad2, href: '/games' },
+  { name: 'Community', icon: Users, href: '/community' },
+  { name: 'Profile', icon: User, href: '/profile' },
 ];
 
 export default function BottomNav() {

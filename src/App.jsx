@@ -22,6 +22,7 @@ import CoinFlipBet from './games/Coinflip/CoinFlipBet';
 import Games from './pages/games';
 import Rewards from './components/rewards';
 import History from './components/history';
+import ProfilePage from './pages/ProfilePage';
 
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -235,8 +236,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/wallet" element={<Wallet />} />
+        <Route path="/games" element={<Games />} />
         <Route path="/community" element={<CommunityPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         {/* Games routes */}
         {/* <Route path="/games/sps" element={<SPS />} />
@@ -245,7 +247,8 @@ function App() {
         <Route path="/games/coinflip" element={<CoinFlipBet />} />
 
         {/* Additional routes */}
-        <Route path="/games" element={<Games />} />
+        
+        <Route path="/wallet" element={<Wallet />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/history" element={<History />} />
       </Routes>
