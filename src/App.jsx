@@ -23,6 +23,7 @@ import Games from './pages/games';
 import Rewards from './components/rewards';
 import History from './components/history';
 import ProfilePage from './pages/ProfilePage';
+import LoginSignup from './pages/login_signup';
 
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -251,6 +252,7 @@ function App() {
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/history" element={<History />} />
+        <Route path="/login" element={<LoginSignup />} />
       </Routes>
     </Router>
   );
