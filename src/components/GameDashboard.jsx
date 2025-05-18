@@ -1,16 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { X, Star } from "lucide-react"
+import { X, Star, Clock } from "lucide-react"
 import ClassicMode from "./game-modes-tictactoe/ClassicMode";
 import TournamentMode from "./game-modes-tictactoe/TournamentMode";
-import QuickMode from "./game-modes-tictactoe/QuickMode";
 import PrivateMode from "./game-modes-tictactoe/PrivateMode";
 import TicTacToe from "../games/Tictactoe/Tictactoe";
 import CoinFlipBet from "../games/Coinflip/CoinFlipBet";
 import DiceDuel from "../games/Dice/DiceDuel";
 import MemoryMatchGame from "../games/Memory/MemoryMatchGame";
 import SPS from "../games/Stone-Paper/SPS";
+import { useNavigate } from "react-router-dom";
 
 export default function GameDashboard({
     link,
@@ -29,20 +29,23 @@ export default function GameDashboard({
 }) {
     const [currentView, setCurrentView] = useState("main")
     const [showDashboard, setShowDashboard] = useState(true)
+    const navigate = useNavigate()
 
     const handleClose = () => {
         console.log("Dashboard closed")
         setShowDashboard(false)
+        navigate("/games")
         if (onClose) onClose()
     }
 
     // Ensure entryFees has all required keys to avoid undefined errors
     const safeEntryFees = {
         classic: entryFees.classic || "₹10 - ₹50",
-        quick: entryFees.quick || "₹5 - ₹25",
         tournament: entryFees.tournament || "₹20 - ₹100",
-        private: entryFees.private || "Custom",
     }
+    
+    // Check if game is in action category
+    const isActionGame = gameCategory === "Action";
 
     // Logic Option 1: Determine game component based on gameTitle prop
     const getGameComponent = () => {
@@ -64,18 +67,26 @@ export default function GameDashboard({
         return <TicTacToe onBack={() => setCurrentView("main")} />;
     }
 
+    // Get game path for redirecting to the actual game page
+    const getGamePath = () => {
+        if (!gameTitle) return "/games";
+        
+        // Convert gameTitle to match route pattern
+        const gamePath = gameTitle.toLowerCase();
+        return `/games/${gamePath}/play`;
+    };
+
     const renderView = () => {
         switch (currentView) {
             case "classicMode":
                 return <ClassicMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
             case "tournament":
                 return <TournamentMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
-            case "quickMode":
-                return <QuickMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
             case "privateRoom":
                 return <PrivateMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
             case "playNow":
-                return getGameComponent();
+                navigate(getGamePath())
+                return null
             case "practice":
                 return <div>Practice Page (Placeholder)</div>
             default:
@@ -93,8 +104,11 @@ export default function GameDashboard({
 
                         {/* Foreground Content */}
                         <div className="relative z-10 flex flex-col min-h-screen px-4">
-                            {/* Header with Close Button */}
-                            <div className="absolute top-4 right-4">
+                            {/* Header with Balance and Close Button */}
+                            <div className="absolute top-4 right-4 flex items-center">
+                                <div className="mr-4 bg-black/30 backdrop-blur-md px-3 py-1 rounded-full text-white font-medium">
+                                    Balance: ₹1000
+                                </div>
                                 <button
                                     className="text-white hover:text-red-500 transition rounded-full p-2 bg-gray-800/50"
                                     onClick={handleClose}
@@ -103,17 +117,28 @@ export default function GameDashboard({
                                 </button>
                             </div>
 
+                            {/* Back Button */}
+                            <div className="absolute top-4 left-4">
+                                <button
+                                    className="text-white hover:text-blue-400 transition rounded-full p-2 bg-gray-800/50"
+                                    onClick={handleClose}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                </button>
+                            </div>
+
                             {/* Spacer to push content down slightly */}
                             <div className="flex-grow" />
 
                             {/* Game Title Section */}
-                            <div className="text-center mb-4">
-                                <div className="w-16 h-16 mx-auto rounded-full bg-purple-500 overflow-hidden shadow-lg mb-3">
+                            <div className="text-center mb-6">
+                                <div className="w-24 h-24 mx-auto rounded-full bg-purple-500 overflow-hidden shadow-lg mb-3 border-2 border-white/20">
                                     <img
                                         src={gameImage || "/placeholder.svg"}
                                         alt={`${gameTitle || "Game"} Logo`}
                                         className="w-full h-full object-cover"
                                     />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-purple-500/30 to-transparent pointer-events-none"></div>
                                 </div>
                                 <h1 className="text-3xl font-bold tracking-tight">{gameTitle || "Game Dashboard"}</h1>
                                 <div className="flex justify-center gap-2 text-base text-gray-300 mt-1">
@@ -128,7 +153,7 @@ export default function GameDashboard({
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex gap-4 w-full max-w-md mb-4">
+                            <div className="flex gap-4 w-full max-w-md mx-auto mb-5">
                                 <button
                                     className="flex-1 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-lg hover:brightness-110 transition-all active:scale-95"
                                     onClick={() => setCurrentView("playNow")}
@@ -144,18 +169,18 @@ export default function GameDashboard({
                             </div>
 
                             {/* Game Modes Section */}
-                            <div className="w-full max-w-md mb-4">
+                            <div className="w-full max-w-md mx-auto mb-6">
                                 <h2 className="text-xl font-bold mb-3 text-white text-left tracking-tight">Game Modes</h2>
-                                <div className="flex flex-col gap-1">
-                                    {/* Classic Mode */}
+                                <div className="flex flex-col gap-3">
+                                    {/* Classic Mode - Show for all games */}
                                     <div
-                                        className="bg-gray-800/50 rounded-xl shadow-lg p-2 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer min-h-[3.5rem]"
+                                        className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
                                         onClick={() => setCurrentView("classicMode")}
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex flex-col gap-0.5">
                                                 <span className="text-blue-400 font-medium text-lg">Classic Mode</span>
-                                                <p className="text-gray-300 text-base">Play with 2-4 players</p>
+                                                <p className="text-gray-300 text-sm">Play with 2-4 players</p>
                                             </div>
                                             <button
                                                 className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
@@ -172,40 +197,42 @@ export default function GameDashboard({
                                         </div>
                                     </div>
 
-                                    {/* Quick Mode */}
-                                    <div
-                                        className="bg-gray-800/50 rounded-xl shadow-lg p-2 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer min-h-[3.5rem]"
-                                        onClick={() => setCurrentView("quickMode")}
-                                    >
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="text-blue-400 font-medium text-lg">Quick Mode</span>
-                                                <p className="text-gray-300 text-base">Faster gameplay</p>
-                                            </div>
-                                            <button
-                                                className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setCurrentView("quickMode")
-                                                }}
-                                            >
-                                                <div className="flex flex-col items-center justify-center gap-0 h-full">
-                                                    <span className="text-white text-sm">Entry</span>
-                                                    <span className="text-white text-sm">{safeEntryFees.quick}</span>
+                                    {/* Quick Mode - Only show for Action games */}
+                                    {isActionGame && (
+                                        <div
+                                            className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
+                                            onClick={() => setCurrentView("quickMode")}
+                                        >
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="text-blue-400 font-medium text-lg">Quick Mode</span>
+                                                    <p className="text-gray-300 text-sm">Faster gameplay</p>
                                                 </div>
-                                            </button>
+                                                <button
+                                                    className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        setCurrentView("quickMode")
+                                                    }}
+                                                >
+                                                    <div className="flex flex-col items-center justify-center gap-0 h-full">
+                                                        <span className="text-white text-sm">Entry</span>
+                                                        <span className="text-white text-sm">{entryFees.quick}</span>
+                                                    </div>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    {/* Tournament Mode */}
+                                    {/* Tournament Mode - Show for all games */}
                                     <div
-                                        className="bg-gray-800/50 rounded-xl shadow-lg p-2 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer min-h-[3.5rem]"
+                                        className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
                                         onClick={() => setCurrentView("tournament")}
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex flex-col gap-0.5">
                                                 <span className="text-blue-400 font-medium text-lg">Tournament</span>
-                                                <p className="text-gray-300 text-base">Compete for big prizes</p>
+                                                <p className="text-gray-300 text-sm">Compete for big prizes</p>
                                             </div>
                                             <button
                                                 className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
@@ -222,30 +249,50 @@ export default function GameDashboard({
                                         </div>
                                     </div>
 
-                                    {/* Private Room */}
-                                    <div
-                                        className="bg-gray-800/50 rounded-xl shadow-lg p-2 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer min-h-[3.5rem]"
-                                        onClick={() => setCurrentView("privateRoom")}
-                                    >
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="text-blue-400 font-medium text-lg">Private Room</span>
-                                                <p className="text-gray-300 text-base">Invite your friends</p>
-                                            </div>
-                                            <button
-                                                className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setCurrentView("privateRoom")
-                                                }}
-                                            >
-                                                <div className="flex flex-col items-center justify-center gap-0 h-full">
-                                                    <span className="text-white text-sm">Entry</span>
-                                                    <span className="text-white text-sm">{safeEntryFees.private}</span>
+                                    {/* Private Room - Changed to "Coming Soon" for non-Action games */}
+                                    {isActionGame ? (
+                                        <div
+                                            className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 transition-all hover:shadow-xl hover:bg-gray-800 cursor-pointer"
+                                            onClick={() => setCurrentView("privateRoom")}
+                                        >
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="text-blue-400 font-medium text-lg">Private Room</span>
+                                                    <p className="text-gray-300 text-sm">Invite your friends</p>
                                                 </div>
-                                            </button>
+                                                <button
+                                                    className="w-28 h-[48px] bg-[#009E60] px-2 py-0.5 rounded-lg font-bold text-white shadow-md hover:brightness-110 transition-all active:scale-95"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        setCurrentView("privateRoom")
+                                                    }}
+                                                >
+                                                    <div className="flex flex-col items-center justify-center gap-0 h-full">
+                                                        <span className="text-white text-sm">Entry</span>
+                                                        <span className="text-white text-sm">{entryFees.private}</span>
+                                                    </div>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    ) : (
+                                        <div className="bg-gray-800/50 rounded-xl shadow-lg p-3 border border-gray-700/50 relative">
+                                            <div className="flex items-start justify-between opacity-60">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="text-blue-400 font-medium text-lg">Private Room</span>
+                                                    <p className="text-gray-300 text-sm">Invite your friends</p>
+                                                </div>
+                                                <div className="w-28 h-[48px] bg-gray-700 rounded-lg flex items-center justify-center">
+                                                    <Clock size={20} className="text-yellow-300 mr-1" />
+                                                </div>
+                                            </div>
+                                            {/* Coming Soon Overlay */}
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="bg-yellow-500/80 text-black font-bold py-1 px-4 rounded-full transform rotate-12 text-sm">
+                                                    Coming Soon
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 

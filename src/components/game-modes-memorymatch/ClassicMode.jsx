@@ -4,50 +4,49 @@ import React from "react"
 import GameModeTemplate from "../GameModeTemplate"
 import { useNavigate } from "react-router-dom"
 
-export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
+export default function ClassicMode({ onBack, gameTitle = "MemoryMatch" }) {
   const navigate = useNavigate()
   
-  // Game data for multiplayer battles with updated prize calculations
+  // Game data for MemoryMatch classic mode
   const gameOptions = [
     {
       id: 1,
-      name: "Multiplayer Battle",
+      name: "Easy Match",
       prize: "₹8",
       entryFee: "₹5",
       players: "2 Players",
-      playerCount: "238",
-      liveCount: "94", 
-      coinCost: "0.50 Coin",
+      playerCount: "245",
+      liveCount: "110", 
+      coinCost: "0.5 Coin",
       winners: "1 Winner",
       xp: 2,
-      timeRemaining: "00m 30s"
+      timeRemaining: "01m 00s"
     },
     {
       id: 2,
-      name: "Special Event",
+      name: "Medium Match",
       prize: "₹15",
       entryFee: "₹10",
       players: "2 Players",
-      playerCount: "102",
-      liveCount: "45",
+      playerCount: "180",
+      liveCount: "86",
       coinCost: "1 Coin",
       winners: "1 Winner", 
-      xp: 3,
-      isQuick: true,
+      xp: 5,
       timeRemaining: "01m 30s"
     },
     {
       id: 3,
-      name: "Advanced Game",
-      prize: "₹23",
-      entryFee: "₹15",
+      name: "Hard Match",
+      prize: "₹38",
+      entryFee: "₹25",
       players: "2 Players",
-      playerCount: "48",
-      liveCount: "22",
-      coinCost: "1.50 Coin",
+      playerCount: "125",
+      liveCount: "65",
+      coinCost: "2.5 Coin",
       winners: "1 Winner", 
-      xp: 8,
-      timeRemaining: "02m 00s"
+      xp: 10,
+      timeRemaining: "02m 30s"
     }
   ]
   
@@ -57,7 +56,7 @@ export default function ClassicMode({ onBack, gameTitle = "TicTacToe" }) {
       gameTitle={gameTitle}
       modeType="Classic"
       gameOptions={gameOptions}
-      logoSrc="/tictactoe.png"
+      logoSrc="/memorymatch.png"
     />
   )
-}
+} 

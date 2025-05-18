@@ -11,7 +11,7 @@ export default function GameModeLayout({ title, children, onBack }) {
         </button>
         <h1 className="text-xl font-bold text-white">{title}</h1>
       </div>
-      <div className="flex-grow p-4 bg-[#1e0b3b] text-white overflow-hidden">{children}</div>
+      <div className="flex-grow p-4 bg-[#1e0b3b] text-white">{children}</div>
     </div>
   )
-}
+} 
