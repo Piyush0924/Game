@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import UnifiedGameLobby from './UnifiedGameLobby';
+import EnhancedGameLobby from './EnhancedGameLobby';
 
 /**
  * GameModeConnector - Connects game mode selection with the game lobby
@@ -33,8 +33,8 @@ const GameModeConnector = () => {
         setShowPriceSelection(false);
         setShowLobby(true);
         
-        // Check if we're in play again mode
-        if (playAgain === 'true') {
+        // Check if we're in play again mode - use '1' instead of 'true' in URL
+        if (playAgain === '1') {
           setPlayAgainMode(true);
         }
       }
@@ -73,8 +73,8 @@ const GameModeConnector = () => {
 
   // Handle play again option
   const handlePlayAgain = () => {
-    // Instead of showing price selection again, reload with same price but add playAgain parameter
-    const currentUrl = `/games/${gameId}/play/${modeType}?price=${selectedPrice}&playAgain=true`;
+    // Use '1' instead of 'true' to avoid React JSX boolean attribute warnings
+    const currentUrl = `/games/${gameId}/play/${modeType}?price=${selectedPrice}&playAgain=1`;
     navigate(currentUrl);
     // This will trigger a component reload with the same price, but in playAgain mode
   };
@@ -130,15 +130,15 @@ const GameModeConnector = () => {
       )}
 
       {showLobby && (
-        <UnifiedGameLobby 
+        <EnhancedGameLobby 
           entryFee={selectedPrice}
           gameMode={getFormattedModeName()}
           onPlayAgain={handlePlayAgain}
           onExit={handleExit}
           gameId={gameId}
-          // Pass play again mode to skip waiting and go straight to matching
+          // Convert string 'matching' or 'waiting' to actual string values, not boolean
           initialStatus={playAgainMode ? 'matching' : 'waiting'}
-          // Pass tournament matches if available in URL
+          // Convert string from URL to actual number for tournament matches
           tournamentMatches={parseInt(searchParams.get('matches')) || 5}
         />
       )}

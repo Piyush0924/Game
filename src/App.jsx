@@ -25,7 +25,7 @@ import Rewards from './components/rewards';
 import History from './components/history';
 import CommunityWrapper from './pages/community';
 import GameDashboard from './components/GameDashboard';
-import GameModeRouter from './components/game-modes-tictactoe/GameModeRouter';
+import GameModeRouter from './components/GameModeRouter';
 import GameConnector from './components/GameConnector';
 import EnhancedGameLobby from './components/EnhancedGameLobby';
 import MemoryMatchTestEntry from './components/debug/MemoryMatchTestEntry';

@@ -1,15 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { X, Star, Clock } from "lucide-react"
-import ClassicMode from "./game-modes-tictactoe/ClassicMode";
-import TournamentMode from "./game-modes-tictactoe/TournamentMode";
-import PrivateMode from "./game-modes-tictactoe/PrivateMode";
-import TicTacToe from "../games/Tictactoe/Tictactoe";
-import CoinFlipBet from "../games/Coinflip/CoinFlipBet";
-import DiceDuel from "../games/Dice/DiceDuel";
-import MemoryMatchGame from "../games/Memory/MemoryMatchGame";
-import SPS from "../games/Stone-Paper/SPS";
 import { useNavigate } from "react-router-dom";
 
 export default function GameDashboard({
@@ -47,26 +39,6 @@ export default function GameDashboard({
     // Check if game is in action category
     const isActionGame = gameCategory === "Action";
 
-    // Logic Option 1: Determine game component based on gameTitle prop
-    const getGameComponent = () => {
-        // Ensure gameTitle is a string and handle potential undefined/null values
-        const title = typeof gameTitle === "string" ? gameTitle.toLowerCase() : "";
-        
-        if (title.includes("tictactoe")) {
-            return <TicTacToe onBack={() => setCurrentView("main")} />;
-        } else if (title.includes("coinflip")) {
-            return <CoinFlipBet onBack={() => setCurrentView("main")} />;
-        } else if (title.includes("dice")) {
-            return <DiceDuel onBack={() => setCurrentView("main")} />;
-        } else if (title.includes("memorymatch")) {
-            return <MemoryMatchGame onBack={() => setCurrentView("main")} />;
-        } else if (title.includes("stonepaper")) {
-            return <SPS onBack={() => setCurrentView("main")} />;
-        }
-        // Default to TicTacToe if no match is found
-        return <TicTacToe onBack={() => setCurrentView("main")} />;
-    }
-
     // Get game path for redirecting to the actual game page
     const getGamePath = () => {
         if (!gameTitle) return "/games";
@@ -79,11 +51,14 @@ export default function GameDashboard({
     const renderView = () => {
         switch (currentView) {
             case "classicMode":
-                return <ClassicMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
+                navigate(`/games/${gameTitle.toLowerCase()}/select/classic`);
+                return null;
             case "tournament":
-                return <TournamentMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
+                navigate(`/games/${gameTitle.toLowerCase()}/select/tournament`);
+                return null;
             case "privateRoom":
-                return <PrivateMode onBack={() => setCurrentView("main")} gameTitle={gameTitle} />
+                navigate(`/games/${gameTitle.toLowerCase()}/select/private`);
+                return null;
             case "playNow":
                 navigate(getGamePath())
                 return null
