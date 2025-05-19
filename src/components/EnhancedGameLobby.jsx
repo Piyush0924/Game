@@ -2,8 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft, Users, Clock, Trophy, Gamepad, Star, ArrowRight } from "lucide-react";
-import MemoryMatchGame from "../games/Memory/MemoryMatchGame";
 import { useWallet } from "../context/WalletContext";
+
+// Import all game components with their game logic wrappers
+import MemoryMatchGameLogic from "../games/Memory/MemoryMatchGameLogic";
+import TictactoeGameLogic from "../games/Tictactoe/TictactoeGameLogic";
+import CoinflipGameLogic from "../games/Coinflip/CoinflipGameLogic";
+import DiceGameLogic from "../games/Dice/DiceGameLogic";
+import StoneGameLogic from "../games/Stone-Paper/StoneGameLogic";
 
 const EnhancedGameLobby = ({
   entryFee = 10,
@@ -168,7 +174,7 @@ const EnhancedGameLobby = ({
     if (onExit) {
       onExit();
     } else {
-      navigate(`/game/${gameId}`);
+      navigate(`/games/${gameId}`);
     }
   };
   
@@ -213,6 +219,93 @@ const EnhancedGameLobby = ({
         return { ...prev, opponent: prev.opponent + 1 };
       }
     });
+  };
+
+  // Handle game completion based on game type
+  const handleGameCompletion = (result) => {
+    console.log("Game ended with result:", result);
+    
+    // Use the actual scores from game result
+    setScore({
+      player: result.score.player,
+      opponent: result.score.opponent
+    });
+    
+    // Check if player won and add prize to wallet in classic mode
+    const playerWon = result.winner === "player";
+    if (!isTournament && playerWon && !prizeAwarded.current) {
+      // Get game info from localStorage or use default values
+      let gameInfo = { winAmount: prizeAmount };
+      try {
+        const savedInfo = localStorage.getItem("currentGameInfo");
+        if (savedInfo) {
+          gameInfo = JSON.parse(savedInfo);
+        }
+      } catch (err) {
+        console.error("Error parsing game info:", err);
+      }
+      
+      // Add prize to wallet
+      if (addMoney) {
+        addMoney(gameInfo.winAmount || prizeAmount, `${getGameTitle()} ${gameMode} prize`);
+        // Mark prize as awarded to prevent duplicate credits on replay
+        prizeAwarded.current = true;
+      }
+    }
+    
+    // If tournament mode, update tournament progress
+    if (isTournament) {
+      handleTournamentProgress(playerWon);
+    }
+    
+    setStatus("results");
+    startPlayAgainCountdown();
+  };
+  
+  // Render the appropriate game component based on gameId
+  const renderGameComponent = () => {
+    // Try to dynamically import and render game component based on gameId
+    try {
+      // Map of game IDs to their corresponding logic components
+      const gameComponents = {
+        "memorymatch": MemoryMatchGameLogic,
+        "tictactoe": TictactoeGameLogic,
+        "coinflip": CoinflipGameLogic,
+        "dice": DiceGameLogic,
+        "stonepaper": StoneGameLogic
+      };
+      
+      // Get the component from the map or use a fallback
+      const GameComponent = gameComponents[gameId.toLowerCase()];
+      
+      if (GameComponent) {
+        return <GameComponent onGameEnd={handleGameCompletion} />;
+      } else {
+        console.warn(`No component found for game: ${gameId}. Using fallback.`);
+        return (
+          <div className="flex flex-col items-center justify-center h-full">
+            <Gamepad size={48} className="text-white mb-4" />
+            <h2 className="text-2xl font-light text-white mb-2">Game Loading...</h2>
+            <p className="text-white/70">This game will be available soon!</p>
+          </div>
+        );
+      }
+    } catch (error) {
+      console.error(`Error loading game component for ${gameId}:`, error);
+      return (
+        <div className="flex flex-col items-center justify-center h-full">
+          <Gamepad size={48} className="text-white mb-4" />
+          <h2 className="text-2xl font-light text-white mb-2">Something went wrong</h2>
+          <p className="text-white/70">Unable to load game. Please try again.</p>
+          <button 
+            onClick={handleExit} 
+            className="mt-4 px-4 py-2 bg-red-500 rounded-lg text-white"
+          >
+            Return to Menu
+          </button>
+        </div>
+      );
+    }
   };
 
   return (
@@ -407,71 +500,10 @@ const EnhancedGameLobby = ({
           </motion.div>
         )}
         
-        {/* Gaming Status - Add tournament mode logic */}
+        {/* Gaming Status */}
         {status === "gaming" && (
           <div className="fixed inset-0 z-20">
-            {gameId === "memorymatch" ? (
-              <MemoryMatchGame 
-                onGameEnd={(result) => {
-                  console.log("Game ended with result:", result);
-                  
-                  // Use the actual scores from game result
-                  setScore({
-                    player: result.score.player,
-                    opponent: result.score.opponent
-                  });
-                  
-                  // Check if player won and add prize to wallet in classic mode
-                  const playerWon = result.winner === "player";
-                  if (!isTournament && playerWon && !prizeAwarded.current) {
-                    // Get game info from localStorage or use default values
-                    let gameInfo = { winAmount: prizeAmount };
-                    try {
-                      const savedInfo = localStorage.getItem("currentGameInfo");
-                      if (savedInfo) {
-                        gameInfo = JSON.parse(savedInfo);
-                      }
-                    } catch (err) {
-                      console.error("Error parsing game info:", err);
-                    }
-                    
-                    // Add prize to wallet
-                    if (addMoney) {
-                      addMoney(gameInfo.winAmount || prizeAmount, `MemoryMatch ${gameMode} prize`);
-                      // Mark prize as awarded to prevent duplicate credits on replay
-                      prizeAwarded.current = true;
-                    }
-                  }
-                  
-                  // If tournament mode, update tournament progress
-                  if (isTournament) {
-                    handleTournamentProgress(playerWon);
-                  }
-                  
-                  setStatus("results");
-                  startPlayAgainCountdown();
-                }} 
-                isMultiplayer={true}
-                difficulty="medium"
-              />
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center"
-              >
-                <div className="w-24 h-24 mx-auto mb-6">
-                  <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                  >
-                    <Gamepad size={96} className="text-white" />
-                  </motion.div>
-                </div>
-                <h2 className="text-2xl font-light text-white mb-2">Game in Progress</h2>
-                <p className="text-white/70">Calculating results...</p>
-              </motion.div>
-            )}
+            {renderGameComponent()}
           </div>
         )}
         

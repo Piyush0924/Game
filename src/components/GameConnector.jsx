@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useWallet } from '../context/WalletContext';
 import GameResultLobby from './GameResultLobby';
+import EnhancedGameLobby from './EnhancedGameLobby';
 
 // Import game components
 import TictactoeGameLogic from '../games/Tictactoe/TictactoeGameLogic';
 import StoneGameLogic from '../games/Stone-Paper/StoneGameLogic';
 import CoinflipGameLogic from '../games/Coinflip/CoinflipGameLogic';
 import DiceGameLogic from '../games/Dice/DiceGameLogic';
+import MemoryMatchGameLogic from '../games/Memory/MemoryMatchGameLogic';
 
 // Game mode layouts
 import TictactoeLayout from './game-modes-tictactoe/GameModeLayout';
 import StonePaperLayout from './game-modes-stonepaper/GameModeLayout';
 import CoinflipLayout from './game-modes-coinflip/GameModeLayout';
 import DiceLayout from './game-modes-dice/GameModeLayout';
+import MemoryMatchLayout from './game-modes-memorymatch/MemoryMatchLayout';
 
 /**
  * GameConnector - Handles the connection to different games and manages game flow
@@ -30,26 +33,50 @@ const GameConnector = () => {
   const [gameEnded, setGameEnded] = useState(false);
   const [gameResult, setGameResult] = useState(null);
   const [gameInfo, setGameInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   // Get price from URL params
   const price = searchParams.get('price') ? parseInt(searchParams.get('price')) : 0;
   
   // Load game info from localStorage on mount
   useEffect(() => {
-    const storedGameInfo = localStorage.getItem('currentGameInfo');
-    if (storedGameInfo) {
-      setGameInfo(JSON.parse(storedGameInfo));
+    try {
+      const storedGameInfo = localStorage.getItem('currentGameInfo');
+      if (storedGameInfo) {
+        setGameInfo(JSON.parse(storedGameInfo));
+      } else {
+        // Set default game info if none found in storage
+        const defaultInfo = {
+          entryFee: price,
+          winAmount: Math.round(price * 1.8),
+          gameType: getGameName(),
+          mode: getFormattedModeType()
+        };
+        setGameInfo(defaultInfo);
+        localStorage.setItem('currentGameInfo', JSON.stringify(defaultInfo));
+      }
+    } catch (error) {
+      console.error("Error loading game info:", error);
+      setError("Failed to load game settings. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  }, [gameId, modeType, price]);
   
   // Handle game completion
   const handleGameEnd = (result) => {
     setGameResult(result);
     setGameEnded(true);
     
-    // Add winnings to wallet if player won
-    if (result.winner === 'player' && gameInfo) {
-      addMoney(gameInfo.winAmount, `${gameInfo.gameType} ${modeType} Mode Winnings`);
+    try {
+      // Add winnings to wallet if player won
+      if (result.winner === 'player' && gameInfo) {
+        addMoney(gameInfo.winAmount, `${gameInfo.gameType} ${modeType} Mode Winnings`);
+      }
+    } catch (error) {
+      console.error("Error processing game results:", error);
+      setError("There was a problem processing your winnings. Please contact support.");
     }
   };
   
@@ -58,6 +85,7 @@ const GameConnector = () => {
     // Reset game state
     setGameEnded(false);
     setGameResult(null);
+    setError(null);
     
     // Reload the game by refreshing the page
     window.location.reload();
@@ -67,38 +95,6 @@ const GameConnector = () => {
   const handleExit = () => {
     // Navigate back to game lobby
     navigate(`/games/${gameId}`);
-  };
-  
-  // Determine which game component to render based on gameId
-  const renderGameComponent = () => {
-    switch (gameId) {
-      case 'tictactoe':
-        return <TictactoeGameLogic onGameEnd={handleGameEnd} />;
-      case 'stonepaper':
-        return <StoneGameLogic onGameEnd={handleGameEnd} />;
-      case 'coinflip':
-        return <CoinflipGameLogic onGameEnd={handleGameEnd} />;
-      case 'dice':
-        return <DiceGameLogic onGameEnd={handleGameEnd} />;
-      default:
-        return <div className="text-center text-white">Game not found</div>;
-    }
-  };
-  
-  // Get the appropriate layout component based on gameId
-  const getLayoutComponent = () => {
-    switch (gameId) {
-      case 'tictactoe':
-        return TictactoeLayout;
-      case 'stonepaper':
-        return StonePaperLayout;
-      case 'coinflip':
-        return CoinflipLayout;
-      case 'dice':
-        return DiceLayout;
-      default:
-        return TictactoeLayout; // Fallback
-    }
   };
   
   // Get formatted game name
@@ -112,15 +108,55 @@ const GameConnector = () => {
         return 'Coinflip';
       case 'dice':
         return 'Dice';
+      case 'memorymatch':
+        return 'Memory Match';
       default:
-        return gameId;
+        return gameId ? gameId.charAt(0).toUpperCase() + gameId.slice(1) : 'Game';
     }
   };
   
   // Format mode type for display
   const getFormattedModeType = () => {
-    return modeType.charAt(0).toUpperCase() + modeType.slice(1);
+    return modeType ? modeType.charAt(0).toUpperCase() + modeType.slice(1) : 'Classic';
   };
+  
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900">
+        <div className="bg-red-900/20 backdrop-blur-md p-8 rounded-lg max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Something went wrong</h2>
+          <p className="text-white/70 mb-6">{error}</p>
+          <div className="flex justify-center gap-4">
+            <button 
+              onClick={handlePlayAgain} 
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              Try Again
+            </button>
+            <button 
+              onClick={handleExit} 
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg"
+            >
+              Back to Menu
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Show loading state if still loading
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white">Loading game...</p>
+        </div>
+      </div>
+    );
+  }
   
   // If game has ended, show result lobby
   if (gameEnded && gameResult && gameInfo) {
@@ -141,16 +177,15 @@ const GameConnector = () => {
     );
   }
   
-  // Render the game with appropriate layout
-  const LayoutComponent = getLayoutComponent();
+  // Use EnhancedGameLobby instead of directly rendering the game
   return (
-    <LayoutComponent 
-      title={getGameName()} 
-      gameMode={getFormattedModeType()} 
-      onBack={handleExit}
-    >
-      {renderGameComponent()}
-    </LayoutComponent>
+    <EnhancedGameLobby 
+      gameId={gameId}
+      gameMode={getFormattedModeType()}
+      entryFee={price}
+      onExit={handleExit}
+      initialStatus="waiting"
+    />
   );
 };
 
