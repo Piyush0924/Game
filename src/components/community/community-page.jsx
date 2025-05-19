@@ -18,8 +18,8 @@ import PollCreatorModal from "./modals/poll-creator-modal"
 import TagPeopleModal from "./modals/tag-people-modal"
 import SchedulerModal from "./modals/scheduler-modal"
 import CreateEventModal from "./modals/create-event-modal"
-import CreateAnnouncementModal from "./modals/create-annoucement-modals" // Fixed typo in import
-import { Menu, X } from "lucide-react"
+import CreateAnnouncementModal from "./modals/create-annoucement-modals"
+import { X, PlusCircle } from "lucide-react"
 import { useCommunityData } from "./useCommunityData"
 
 export default function CommunityPage() {
@@ -34,7 +34,7 @@ export default function CommunityPage() {
     userBadges,
     gameOptions,
     chats,
-    search, // Added for search functionality
+    search,
     addPostComment,
     toggleLikePost,
     createPost,
@@ -52,7 +52,8 @@ export default function CommunityPage() {
   const [activeSection, setActiveSection] = useState("home")
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showUserList, setShowUserList] = useState(false)
-  const [isHubVisible, setIsHubVisible] = useState(true) // Control Community Hub visibility
+  const [isHubVisible, setIsHubVisible] = useState(true)
+  const [isCreatePostVisible, setIsCreatePostVisible] = useState(false)
 
   // Modal states
   const [viewingProfile, setViewingProfile] = useState(null)
@@ -65,9 +66,14 @@ export default function CommunityPage() {
   const [showCreateEvent, setShowCreateEvent] = useState(false)
   const [showCreateAnnouncement, setShowCreateAnnouncement] = useState(false)
 
-  // Inactivity timer (from previous requirement)
+  // Toggle create post visibility
+  const toggleCreatePostVisibility = () => {
+    setIsCreatePostVisible(!isCreatePostVisible)
+  }
+
+  // Inactivity timer
   useEffect(() => {
-    const currentUser = users.find((u) => u.id === 1) // Assuming user ID 1 is the current user
+    const currentUser = users.find((u) => u.id === 1)
     if (!currentUser?.isOnline) {
       setIsHubVisible(true)
       return
@@ -78,9 +84,12 @@ export default function CommunityPage() {
     const resetTimer = () => {
       setIsHubVisible(true)
       clearTimeout(inactivityTimeout)
-      inactivityTimeout = setTimeout(() => {
-        setIsHubVisible(false)
-      }, 5 * 60 * 1000) // 5 minutes
+      inactivityTimeout = setTimeout(
+        () => {
+          setIsHubVisible(false)
+        },
+        5 * 60 * 1000,
+      )
     }
 
     const events = ["mousemove", "click", "keypress"]
@@ -119,6 +128,7 @@ export default function CommunityPage() {
   const handleCreatePost = async (postData) => {
     try {
       await createPost(postData)
+      setIsCreatePostVisible(false)
     } catch (error) {
       console.error("Error creating post:", error)
       alert("Failed to create post. Please try again.")
@@ -146,20 +156,58 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="h-[100vh] bg-gradient-to-br from-blue-200 via-blue-900  to-white transition-all duration-500">
+    <div className="h-full min-h-screen galaxy-background transition-all duration-500">
       {/* Global styles */}
       <style jsx>{`
+        /* Galaxy Background */
+        .galaxy-background {
+          background: linear-gradient(
+            135deg,
+            #0d1b2a 0%,
+            #1b263b 30%,
+            #2a2a72 60%,
+            #3c096c 100%
+          );
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Starry overlay effect */
+        .galaxy-background::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          background: 
+            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15) 0.1%, transparent 0.3%),
+            radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.1) 0.15%, transparent 0.4%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.12) 0.1%, transparent 0.3%),
+            radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.08) 0.1%, transparent 0.3%),
+            radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.1) 0.12%, transparent 0.35%);
+          background-size: 100% 100%;
+          animation: twinkle 10s infinite ease-in-out;
+        }
+
+        /* Twinkle animation for stars */
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 1; }
+        }
+
         /* Card hover effects */
         .card-hover {
           transition: all 0.3s ease;
           border: 1px solid rgba(255, 255, 255, 0.18);
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
-        
+
         .card-hover:hover {
           transform: translateY(-5px);
-          box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
-          border-color: rgba(99, 102, 241, 0.3);
+          box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+          border-color: rgba(59, 130, 246, 0.3);
         }
 
         /* Button animations */
@@ -188,10 +236,10 @@ export default function CommunityPage() {
         .icon-animated {
           transition: all 0.3s ease;
         }
-        
+
         .icon-animated:hover {
           transform: scale(1.2);
-          color: #6366f1;
+          color: #3b82f6;
         }
 
         /* Pulse animation for notifications */
@@ -200,7 +248,7 @@ export default function CommunityPage() {
           50% { transform: scale(1.1); }
           100% { transform: scale(1); }
         }
-        
+
         .pulse {
           animation: pulse 1.5s infinite;
         }
@@ -210,7 +258,7 @@ export default function CommunityPage() {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
+
         .fade-in {
           animation: fadeIn 0.5s ease forwards;
         }
@@ -220,7 +268,7 @@ export default function CommunityPage() {
           from { opacity: 1; }
           to { opacity: 0; display: none; }
         }
-        
+
         .fade-out {
           animation: fadeOut 0.5s ease forwards;
         }
@@ -230,7 +278,7 @@ export default function CommunityPage() {
           from { opacity: 0; transform: translateY(-50px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
+
         .slide-down {
           animation: slideDown 0.3s ease forwards;
         }
@@ -240,38 +288,37 @@ export default function CommunityPage() {
           .icon-nav {
             overflow-x: auto;
             padding-bottom: 8px;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
           }
-          
+
           .icon-nav::-webkit-scrollbar {
             height: 3px;
           }
-          
+
           .icon-nav::-webkit-scrollbar-thumb {
             background-color: rgba(156, 163, 175, 0.5);
             border-radius: 3px;
           }
-          
+
           .icon-button {
-            min-width: 50px; /* Reduced from 60px for mobile */
+            min-width: 50px;
           }
         }
 
         /* Responsive styles for modals */
         @media (max-width: 640px) {
           .modal-container {
-            width: 90% !important; /* Override default width */
-            max-height: 80vh !important; /* Ensure it fits on mobile */
-            padding: 12px !important; /* Reduced padding */
-            font-size: 14px !important; /* Smaller font size */
+            width: 100% !important;
+            padding: 12px !important;
+            font-size: 14px !important;
           }
 
           .modal-content {
-            padding: 8px !important; /* Reduced padding for content */
+            padding: 8px !important;
           }
 
           .modal-header {
-            font-size: 16px !important; /* Smaller header */
+            font-size: 16px !important;
           }
         }
 
@@ -280,7 +327,7 @@ export default function CommunityPage() {
           0% { background-position: -200% 0; }
           100% { background-position: 200% 0; }
         }
-        
+
         .shimmer {
           background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
           background-size: 200% 100%;
@@ -289,12 +336,12 @@ export default function CommunityPage() {
 
         /* Glow effect for important elements */
         .glow {
-          box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
           transition: box-shadow 0.3s ease;
         }
-        
+
         .glow:hover {
-          box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+          box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
         }
 
         /* Notification dot */
@@ -308,7 +355,7 @@ export default function CommunityPage() {
           border-radius: 50%;
           border: 1px solid white;
         }
-        
+
         /* Icon button hover effects */
         .icon-button {
           position: relative;
@@ -318,34 +365,44 @@ export default function CommunityPage() {
           justify-content: center;
           transition: all 0.3s ease;
         }
-        
+
         .icon-button::after {
           content: '';
           position: absolute;
           bottom: -4px;
           width: 0;
           height: 2px;
-          background-color: #6366f1;
+          background-color: #3b82f6;
           transition: width 0.3s ease;
         }
-        
+
         .icon-button:hover::after {
           width: 70%;
         }
 
         /* Glass morphism effect */
         .glass {
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive adjustments for galaxy background */
+        @media (max-width: 640px) {
+          .galaxy-background {
+            background-size: 150% 150%;
+          }
+          .galaxy-background::after {
+            background-size: 150% 150%;
+          }
         }
       `}</style>
 
       {/* Community Hub (Main Container) */}
       <div
-        className={`h-[100vh] max-w-md mx-auto p-3 pb-16 sm:pb-12 md:pb-4 mt-3 sm:mt-2 glass rounded-2xl bg-gradient-to-br from-blue-500/80 via-slate-900/80 to-blue-950/80 transition-opacity duration-500 ${
+        className={`h-[200vh] max-w-md mx-auto p-3 pb-16 sm:pb-2 md:pb-4 mt-3 sm:mt-2 glass rounded-2xl transition-opacity duration-500 ${
           isHubVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -360,12 +417,35 @@ export default function CommunityPage() {
           showUserList={showUserList}
         />
 
-        {/* Create Post Section - Always at the top */}
+        {/* Create Post Toggle Button */}
+        <div className="flex justify-start">
+          <button
+            onClick={toggleCreatePostVisibility}
+            className="w-full create-post-toggle flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-white to-white text-black shadow-md hover:shadow-lg transition-all duration-300 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+            aria-label={isCreatePostVisible ? "Hide post creation" : "Create a new post"}
+          >
+            {isCreatePostVisible ? (
+              <>
+                <X size={16} />
+                <span className="font-medium"></span>
+              </>
+            ) : (
+              <>
+                <PlusCircle size={16} />
+                <span className="font-medium">Create Post</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Create Post Section - Conditionally rendered */}
         <CreatePostCard
           createPost={handleCreatePost}
           setShowPollCreator={setShowPollCreator}
           setShowTagPeople={setShowTagPeople}
           setShowScheduler={setShowScheduler}
+          isVisible={isCreatePostVisible}
+          toggleVisibility={toggleCreatePostVisibility}
         />
 
         {/* Main Content Area - Changes based on active section */}
@@ -378,6 +458,8 @@ export default function CommunityPage() {
             handleProfileClick={handleProfileClick}
             startChat={startChat}
             formatDate={formatDate}
+            toggleFollow={toggleFollow}
+            isFollowing={isFollowing}
           />
         )}
 
@@ -424,7 +506,7 @@ export default function CommunityPage() {
             inviteToGame={inviteToGame}
             getUserLevel={getUserLevel}
             getUserXP={getUserXP}
-            className="modal-container" // Add responsive class
+            className="modal-container"
           />
         )}
 
@@ -436,7 +518,7 @@ export default function CommunityPage() {
             closeChat={closeChat}
             sendChatMessage={handleSendChatMessage}
             formatDate={formatDate}
-            className="modal-container" // Add responsive class
+            className="modal-container"
           />
         )}
 
@@ -446,13 +528,11 @@ export default function CommunityPage() {
             gameOptions={gameOptions}
             sendGameInvite={handleSendGameInvite}
             setShowGameInvite={setShowGameInvite}
-            className="modal-container" // Add responsive class
+            className="modal-container"
           />
         )}
 
-        {showPollCreator && (
-          <PollCreatorModal setShowPollCreator={setShowPollCreator} className="modal-container" />
-        )}
+        {showPollCreator && <PollCreatorModal setShowPollCreator={setShowPollCreator} className="modal-container" />}
 
         {showTagPeople && (
           <TagPeopleModal users={users} setShowTagPeople={setShowTagPeople} className="modal-container" />
@@ -485,8 +565,6 @@ export default function CommunityPage() {
           />
         )}
       </div>
-
-     
     </div>
   )
 }

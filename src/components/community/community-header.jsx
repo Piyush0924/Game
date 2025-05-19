@@ -25,10 +25,10 @@ export default function CommunityHeader({ search }) {
     <header className="relative mb-2 ">
       {/* Header Title */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-indigo-800">Community Hub</h1>
+        <h1 className="text-2xl font-bold text-indigo-100">Community Hub</h1>
         <button
           onClick={handleSearchToggle}
-          className="p-3 text-indigo-600 hover:bg-indigo-100 transition-all duration-300"
+          className="p-3 text-indigo-100 hover:bg-indigo-100 transition-all duration-300"
           aria-label={isSearchOpen ? "Close search" : "Open search"}
         >
           {isSearchOpen ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" />}

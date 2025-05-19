@@ -15,10 +15,10 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
 
   return (
     <div
-      className="w-auto  flex justify-center overflow-x-auto nav-container "
+      className="w-full  flex justify-center overflow-x-auto nav-container "
       ref={navContainerRef}
     >
-      <div className="flex space-x-3.5 sm:space-x-1 bg-gradient-to-r from-indigo-50 to-purple-50 p-1.5 sm:p-2 px-4 sm:px-2 pr-3 sm:pr-2 shadow-xl">
+      <div className="flex space-x-3.5 sm:space-x-1  bg-gradient-to-b from-white to-gray-50 p-1.5 sm:p-2 px-4 sm:px-2 pr-3 sm:pr-2 shadow-xl">
         <style jsx>{`
           /* Standardize scrollbar */
           .nav-container {
@@ -27,7 +27,7 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
             scroll-behavior: smooth; /* Smooth scrolling */
             scroll-snap-type: x proximity; /* Snap scrolling */
             overscroll-behavior-x: contain; /* Prevent over-scrolling on iOS */
-            padding-left: 12rem; /* Respect safe area on iOS */
+            padding-left: 8rem; /* Respect safe area on iOS */
             padding-right: 2rem; /* Respect safe area on iOS */
           }
           
@@ -239,7 +239,7 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
           </span>
         </button>
 
-        <button
+        {/* <button
           onClick={() => setActiveSection("achievements")}
           className={`nav-item p-3 sm:p-2 rounded-xl w-14 h-14 sm:w-12 sm:h-12 flex flex-col items-center justify-center transition-all duration-300 ${
             activeSection === "achievements"
@@ -270,7 +270,7 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
           >
             Awards
           </span>
-        </button>
+        </button> */}
 
         <button
           onClick={() => {
