@@ -37,6 +37,7 @@ import MemoryMatchGame from './games/Memory/MemoryMatchGame';
 import DiceDuel from './games/Dice/DiceDuel';
 import CoinFlipBet from './games/Coinflip/CoinFlipBet';
 import TicTacToe from './games/Tictactoe/Tictactoe';
+import GamingLoginMobile from './components/login_signup/GamingLoginMobile';
 
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -372,6 +373,8 @@ function App() {
         <Route path="/debug/wallet-test" element={<WalletTest />} />
         
         <Route path="*" element={<GamesPage />} />
+        <Route path="/login" element={<GamingLoginMobile />} />
+        
       </Routes>
     </Router>
     </WalletProvider>
