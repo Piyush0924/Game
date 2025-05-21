@@ -10,6 +10,7 @@ const protected = require('./routes/protected');
 const MatchmakingQueue = require('./models/MatchmakingQueue');
 const Room = require('./models/Room');
 
+const rockPaperGameRoutes = require('./routes/rockPaperGameRoutes');
 const app = express();
 const server = http.createServer(app);
 
@@ -17,11 +18,15 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173", // React app
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
   },
 });
 
 // Middleware
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 app.use(cors());
 app.use(express.json());
 
@@ -32,6 +37,8 @@ require('./config/db')();
 app.use('/api/games', gameRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use('/api/game', rockPaperGameRoutes);
 // app.use('/api/protected', require('./routes/protected')); // secured routes
 app.use('/api/protected', protected); // secured routes
 
