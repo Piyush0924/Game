@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useCallback } from 'react';
+import socket from '../../socekt'
+import axios from 'axios'
 /**
  * TictactoeGameLogic - Handles the game logic for Tic Tac Toe
  * This component manages the board state, tracks rounds, and determines the winner
@@ -8,13 +9,27 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
   // Game board state (3x3 grid)
   const [board, setBoard] = useState(Array(9).fill(null));
   
+
+   const matchData = localStorage.getItem("match_found")
+  const userData = localStorage.getItem("user")
+  const parsedMatchData = JSON.parse(matchData)
+  const parsedUserData = JSON.parse(userData)
+  const roomId = parsedMatchData?.roomId
+  const userId = parsedUserData?._id
+  const playerId1 = parsedMatchData?.players[0]?.userId
+  const playerId2 = parsedMatchData?.players[1]?.userId
   // Game state tracking
-  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+  const [isPlayerTurn, setIsPlayerTurn] = useState(false);
   const [roundWinner, setRoundWinner] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [roundNumber, setRoundNumber] = useState(1);
-  const [roundScore, setRoundScore] = useState({ player: 0, opponent: 0 });
-  const [turnTimer, setTurnTimer] = useState(null);
+  const [roundScore, setRoundScore] = useState({ player1: 0, player2: 0 });
+  const [gameId, setGameId] = useState(null);
+  const [isPlayer1, setIsPlayer1] = useState(null);
+  const [gameStatus, setGameStatus] = useState('waiting'); // 'waiting', 'playing', 'finished'
+  const [error, setError] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [playerSymbols, setPlayerSymbols] = useState({ player1: 'X', player2: 'O' });
 
   // Winning combinations (rows, columns, diagonals)
   const winningCombinations = [
@@ -27,7 +42,7 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
   const resetBoard = () => {
     setBoard(Array(9).fill(null));
     setRoundWinner(null);
-    setIsPlayerTurn(true);
+    setIsPlayerTurn(false);
   };
 
   // Start a new round
@@ -57,140 +72,166 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
     return null; // No winner yet
   };
 
-  // Handle player's move
-  const handleCellClick = (index) => {
-    // Ignore clicks if not player's turn or cell is already filled
-    if (!isPlayerTurn || board[index] || roundWinner) return;
+  // Update game state
+  const updateGameState = useCallback((game) => {
+    if (!game) return;
     
-    // Update board with player's move
-    const newBoard = [...board];
-    newBoard[index] = 'X';  // Player is always X
-    setBoard(newBoard);
-    setIsPlayerTurn(false);
-    
-    // Check for winner after player's move
-    const winner = checkWinner(newBoard);
-    if (winner) {
-      handleRoundEnd(winner);
-    }
-  };
+    setBoard(game.rounds[game.currentRound - 1].board.flat());
+    setIsPlayerTurn(game.currentTurn === userId);
+    setRoundNumber(game.currentRound);
+    setRoundScore({
+      player1: game.player1Score,
+      player2: game.player2Score
+    });
+    setGameStatus(game.status);
 
-  // Computer's move (opponent)
-  useEffect(() => {
-    if (!isPlayerTurn && !roundWinner) {
-      // Add delay for more natural feeling
-      const timer = setTimeout(() => {
-        // Find empty cells
-        const emptyCells = board.reduce((acc, cell, index) => {
-          if (cell === null) acc.push(index);
-          return acc;
-        }, []);
-        
-        if (emptyCells.length > 0) {
-          // Try to make a smart move (for better gameplay)
-          let moveIndex = findBestMove(board);
-          
-          // Update board with opponent's move
-          const newBoard = [...board];
-          newBoard[moveIndex] = 'O';  // Opponent is always O
-          setBoard(newBoard);
-          setIsPlayerTurn(true);
-          
-          // Check for winner after opponent's move
-          const winner = checkWinner(newBoard);
-          if (winner) {
-            handleRoundEnd(winner);
+    // Set player symbols based on game data
+    if (game.player1 && game.player2) {
+      setPlayerSymbols({
+        player1: game.player1.symbol || 'X',
+        player2: game.player2.symbol || 'O'
+      });
+    }
+
+    if (game.status === 'finished') {
+      setGameOver(true);
+      if (onGameEnd) {
+        onGameEnd({
+          winner: game.winner === userId ? 'player' : 'opponent',
+          score: {
+            player: game.winner === userId ? game.player1Score : game.player2Score,
+            opponent: game.winner === userId ? game.player2Score : game.player1Score
           }
-        }
-      }, 500);
-      
-      return () => clearTimeout(timer);
+        });
+      }
     }
-  }, [isPlayerTurn, board, roundWinner]);
+  }, [userId, onGameEnd]);
 
-  // Find best move for AI using minimax
-  const findBestMove = (currentBoard) => {
-    // Simplified logic - first try to win, then block player, then random
-    
-    // Check if AI can win in one move
-    for (let i = 0; i < 9; i++) {
-      if (currentBoard[i] === null) {
-        const boardCopy = [...currentBoard];
-        boardCopy[i] = 'O';
-        if (checkWinner(boardCopy) === 'O') {
-          return i; // Winning move
+  // Initialize game
+  useEffect(() => {
+    const initializeGame = async () => {
+      try {
+        setError(null);
+        const response = await axios.get(`http://localhost:5000/api/tictactoe/room/${roomId}`);
+        const game = response.data;
+        
+        if (!game) {
+          setError('Failed to initialize game');
+          return;
         }
+
+        setGameId(game._id);
+        setIsPlayer1(game.player1?.playerId === userId);
+        updateGameState(game);
+
+      } catch (error) {
+        console.error('Error initializing game:', error);
+        setError('Failed to initialize game');
       }
+    };
+
+    if (roomId) {
+      initializeGame();
     }
-    
-    // Check if player can win in one move and block
-    for (let i = 0; i < 9; i++) {
-      if (currentBoard[i] === null) {
-        const boardCopy = [...currentBoard];
-        boardCopy[i] = 'X';
-        if (checkWinner(boardCopy) === 'X') {
-          return i; // Blocking move
-        }
+  }, [roomId, userId, updateGameState]);
+
+  // Assign players
+  useEffect(() => {
+    const assignPlayers = async () => {
+      if (!gameId || !playerId1 || !playerId2) return;
+
+      try {
+        const response = await axios.put(`http://localhost:5000/api/tictactoe/assignPlayers/${gameId}`, {
+          player1: {
+            playerId: playerId1,
+            name: 'Player 1',
+            symbol: 'X'
+          },
+          player2: {
+            playerId: playerId2,
+            name: 'Player 2',
+            symbol: 'O'
+          }
+        });
+
+        updateGameState(response.data);
+      } catch (error) {
+        console.error('Failed to assign players:', error);
+        setError('Failed to assign players');
       }
+    };
+
+    assignPlayers();
+  }, [gameId, playerId1, playerId2, updateGameState]);
+
+  // Socket event listeners
+  useEffect(() => {
+    if (!socket || !gameId) return;
+
+    const handleMoveMade = (game) => {
+      if (game._id === gameId && !isUpdating) {
+        updateGameState(game);
+      }
+    };
+
+    const handlePlayersAssigned = (game) => {
+      if (game._id === gameId) {
+        updateGameState(game);
+      }
+    };
+
+    socket.on('moveMade', handleMoveMade);
+    socket.on('playersAssigned', handlePlayersAssigned);
+
+    return () => {
+      socket.off('moveMade', handleMoveMade);
+      socket.off('playersAssigned', handlePlayersAssigned);
+    };
+  }, [socket, gameId, updateGameState, isUpdating]);
+
+  // Handle player's move
+  const handleCellClick = async (index) => {
+    if (!isPlayerTurn || board[index] || gameOver || gameStatus !== 'ongoing' || !gameId || isUpdating) return;
+
+    const row = Math.floor(index / 3);
+    const col = index % 3;
+    const symbol = isPlayer1 ? playerSymbols.player1 : playerSymbols.player2;
+
+    try {
+      setIsUpdating(true);
+      setError(null);
+      
+      const response = await axios.put(`http://localhost:5000/api/tictactoe/move/${gameId}`, {
+        row,
+        col,
+        playerId: userId,
+        symbol,
+        moveNumber: board.filter(cell => cell !== null).length + 1,
+        roundNumber: roundNumber
+      });
+
+      if (response.data) {
+        updateGameState(response.data);
+      }
+    } catch (error) {
+      console.error('Error making move:', error);
+      setError(error.response?.data?.error || 'Invalid move. Please try again.');
+    } finally {
+      setIsUpdating(false);
     }
-    
-    // Take center if available
-    if (currentBoard[4] === null) return 4;
-    
-    // Take corners if available
-    const corners = [0, 2, 6, 8];
-    const availableCorners = corners.filter(i => currentBoard[i] === null);
-    if (availableCorners.length > 0) {
-      return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-    }
-    
-    // Take any available cell
-    const emptyCells = currentBoard.reduce((acc, cell, index) => {
-      if (cell === null) acc.push(index);
-      return acc;
-    }, []);
-    
-    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
   };
 
-  // Handle round completion
-  const handleRoundEnd = (winner) => {
-    setRoundWinner(winner);
-    
-    // Update score based on winner
-    if (winner === 'X') {
-      // Player won
-      setRoundScore(prev => ({
-        ...prev,
-        player: prev.player + 1
-      }));
-    } else if (winner === 'O') {
-      // Opponent won
-      setRoundScore(prev => ({
-        ...prev,
-        opponent: prev.opponent + 1
-      }));
-    }
-    
-    // Check if we should proceed to next round or end game
-    setTimeout(() => {
-      if (roundScore.player === 2 || roundScore.opponent === 2) {
-        // End game if someone has won 2 rounds (best of 3)
-        setGameOver(true);
-        if (onGameEnd) {
-          onGameEnd({
-            winner: roundScore.player > roundScore.opponent ? 'player' : 'opponent',
-            score: {
-              player: roundScore.player,
-              opponent: roundScore.opponent
-            }
-          });
-        }
-      } else {
-        // Start next round
-        startNextRound();
-      }
-    }, 1500);
+  const getStatusMessage = () => {
+    if (error) return error;
+    if (gameStatus === 'waiting') return 'Waiting for opponent...';
+    if (gameOver) return 'Game Over';
+    if (!isPlayerTurn) return "Opponent's turn";
+    return 'Your turn';
+  };
+
+  const getPlayerLabel = (isPlayer1) => {
+    const symbol = isPlayer1 ? playerSymbols.player1 : playerSymbols.player2;
+    return `Player ${isPlayer1 ? '1' : '2'} (${symbol})`;
   };
 
   return (
@@ -200,9 +241,9 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
         <div className="flex justify-between items-center w-64">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-400">
-              {roundScore.player}
+              {roundScore.player1}
             </div>
-            <div className="text-xs text-white/60">You</div>
+            <div className="text-xs text-white/60">{getPlayerLabel(true)}</div>
           </div>
           
           <div className="text-center">
@@ -210,17 +251,15 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
               Round {roundNumber}/3
             </div>
             <div className="text-xs text-white/60">
-              {roundWinner === 'X' ? 'You won!' : 
-               roundWinner === 'O' ? 'Opponent won!' : 
-               roundWinner === 'draw' ? 'Draw!' : 'In progress'}
+              {getStatusMessage()}
             </div>
           </div>
           
           <div className="text-center">
             <div className="text-2xl font-bold text-red-400">
-              {roundScore.opponent}
+              {roundScore.player2}
             </div>
-            <div className="text-xs text-white/60">Opponent</div>
+            <div className="text-xs text-white/60">{getPlayerLabel(false)}</div>
           </div>
         </div>
       </div>
@@ -236,11 +275,12 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
                 w-20 h-20 text-4xl font-bold rounded-md
                 ${cell ? 'cursor-default' : 'cursor-pointer'}
                 ${cell === null ? 'bg-white/5 hover:bg-white/10' : 
-                  cell === 'X' ? 'bg-blue-500/20 text-blue-400' : 
+                  cell === playerSymbols.player1 ? 'bg-blue-500/20 text-blue-400' : 
                   'bg-red-500/20 text-red-400'}
                 transition-all
               `}
               onClick={() => handleCellClick(index)}
+              disabled={!isPlayerTurn || cell !== null || gameOver || gameStatus !== 'ongoing' || isUpdating}
             >
               {cell}
             </button>
@@ -251,18 +291,8 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
       {/* Game status */}
       <div className="mt-6 text-center">
         <div className="text-lg text-white">
-          {isPlayerTurn ? "Your turn" : "Opponent's turn"}
+          {getStatusMessage()}
         </div>
-        {roundWinner && (
-          <div className="mt-2 font-medium text-lg">
-            {roundWinner === 'X' ? 
-              <span className="text-blue-400">You won this round!</span> : 
-             roundWinner === 'O' ? 
-              <span className="text-red-400">Opponent won this round!</span> : 
-              <span className="text-yellow-400">This round is a draw!</span>
-            }
-          </div>
-        )}
       </div>
     </div>
   );

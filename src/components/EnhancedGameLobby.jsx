@@ -104,6 +104,7 @@ useEffect(() => {
 
     socket.on('match_found', ({ roomId, players }) => {
       console.log("Received match_found event", { roomId, players });
+      localStorage.setItem("match_found", JSON.stringify({ roomId, players }));
       setStatus('Match found! Joining...');
       setRoomId(roomId);
       
