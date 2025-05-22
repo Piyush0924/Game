@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react"
 
 export default function UserListSection({ users, startChat, toggleFollow, isFollowing }) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover fade-in border-2 border-purple-200">
+    <div className="bg-white rounded-b-md rounded-t-none shadow-md p-4 mb-6 card-hover fade-in border-2 border-purple-200">
       <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 mb-4">
         User List
       </h2>

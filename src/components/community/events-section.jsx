@@ -4,7 +4,7 @@ import { PlusCircle } from "lucide-react"
 
 export default function EventsSection({ events, users, setShowCreateEvent }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-orange-200">
+    <div className="bg-white rounded-b-md rounded-t-none shadow-md overflow-hidden mb-6 card-hover border-2 border-orange-200">
       <div className="bg-gradient-to-r from-orange-50 to-amber-50 px-4 py-2 border-b flex justify-between items-center">
         <h2 className="font-semibold text-orange-800">Upcoming Events</h2>
         <button

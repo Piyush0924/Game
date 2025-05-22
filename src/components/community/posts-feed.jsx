@@ -28,11 +28,11 @@ export default function PostsFeed({
   return (
     <div className="space-y-1 sm:px-0">
       {/* Recent Posts Header */}
-      <div className="recent-posts-header flex items-center gap-2 bg-gradient-to-r from-white to-white p-2 mt-1 shadow-sm">
-        <MessageCircle size={20} className="text-black pl-2" />
+      <div className="recent-posts-header flex rounded-md items-center gap-2 bg-gradient-to-r from-white to-white p-2 mt-1 shadow-sm">
+        <MessageCircle size={20} className="text-black " />
         <span className="text-base font-semibold text-gray-900">Recent Posts</span>
         <div className="ml-auto flex items-center">
-          <span className="bg-blue-600 text-white text-sm font-bold px-2 rounded-full shadow-sm">
+          <span className="bg-blue-600 text-white text-sm font-bold px-2 rounded-md shadow-sm">
             {posts.length}
           </span>
         </div>
@@ -53,7 +53,7 @@ export default function PostsFeed({
               className="post-card bg-white rounded-lg shadow-md text-gray-900 border border-gray-200 hover:shadow-lg transition-shadow duration-300 animate-fade-in-up overflow-visible"
             >
               {/* Post Header */}
-              <div className="post-header flex items-center gap-10 p-3 border-b border-gray-100">
+              <div className="post-header flex items-center gap-10 p-1 border-b border-gray-100">
                 <img
                   src={author.avatar || "/images/avatars/default-avatar.jpg"}
                   alt={`${author.name}'s avatar`}
@@ -195,7 +195,7 @@ export default function PostsFeed({
               {/* Comments Section - Hidden by default */}
               <div className={`post-comments border-t border-gray-200 ${showComments[post.id] ? "block" : "hidden"}`}>
                 {post.comments && post.comments.length > 0 && (
-                  <div className="p-3 space-y-3">
+                  <div className="p-1 space-y-1">
                     <h4 className="text-sm font-semibold text-blue-700">
                       {post.comments.length} Comment{post.comments.length !== 1 && "s"}
                     </h4>
@@ -205,14 +205,14 @@ export default function PostsFeed({
                         avatar: "/images/h1.jpg",
                       }
                       return (
-                        <div key={comment.id} className="flex space-x-3 fade-in min-h-[60px] items-start">
+                        <div key={comment.id} className="flex space-x-3 fade-in min-h-[40px] items-start">
                           <img
                             src={commentAuthor.avatar || "/images/h1.jpg"}
                             alt={`${commentAuthor.name}'s avatar`}
-                            className="w-8 h-8 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 object-cover"
+                            className="w-8 h-8 rounded-md cursor-pointer transition-transform duration-300 hover:scale-110 object-cover"
                             onClick={() => handleProfileClick(commentAuthor.id)}
                           />
-                          <div className="flex-1 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-2 hover:bg-gradient-to-r hover:from-blue-100 hover:to-blue-200 transition-colors duration-300">
+                          <div className="flex-1 p-1 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg  hover:bg-gradient-to-r hover:from-blue-100 hover:to-blue-200 transition-colors duration-300">
                             <div className="flex justify-between items-start">
                               <h5
                                 className="text-sm font-semibold text-blue-700 hover:text-blue-900 cursor-pointer transition-colors duration-300"
@@ -222,7 +222,7 @@ export default function PostsFeed({
                               </h5>
                               <span className="text-xs text-gray-500">{formatDate(comment.timestamp)}</span>
                             </div>
-                            <p className="text-sm text-gray-900 leading-relaxed mt-1 whitespace-pre-wrap">{comment.content}</p>
+                            <p className="text-sm text-gray-900 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
                           </div>
                         </div>
                       )
@@ -230,7 +230,7 @@ export default function PostsFeed({
                   </div>
                 )}
 
-                <div className="comment-form flex items-center gap-2 p-3">
+                <div className="comment-form flex items-center gap-2 p-1">
                   <input
                     type="text"
                     value={newPostComment[post.id] || ""}

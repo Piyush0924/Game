@@ -1718,13 +1718,13 @@ export default function CommunityPage() {
               }`}
               title="Top Coins"
             >
-              <Coins size={20} className="transition-transform duration-300" />
+              <Coins size={20} className="transition-transform duration-300 rounded-b-md rounded-t-none" />
               <span className="text-xs mt-1 font-medium">Coins</span>
             </button>
 
             <button
               onClick={() => setActiveSection("topFollowers")}
-              className={`icon-button p-2 rounded-xl w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
+              className={`icon-button p-2 rounded-md w-14 h-14 flex flex-col items-center justify-center transition-all duration-300 ${
                 activeSection === "topFollowers"
                   ? "bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-md transform scale-110"
                   : "text-gray-500 hover:bg-blue-100 hover:text-blue-600"
@@ -2463,7 +2463,7 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "topCoins" && (
-          <div className="bg-white text-black rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-yellow-200">
+          <div className="bg-white text-black rounded-md shadow-md overflow-hidden mb-6 card-hover border-2 border-yellow-200">
             <div className="bg-gradient-to-r from-yellow-50 to-amber-50 px-4 py-2 border-b">
               <h2 className="font-semibold text-amber-800">Top Coins</h2>
             </div>
@@ -2500,8 +2500,8 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "topFollowers" && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-blue-200">
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 px-4 py-2 border-b">
+          <div className="bg-white rounded-md shadow-md overflow-hidden mb-6 card-hover border-2 border-blue-200">
+            <div className="bg-gradient-to-r  rounded-b-md rounded-t-none from-purple-50 to-blue-50 px-4 py-2 border-b">
               <h2 className="font-semibold text-purple-800">Top Followers</h2>
             </div>
             <div className="divide-y">
@@ -2540,7 +2540,7 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "achievements" && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-green-200">
+          <div className="bg-white rounded-md shadow-md overflow-hidden mb-6 card-hover border-2 border-green-200">
             <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 border-b">
               <div className="flex justify-between items-center">
                 <h3 className="font-semibold text-emerald-800">Achievements</h3>
@@ -2576,7 +2576,7 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "messages" && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover border-2 border-pink-200">
+          <div className="bg-white rounded-md shadow-md p-4 mb-6 card-hover border-2 border-pink-200">
             <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600 mb-4">
               Messages
             </h2>
@@ -2609,7 +2609,7 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "settings" && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover border-2 border-gray-200">
+          <div className="bg-white rounded-md shadow-md p-4 mb-6 card-hover border-2 border-gray-200">
             <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-gray-600 to-slate-600 mb-4">
               Settings
             </h2>
@@ -2665,7 +2665,7 @@ export default function CommunityPage() {
         )}
 
         {activeSection === "announcements" && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-red-200">
+          <div className="bg-white rounded-md shadow-md overflow-hidden mb-6 card-hover border-2 border-red-200">
             <div className="bg-gradient-to-r from-red-50 to-pink-50 px-4 py-2 border-b flex justify-between items-center">
               <h2 className="font-semibold text-red-800">Important Announcements</h2>
               <button
@@ -2737,7 +2737,7 @@ export default function CommunityPage() {
 
         {/* User List */}
         {showUserList && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover fade-in border-2 border-purple-200">
+          <div className="bg-white rounded-md shadow-md p-4 mb-6 card-hover fade-in border-2 border-purple-200">
             <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 mb-4">
               User List
             </h2>

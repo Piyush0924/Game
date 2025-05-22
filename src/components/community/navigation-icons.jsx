@@ -15,10 +15,10 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
 
   return (
     <div
-      className="w-full  flex justify-center overflow-x-auto nav-container "
+      className="w-full  flex justify-center overflow-x-auto nav-container rounded-xl "
       ref={navContainerRef}
     >
-      <div className="flex space-x-3.5 sm:space-x-1  bg-gradient-to-b from-white to-gray-50 p-1.5 sm:p-2 px-4 sm:px-2 pr-3 sm:pr-2 shadow-xl">
+      <div className="flex space-x-3.5 sm:space-x-1 rounded-b-md rounded-t-none bg-gradient-to-b from-white to-gray-50 p-1.5 sm:p-2 px-4 sm:px-2 pr-3 sm:pr-2 shadow-xl">
         <style jsx>{`
           /* Standardize scrollbar */
           .nav-container {
@@ -208,7 +208,7 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
 
         <button
           onClick={() => setActiveSection("topFollowers")}
-          className={`nav-item p-3 sm:p-2 rounded-xl w-14 h-14 sm:w-12 sm:h-12 flex flex-col items-center justify-center transition-all duration-300 ${
+          className={`nav-item p-3 sm:p-2 rounded-md w-14 h-14 sm:w-12 sm:h-12 flex flex-col items-center justify-center transition-all duration-300 ${
             activeSection === "topFollowers"
               ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-md transform scale-110"
               : "text-gray-500 hover:bg-blue-100 hover:text-blue-600"
@@ -223,7 +223,7 @@ export default function NavigationIcons({ activeSection, setActiveSection, setSh
           >
             <Users
               size={20}
-              className={`sm:size-18 transition-transform duration-300 ${
+              className={`sm:size-18 transition-transform duration-300  ${
                 activeSection === "topFollowers"
                   ? "scale-120 icon-pulse icon-glow-followers"
                   : ""

@@ -1,6 +1,6 @@
-
 "use client"
 
+import { useState } from "react"
 import { Heart, MessageCircle, Trophy, X, UserPlus } from "lucide-react"
 
 export default function ProfileModal({
@@ -17,7 +17,20 @@ export default function ProfileModal({
   getUserLevel,
   getUserXP,
 }) {
+  // Validate props
+  if (!userId || !Array.isArray(users)) {
+    console.error("Invalid props: userId or users missing", { userId, users })
+    return <div className="text-white">Error: Invalid user data</div>
+  }
+
   const user = users.find((u) => u.id === userId) || { name: "Unknown User", avatar: "/placeholder.svg" }
+  console.log("ProfileModal rendered for userId:", userId, "user:", user)
+
+  const [showChatPopup, setShowChatPopup] = useState(false)
+  const [showInvitePopup, setShowInvitePopup] = useState(false)
+  const [chatMessage, setChatMessage] = useState("")
+  const [selectedGame, setSelectedGame] = useState("Chess")
+
   const achievementCategories = [
     { id: 1, name: "Victories", icon: "🏆", color: "bg-yellow-500" },
     { id: 2, name: "Social", icon: "👥", color: "bg-blue-500" },
@@ -28,11 +41,15 @@ export default function ProfileModal({
 
   // Get achievement by ID
   const getAchievementById = (id) => {
+    if (!Array.isArray(achievements)) {
+      console.error("Achievements is not an array:", achievements)
+      return null
+    }
     return achievements.find((a) => a.id === id)
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 fade-in">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-start justify-center z-50 fade-in">
       {/* Global styles */}
       <style jsx>{`
         /* Glossy dark glassmorphism */
@@ -73,6 +90,35 @@ export default function ProfileModal({
           left: 100%;
         }
 
+        /* Popup button glossy effect */
+        .popup-btn-glossy {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          background: linear-gradient(45deg, rgba(79, 70, 229, 0.8), rgba(37, 99, 235, 0.8));
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .popup-btn-glossy:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .popup-btn-glossy::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: left 0.5s ease;
+        }
+
+        .popup-btn-glossy:hover::after {
+          left: 100%;
+        }
+
         /* Card hover effects */
         .card-hover {
           transition: all 0.3s ease;
@@ -105,12 +151,21 @@ export default function ProfileModal({
           to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Hide scrollbar */
+        .scrollbar-hidden {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .scrollbar-hidden::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, and Opera */
+        }
+
         /* Responsive styles */
         @media (max-width: 640px) {
           .modal-content {
             width: 100% !important;
-            height: 100% !important;
-            padding: 12px !important;
+            padding: 8px !important;
           }
 
           .modal-body {
@@ -121,14 +176,34 @@ export default function ProfileModal({
             padding: 8px 12px !important;
             font-size: 12px !important;
           }
+
+          .card-hover {
+            padding: 2px !important;
+          }
+
+          .grid-cols-3 {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+
+          .popup-content {
+            width: 100% !important;
+            padding: 8px !important;
+          }
+
+          .popup-body {
+            font-size: 14px !important;
+          }
         }
       `}</style>
 
-      <div className="modal-content slide-down glossy-dark w-full h-full overflow-hidden">
-        <div className="modal-header flex justify-between items-center p-4 border-b border-indigo-900">
-          <h3 className="font-bold text-indigo-100">Profile</h3>
+      <div className="modal-content slide-down glossy-dark w-full max-w-md mx-auto mt-2 mb-2 p-2 flex flex-col">
+        <div className="modal-header flex justify-between items-center p-2 border-b border-indigo-900">
+          <h3 className="font-bold text-indigo-100 text-lg">Profile</h3>
           <button
-            onClick={closeProfileModal}
+            onClick={() => {
+              console.log("closeProfileModal clicked for userId:", userId)
+              closeProfileModal()
+            }}
             className="text-indigo-100 hover:text-pink-400 p-1 rounded-full hover:bg-indigo-900 transition-colors duration-300"
             aria-label="Close profile"
           >
@@ -136,37 +211,28 @@ export default function ProfileModal({
           </button>
         </div>
 
-        <div className="modal-body p-6 overflow-y-auto h-[calc(100%-4rem)]">
+        <div className="modal-body  pb-[7rem] overflow-y-auto scrollbar-hidden p-2 bg-gradient-to-b from-gray-800 to-indigo-900 rounded-lg shadow-lg max-h-[calc(100vh-4rem)]">
           {/* User Info */}
-          <div className="flex items-center space-x-4 mb-6">
+          <div className="flex items-center space-x-4 mb-4">
             <img
               src={user.avatar || "/bgmi.jpg"}
               alt={`${user.name}'s avatar`}
-              className="w-16 h-16 rounded-full border-2 border-indigo-200 glow transition-all duration-300 hover:scale-110"
+              className="w-12 h-12 rounded-full border-2 border-indigo-200 glow transition-all duration-300 hover:scale-110"
             />
-            <div className="flex flex-row gap-7">
-              <h3 className="font-bold text-lg text-indigo-100">{user.name}</h3>
-              <p className="text-indigo-100 font-medium pt-1">Level: {getUserLevel(getUserXP(userId))}</p>
-              {toggleFollow && (
-                <button
-                  onClick={() => toggleFollow(userId)}
-                  className={`btn-glossy flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium text-indigo-100 transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-500`}
-                  aria-label={isFollowing(userId) ? "Unfollow user" : "Follow user"}
-                  aria-pressed={isFollowing(userId)}
-                >
-                  <UserPlus size={14} />
-                  <span>{isFollowing(userId) ? "Unfollow" : "Follow"}</span>
-                </button>
-              )}
+            <div className="flex flex-row gap-40">
+              <h3 className="font-bold text-base text-indigo-100">{user.name}</h3>
+              <p className="text-indigo-100 font-medium text-sm pt-1">
+                Level: {getUserLevel ? getUserLevel(getUserXP ? getUserXP(userId) : 0) : "N/A"}
+              </p>
             </div>
           </div>
 
           {/* Player Stats */}
-          <div className="mb-6">
-            <h4 className="font-medium mb-3 text-indigo-100 border-b border-indigo-900 pb-1 flex items-center">
+          <div className="mb-4">
+            <h4 className="font-medium mb-2 text-indigo-100 border-b border-indigo-900 pb-1 flex items-center text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1 text-indigo-100"
+                className="h-4 w-4 mr-1 text-indigo-100"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -180,60 +246,82 @@ export default function ProfileModal({
               </svg>
               Player Statistics
             </h4>
-            {playerStats[userId] ? (
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="card-hover bg-indigo-900 p-3 rounded-lg">
-                  <div className="text-sm text-indigo-100 mb-1">Matches Played</div>
-                  <div className="font-bold text-lg text-indigo-100">{playerStats[userId].matchesPlayed}</div>
+            {playerStats && playerStats[userId] ? (
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                <div className="card-hover bg-indigo-900 p-4 rounded-lg">
+                  <div className="text-xs text-indigo-100 mb-1">Matches Played</div>
+                  <div className="font-bold text-sm text-indigo-100">{playerStats[userId].matchesPlayed || 0}</div>
                 </div>
-                <div className="card-hover bg-green-900 p-3 rounded-lg">
-                  <div className="text-sm text-indigo-100 mb-1">Wins</div>
-                  <div className="font-bold text-lg text-green-400">{playerStats[userId].wins}</div>
+                <div className="card-hover bg-green-900 p-2 rounded-lg">
+                  <div className="text-xs text-indigo-100 mb-1">Wins</div>
+                  <div className="font-bold text-sm text-green-400">{playerStats[userId].wins || 0}</div>
                 </div>
-                <div className="card-hover bg-red-900 p-3 rounded-lg">
-                  <div className="text-sm text-indigo-100 mb-1">Losses</div>
-                  <div className="font-bold text-lg text-red-400">{playerStats[userId].losses}</div>
+                <div className="card-hover bg-red-900 p-2 rounded-lg">
+                  <div className="text-xs text-indigo-100 mb-1">Losses</div>
+                  <div className="font-bold text-sm text-red-400">{playerStats[userId].losses || 0}</div>
                 </div>
-                <div className="card-hover bg-indigo-900 p-3 rounded-lg">
-                  <div className="text-sm text-indigo-100 mb-1">Win Rate</div>
-                  <div className="font-bold text-lg text-indigo-200">{playerStats[userId].winRate}</div>
+                <div className="card-hover bg-indigo-900 p-2 rounded-lg">
+                  <div className="text-xs text-indigo-100 mb-1">Win Rate</div>
+                  <div className="font-bold text-sm text-indigo-200">{playerStats[userId].winRate || "0%"}</div>
                 </div>
-                <div className="card-hover bg-yellow-900 p-3 rounded-lg">
-                  <div className="text-sm text-indigo-100 mb-1">Best Score</div>
-                  <div className="font-bold text-lg text-yellow-400">{playerStats[userId].bestScore}</div>
+                <div className="card-hover bg-yellow-900 p-2 rounded-lg">
+                  <div className="text-xs text-indigo-100 mb-1">Best Score</div>
+                  <div className="font-bold text-sm text-yellow-400">{playerStats[userId].bestScore || 0}</div>
                 </div>
-                <div className="card-hover bg-purple-900 p-3 rounded-lg">
-                  <div className="text-sm text-indigo-100 mb-1">Rank</div>
-                  <div className="font-bold text-lg text-purple-400">{playerStats[userId].rank}</div>
+                <div className="card-hover bg-purple-900 p-2 rounded-lg">
+                  <div className="text-xs text-indigo-100 mb-1">Rank</div>
+                  <div className="font-bold text-sm text-purple-400">{playerStats[userId].rank || "Unranked"}</div>
                 </div>
               </div>
             ) : (
-              <p className="text-indigo-100">No stats available</p>
+              <p className="text-indigo-100 text-sm">No stats available</p>
             )}
 
             {/* Actions */}
-            <div className="flex flex-wrap gap-2 justify-between mt-6 border-t border-indigo-900 pt-4">
+            <div className="flex flex-wrap gap-2 justify-center mt-4 border-t border-indigo-900 pt-2">
               <button
-                onClick={() => startChat(userId)}
-                className="btn-glossy px-14 py-2 text-indigo-100 rounded-lg text-sm transition-all duration-300 flex items-center"
+                onClick={() => {
+                  console.log("Chat button clicked for userId:", userId)
+                  setShowChatPopup(true)
+                }}
+                className="btn-glossy px-8 py-1 text-indigo-100 rounded-lg text-xs transition-all duration-300 flex items-center"
+                aria-label="Open chat popup"
               >
-                <MessageCircle className="h-4 w-4 mr-1" /> Chat
+                <MessageCircle className="h-3 w-3 mr-1" /> Chat
               </button>
+              {toggleFollow && (
+                <button
+                  onClick={() => {
+                    console.log("toggleFollow clicked for userId:", userId, "isFollowing:", isFollowing(userId))
+                    toggleFollow(userId)
+                  }}
+                  className="btn-glossy flex items-center gap-1 px-8 py-1 rounded-lg text-xs font-medium text-indigo-100 transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-500"
+                  aria-label={isFollowing(userId) ? "Unfollow user" : "Follow user"}
+                  aria-pressed={isFollowing(userId)}
+                >
+                  <UserPlus size={12} />
+                  <span>{isFollowing(userId) ? "Unfollow" : "Follow"}</span>
+                </button>
+              )}
               <button
-                onClick={() => inviteToGame(userId)}
-                className="btn-glossy px-14 py-2 text-indigo-100 rounded-lg text-sm transition-all duration-300 flex items-center"
+                onClick={() => {
+                  console.log("Invite button clicked for userId:", userId)
+                  setShowInvitePopup(true)
+                }}
+                className="btn-glossy px-8 py-1 text-indigo-100 rounded-lg text-xs transition-all duration-300 flex items-center"
+                aria-label="Open invite popup"
               >
-                <Trophy className="h-4 w-4 mr-1" /> Invite
+                <Trophy className="h-3 w-3 mr-1" /> Invite
               </button>
             </div>
           </div>
 
           {/* Achievements */}
-          <div className="mb-6">
-            <h4 className="font-medium mb-3 text-indigo-100 border-b border-indigo-900 pb-1 flex items-center">
+          <div className="mb-2">
+            <h4 className="font-medium mb-2 text-indigo-100 border-b border-indigo-900 p-1 flex items-center text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1 text-indigo-100"
+                className="h-4 w-4 mr-1 text-indigo-100"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -247,39 +335,39 @@ export default function ProfileModal({
               </svg>
               Achievements
             </h4>
-            {userBadges[userId] && userBadges[userId].length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
-                {userBadges[userId].map((achievementId) => {
+            {userBadges && userBadges[userId] && userBadges[userId].length > 0 ? (
+              <div className="grid grid-cols-3 gap-2">
+                {userBadges[userId].slice(0, 6).map((achievementId) => {
                   const achievement = getAchievementById(achievementId)
                   return (
                     achievement && (
                       <div
                         key={achievement.id}
-                        className="card-hover bg-indigo-900 rounded-lg p-3 flex flex-col items-center justify-center"
+                        className="card-hover bg-indigo-900 rounded-lg p-2 flex flex-col items-center justify-center"
                       >
                         <div
-                          className={`text-2xl mb-2 ${achievementCategories.find((c) => c.id === achievement.category)?.color.replace("bg-", "text-")}`}
+                          className={`text-lg mb-1 ${achievementCategories.find((c) => c.id === achievement.category)?.color.replace("bg-", "text-")}`}
                         >
                           {achievement.icon}
                         </div>
-                        <p className="text-sm font-medium text-indigo-100 text-center">{achievement.name}</p>
-                        <p className="text-xs text-indigo-200 text-center mt-1">{achievement.description}</p>
+                        <p className="text-xs font-medium text-indigo-100 text-center">{achievement.name}</p>
+                        <p className="text-[10px] text-indigo-200 text-center mt-1">{achievement.description}</p>
                       </div>
                     )
                   )
                 })}
               </div>
             ) : (
-              <p className="text-indigo-100">No achievements yet</p>
+              <p className="text-indigo-100 text-sm">No achievements yet</p>
             )}
           </div>
 
           {/* Gaming History */}
-          <div className="mb-6">
-            <h4 className="font-medium mb-3 text-indigo-100 border-b border-indigo-900 pb-1 flex items-center">
+          <div className="mb-4">
+            <h4 className="font-medium mb-2 text-indigo-100 border-b border-indigo-900 pb-1 flex items-center text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1 text-indigo-100"
+                className="h-4 w-4 mr-1 text-indigo-100"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -293,34 +381,191 @@ export default function ProfileModal({
               </svg>
               Recent Activity
             </h4>
-            <div className="space-y-3">
-              <div className="card-hover bg-indigo-900 p-3 rounded-lg flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
                 <div>
-                  <div className="text-sm font-medium text-indigo-100">Chess Match</div>
-                  <div className="text-xs text-indigo-200">
-                    vs. {users[Math.floor(Math.random() * users.length)]?.name}
+                  <div className="text-xs font-medium text-indigo-100">Chess Match</div>
+                  <div className="text-[10px] text-indigo-200">
+                    vs. {users && users.length > 0 ? users[Math.floor(Math.random() * users.length)]?.name : "Unknown"}
                   </div>
                 </div>
-                <div className="text-sm font-bold text-green-400 bg-green-900 px-3 py-1 rounded-full">Won</div>
+                <div className="text-xs font-bold text-green-400 bg-green-900 px-2 py-0.5 rounded-full">Won</div>
               </div>
-              <div className="card-hover bg-indigo-900 p-3 rounded-lg flex justify-between items-center">
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
                 <div>
-                  <div className="text-sm font-medium text-indigo-100">Poker Tournament</div>
-                  <div className="text-xs text-indigo-200">8 players</div>
+                  <div className="text-xs font-medium text-indigo-100">Poker Tournament</div>
+                  <div className="text-[10px] text-indigo-200">8 players</div>
                 </div>
-                <div className="text-sm font-bold text-amber-400 bg-amber-900 px-3 py-1 rounded-full">3rd Place</div>
+                <div className="text-xs font-bold text-amber-400 bg-amber-900 px-2 py-0.5 rounded-full">3rd Place</div>
               </div>
-              <div className="card-hover bg-indigo-900 p-3 rounded-lg flex justify-between items-center">
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
                 <div>
-                  <div className="text-sm font-medium text-indigo-100">Racing Challenge</div>
-                  <div className="text-xs text-indigo-200">Time Trial</div>
+                  <div className="text-xs font-medium text-indigo-100">Poker Tournament</div>
+                  <div className="text-[10px] text-indigo-200">8 players</div>
                 </div>
-                <div className="text-sm font-bold text-blue-400 bg-blue-900 px-3 py-1 rounded-full">New Record</div>
+                <div className="text-xs font-bold text-amber-400 bg-amber-900 px-2 py-0.5 rounded-full">3rd Place</div>
+              </div>
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
+                <div>
+                  <div className="text-xs font-medium text-indigo-100">Poker Tournament</div>
+                  <div className="text-[10px] text-indigo-200">8 players</div>
+                </div>
+                <div className="text-xs font-bold text-amber-400 bg-amber-900 px-2 py-0.5 rounded-full">3rd Place</div>
+              </div>
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
+                <div>
+                  <div className="text-xs font-medium text-indigo-100">Poker Tournament</div>
+                  <div className="text-[10px] text-indigo-200">8 players</div>
+                </div>
+                <div className="text-xs font-bold text-amber-400 bg-amber-900 px-2 py-0.5 rounded-full">3rd Place</div>
+              </div>
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
+                <div>
+                  <div className="text-xs font-medium text-indigo-100">Poker Tournament</div>
+                  <div className="text-[10px] text-indigo-200">8 players</div>
+                </div>
+                <div className="text-xs font-bold text-amber-400 bg-amber-900 px-2 py-0.5 rounded-full">3rd Place</div>
+              </div>
+              <div className="card-hover bg-indigo-900 p-2 rounded-lg flex justify-between items-center">
+                <div>
+                  <div className="text-xs font-medium text-indigo-100">Racing Challenge</div>
+                  <div className="text-[10px] text-indigo-200">Time Trial</div>
+                </div>
+                <div className="text-xs font-bold text-blue-400 bg-blue-900 px-2 py-0.5 rounded-full">New Record</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Chat Popup */}
+      {showChatPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-60 fade-in">
+          <div className="popup-content slide-down glossy-dark w-full max-w-sm mx-auto p-4 rounded-lg shadow-lg">
+            <div className="popup-header flex justify-between items-center p-2 border-b border-indigo-700">
+              <h3 className="font-semibold text-indigo-100 text-base">Chat with {user.name}</h3>
+              <button
+                onClick={() => {
+                  console.log("Close chat popup for userId:", userId)
+                  setShowChatPopup(false)
+                  setChatMessage("")
+                }}
+                className="text-indigo-200 hover:text-blue-400 p-1 rounded-full hover:bg-indigo-800 transition-colors duration-300"
+                aria-label="Close chat popup"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="popup-body bg-gradient-to-b from-indigo-900 to-blue-900 p-4 rounded-b-md">
+              <div className="mb-4 card-hover p-2 rounded-lg">
+                <label htmlFor="chatMessage" className="block text-indigo-100 text-sm font-bold mb-2">
+                  Message
+                </label>
+                <textarea
+                  id="chatMessage"
+                  className="shadow appearance-none border border-indigo-700 rounded w-full py-2 px-3 text-indigo-100 bg-indigo-800 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
+                  placeholder="Type your message..."
+                  rows={3}
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  aria-label="Chat message"
+                ></textarea>
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    console.log("Cancel chat popup for userId:", userId)
+                    setShowChatPopup(false)
+                    setChatMessage("")
+                  }}
+                  className="px-4 py-1 text-indigo-100 bg-indigo-800 rounded-lg text-sm hover:bg-indigo-700 transition-all duration-300"
+                  aria-label="Cancel chat"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    console.log("Send chat message for userId:", userId, "message:", chatMessage)
+                    if (chatMessage.trim()) {
+                      startChat(userId, chatMessage)
+                      setShowChatPopup(false)
+                      setChatMessage("")
+                    } else {
+                      alert("Please enter a message")
+                    }
+                  }}
+                  className="popup-btn-glossy px-4 py-1 text-indigo-100 rounded-lg text-sm transition-all duration-300"
+                  aria-label="Send chat message"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Invite Popup */}
+      {showInvitePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-60 fade-in">
+          <div className="popup-content slide-down glossy-dark w-full max-w-sm mx-auto p-4 rounded-lg shadow-lg">
+            <div className="popup-header flex justify-between items-center p-2 border-b border-indigo-700">
+              <h3 className="font-semibold text-indigo-100 text-base">Invite {user.name} to Game</h3>
+              <button
+                onClick={() => {
+                  console.log("Close invite popup for userId:", userId)
+                  setShowInvitePopup(false)
+                }}
+                className="text-indigo-200 hover:text-blue-400 p-1 rounded-full hover:bg-indigo-800 transition-colors duration-300"
+                aria-label="Close invite popup"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="popup-body bg-gradient-to-b from-indigo-900 to-blue-900 p-4 rounded-b-md">
+              <div className="mb-4 card-hover p-2 rounded-lg">
+                <label htmlFor="gameType" className="block text-indigo-100 text-sm font-bold mb-2">
+                  Game Type
+                </label>
+                <select
+                  id="gameType"
+                  className="shadow appearance-none border border-indigo-700 rounded w-full py-2 px-3 text-indigo-100 bg-indigo-800 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
+                  value={selectedGame}
+                  onChange={(e) => setSelectedGame(e.target.value)}
+                  aria-label="Select game type"
+                >
+                  <option value="Chess">Chess</option>
+                  <option value="Poker">Poker</option>
+                  <option value="Racing">Racing</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    console.log("Cancel invite popup for userId:", userId)
+                    setShowInvitePopup(false)
+                  }}
+                  className="px-4 py-1 text-indigo-100 bg-indigo-800 rounded-lg text-sm hover:bg-indigo-700 transition-all duration-300"
+                  aria-label="Cancel invite"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    console.log("Send invite for userId:", userId, "game:", selectedGame)
+                    inviteToGame(userId, selectedGame)
+                    setShowInvitePopup(false)
+                  }}
+                  className="popup-btn-glossy px-4 py-1 text-indigo-100 rounded-lg text-sm transition-all duration-300"
+                  aria-label="Send game invite"
+                >
+                  Send Invite
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
