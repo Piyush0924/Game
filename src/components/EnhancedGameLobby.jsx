@@ -10,7 +10,7 @@ import TictactoeGameLogic from "../games/Tictactoe/TictactoeGameLogic";
 import CoinflipGameLogic from "../games/Coinflip/CoinflipGameLogic";
 import DiceGameLogic from "../games/Dice/DiceGameLogic";
 import StoneGameLogic from "../games/Stone-Paper/StoneGameLogic";
-
+import socket from '../socekt';
 const EnhancedGameLobby = ({
   entryFee = 10,
   gameMode = "Classic",
@@ -23,6 +23,7 @@ const EnhancedGameLobby = ({
   const params = useParams();
   const routeGameId = params.gameId;
   const gameId = propGameId || routeGameId || "memorymatch";
+  // const gameId = '6650c2b234def789abc00001';
   const navigate = useNavigate();
   const { addMoney } = useWallet();
   
@@ -30,6 +31,8 @@ const EnhancedGameLobby = ({
   const prizeAwarded = useRef(false);
   
   // Game states
+  const [roomId, setRoomId] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [status, setStatus] = useState(initialStatus);
   const [timeLeft, setTimeLeft] = useState(3);
   const [gameBg, setGameBg] = useState("");
@@ -58,27 +61,101 @@ const EnhancedGameLobby = ({
   const [maxTournamentMatches, setMaxTournamentMatches] = useState(tournamentMatches || 5);
   
   // Set up game background and determine if it's an action game
-  useEffect(() => {
-    if (gameId) {
-      setGameBg(`/${gameId.toLowerCase()}.jpg`);
-      setIsActionGame(["bgmi", "freefire"].includes(gameId.toLowerCase()));
-    }
+  // useEffect(() => {
+  //   if (gameId) {
+  //     setGameBg(`/${gameId.toLowerCase()}.jpg`);
+  //     setIsActionGame(["bgmi", "freefire"].includes(gameId.toLowerCase()));
+  //   }
     
-    const isTournamentMode = gameMode?.toLowerCase() === "tournament";
-    setIsTournament(isTournamentMode);
+  //   const isTournamentMode = gameMode?.toLowerCase() === "tournament";
+  //   setIsTournament(isTournamentMode);
     
-    if (isTournamentMode) {
-      setMaxTournamentMatches(tournamentMatches || 5);
-      setCurrentTournamentMatch(0);
+  //   if (isTournamentMode) {
+  //     setMaxTournamentMatches(tournamentMatches || 5);
+  //     setCurrentTournamentMatch(0);
+  //   } else {
+  //     setPrizeAmount(getPrizeFromEntry(entryFee));
+  //   }
+  // }, [gameId, gameMode, entryFee, tournamentMatches]);
+useEffect(() => {
+    // Get userId from localStorage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser && storedUser._id) {
+      setUserId(storedUser._id);
     } else {
-      setPrizeAmount(getPrizeFromEntry(entryFee));
+      setStatus('User not logged in.');
     }
-  }, [gameId, gameMode, entryFee, tournamentMatches]);
 
+    // Add connection status logging
+    console.log("Socket connection status:", socket.connected);
+
+    socket.on('connect', () => {
+      console.log("Socket connected");
+    });
+
+    socket.on('disconnect', () => {
+      console.log("Socket disconnected");
+    });
+
+    socket.on('waiting_for_opponent', () => {
+      console.log("Received waiting_for_opponent event");
+      setStatus('Waiting for opponent...');
+    });
+
+    socket.on('match_found', ({ roomId, players }) => {
+      console.log("Received match_found event", { roomId, players });
+      setStatus('Match found! Joining...');
+      setRoomId(roomId);
+      
+      // Add a delay before starting the game
+      setTimeout(() => {
+        console.log("Starting game after match found");
+        setStatus('gaming');
+      }, 3000);
+    });
+
+    socket.on('matchmaking_error', (msg) => {
+      console.log("Received matchmaking_error event", msg);
+      setStatus(`Error: ${msg}`);
+    });
+
+    socket.on('game_start', () => {
+      console.log("Received game_start event");
+      setStatus('gaming');
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('waiting_for_opponent');
+      socket.off('match_found');
+      socket.off('matchmaking_error');
+      socket.off('game_start');
+    };
+  }, []);
   // Start matchmaking
   const findMatch = () => {
+    console.log("Starting findMatch function");
+    console.log("Current status:", status);
+    console.log("Current userId:", userId);
+    
+    if (!userId) {
+      console.log("User not logged in");
+      setStatus('User not logged in.');
+      return;
+    }
+
+    // Force a state update to ensure it changes
     setStatus("matching");
     setTimeLeft(3);
+    
+    // Add a small delay to ensure state updates are processed
+    setTimeout(() => {
+      console.log("Emitting join_matchmaking");
+      socket.emit('join_matchmaking', { userId, gameId });
+      console.log("Status after emit:", status);
+    }, 100);
+
     setPlayersInQueue(Math.floor(Math.random() * 500) + 500);
   };
 
@@ -264,6 +341,9 @@ const EnhancedGameLobby = ({
   
   // Render the appropriate game component based on gameId
   const renderGameComponent = () => {
+    console.log("Rendering game component for gameId:", gameId);
+    console.log("Current status:", status);
+    
     // Try to dynamically import and render game component based on gameId
     try {
       // Map of game IDs to their corresponding logic components
@@ -279,7 +359,16 @@ const EnhancedGameLobby = ({
       const GameComponent = gameComponents[gameId.toLowerCase()];
       
       if (GameComponent) {
-        return <GameComponent onGameEnd={handleGameCompletion} />;
+        console.log("Found game component:", GameComponent.name);
+        return (
+          <div className="w-full h-full">
+            <GameComponent 
+              onGameEnd={handleGameCompletion} 
+              roomId={roomId}
+              userId={userId}
+            />
+          </div>
+        );
       } else {
         console.warn(`No component found for game: ${gameId}. Using fallback.`);
         return (
@@ -502,8 +591,10 @@ const EnhancedGameLobby = ({
         
         {/* Gaming Status */}
         {status === "gaming" && (
-          <div className="fixed inset-0 z-20">
-            {renderGameComponent()}
+          <div className="fixed inset-0 z-20 bg-black/80">
+            <div className="w-full h-full flex items-center justify-center">
+              {renderGameComponent()}
+            </div>
           </div>
         )}
         
