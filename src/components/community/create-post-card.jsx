@@ -138,7 +138,7 @@ export default function CreatePostCard({
 
   return (
     <div
-      className="w-full bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-lg p-3 mb-4 transition-all duration-300 ease-in-out"
+      className="w-full bg-gradient-to-b from-white to-gray-50 rounded-b-md  shadow-lg p-1 mb-1 transition-all duration-300"
       style={{
         paddingLeft: "env(safe-area-inset-left)",
         paddingRight: "env(safe-area-inset-right)",
@@ -155,36 +155,15 @@ export default function CreatePostCard({
       `}</style>
 
       {/* Header, Follow Button, and Textarea */}
-      <div className="flex items-start gap-2 mb-3">
-        {/* Create Post Header and Follow Button */}
-        <div className="flex items-center gap-2 min-w-[110px]">
-          <PlusCircle size={18} className="text-blue-500" />
-          <span className="text-sm font-medium text-gray-900">Create Post</span>
-          {toggleFollow && currentUserId && (
-            <button
-              onClick={() => toggleFollow(currentUserId)}
-              className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 hover:scale-105 transform ${
-                isUserFollowing
-                  ? "bg-gray-400 hover:bg-gray-500"
-                  : "bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
-              }`}
-              aria-label={isUserFollowing ? "Unfollow user" : "Follow user"}
-              aria-pressed={isUserFollowing}
-            >
-              <UserPlus size={14} />
-              <span>{isUserFollowing ? "Unfollow" : "Follow"}</span>
-            </button>
-          )}
-        </div>
-
+      <div className="flex items-start gap-2 mb-1">
         {/* Textarea */}
         <textarea
           ref={textareaRef}
           value={newPostContent}
           onChange={(e) => setNewPostContent(e.target.value)}
           placeholder="What's on your mind?"
-          maxLength={5000} // Added to prevent excessively long posts
-          className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-normal text-gray-900 placeholder-gray-400 min-h-[60px] resize-none"
+          maxLength={5000}
+          className="flex-1 p-2 border mb-1 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-normal text-gray-900 placeholder-gray-400 min-h-[60px] resize-none"
           aria-label="Create a new post"
         />
       </div>
@@ -192,7 +171,7 @@ export default function CreatePostCard({
       {/* Body */}
       <div>
         {selectedFile && !mediaType && (
-          <div className="mb-3 bg-gray-100 rounded-lg border border-gray-200 shadow-sm fade-in p-2">
+          <div className="mb-3 bg-gray-100 border border-gray-200 shadow-sm fade-in p-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 pl-1 sm:pl-1">
                 <div className="text-blue-900">
@@ -311,21 +290,20 @@ export default function CreatePostCard({
               setShowMediaOptions(!showMediaOptions)
               setMediaType(null)
             }}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 transition-colors duration-300 touch-action-manipulation"
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-300 touch-action-manipulation"
             aria-label={showMediaOptions ? "Hide media options" : "Show media options"}
           >
-            <PlusCircle className="h-4 w-4 text-blue-500" />
+            <PlusCircle className="h-4 w-4 text-blue-500 hover:text-blue-700" />
             <span className="hidden sm:inline-block">Add Media</span>
           </button>
 
           <button
             onClick={() => alert("Live streaming feature coming soon!")}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 transition-colors duration-300 touch-action-manipulation"
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-300 touch-action-manipulation"
             aria-label="Go live (coming soon)"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
+              className="h-4 w-4 text-blue-500 hover:text-blue-700"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -342,28 +320,28 @@ export default function CreatePostCard({
 
           <button
             onClick={() => setShowPollCreator(true)}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 transition-colors duration-300 touch-action-manipulation"
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-300 touch-action-manipulation"
             aria-label="Create poll"
           >
-            <BarChart2 className="h-4 w-4" />
+            <BarChart2 className="h-4 w-4 text-blue-500 hover:text-blue-700" />
             <span className="hidden sm:inline-block">Poll</span>
           </button>
 
           <button
             onClick={() => setShowTagPeople(true)}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 transition-colors duration-300 touch-action-manipulation"
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-300 touch-action-manipulation"
             aria-label="Tag people"
           >
-            <Tag className="h-4 w-4" />
+            <Tag className="h-4 w-4 text-blue-500 hover:text-blue-700" />
             <span className="hidden sm:inline-block">Tag</span>
           </button>
 
           <button
             onClick={() => setShowScheduler(true)}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 transition-colors duration-300 touch-action-manipulation"
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-300 touch-action-manipulation"
             aria-label="Schedule post"
           >
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-4 w-4 text-blue-500 hover:text-blue-700" />
             <span className="hidden sm:inline-block">Schedule</span>
           </button>
 
@@ -395,7 +373,7 @@ export default function CreatePostCard({
         </div>
 
         {showMediaOptions && (
-          <div className="bg-white rounded-lg p-3 shadow-md mb-3 border border-gray-200 fade-in">
+          <div className="bg-white rounded-lg pb-1 shadow-md border border-gray-200 fade-in">
             <div className="flex flex-wrap gap-2 justify-center">
               <button
                 onClick={() => {
@@ -405,11 +383,11 @@ export default function CreatePostCard({
                 className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors duration-300 touch-action-manipulation ${
                   mediaType === "photo"
                     ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 } text-sm font-medium`}
                 aria-label="Add photo"
               >
-                <ImageIcon size={16} />
+                <ImageIcon size={16} className={`text-blue-500 hover:text-blue-700 ${mediaType === "photo" ? "text-blue-700" : ""}`} />
                 <span>Photo</span>
               </button>
 
@@ -421,11 +399,11 @@ export default function CreatePostCard({
                 className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors duration-300 touch-action-manipulation ${
                   mediaType === "video"
                     ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 } text-sm font-medium`}
                 aria-label="Add video"
               >
-                <Film size={16} />
+                <Film size={16} className={`text-blue-500 hover:text-blue-700 ${mediaType === "video" ? "text-blue-700" : ""}`} />
                 <span>Video</span>
               </button>
 
@@ -437,11 +415,11 @@ export default function CreatePostCard({
                 className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors duration-300 touch-action-manipulation ${
                   mediaType === "music"
                     ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 } text-sm font-medium`}
                 aria-label="Add music"
               >
-                <Music size={16} />
+                <Music size={16} className={`text-blue-500 hover:text-blue-700 ${mediaType === "music" ? "text-blue-700" : ""}`} />
                 <span>Music</span>
               </button>
 
@@ -450,11 +428,11 @@ export default function CreatePostCard({
                 className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors duration-300 touch-action-manipulation ${
                   mediaType === "background"
                     ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 } text-sm font-medium`}
                 aria-label="Add background"
               >
-                <Palette size={16} />
+                <Palette size={16} className={`text-blue-500 hover:text-blue-700 ${mediaType === "background" ? "text-blue-700" : ""}`} />
                 <span>Background</span>
               </button>
             </div>

@@ -24,29 +24,29 @@ import { useCommunityData } from "./useCommunityData"
 
 export default function CommunityPage() {
   const {
-    users,
-    filteredUsers,
-    posts,
-    playerStats,
-    achievements,
-    events,
-    announcements,
-    userBadges,
-    gameOptions,
-    chats,
-    search,
-    addPostComment,
-    toggleLikePost,
-    createPost,
-    sendGameInvite,
-    toggleFollow,
-    isFollowing,
-    startChat,
-    sendChatMessage,
-    formatDate,
-    getUserLevel,
-    getUserXP,
-  } = useCommunityData()
+    users = [],
+    filteredUsers = [],
+    posts = [],
+    playerStats = [],
+    achievements = [],
+    events = [],
+    announcements = [],
+    userBadges = [],
+    gameOptions = [],
+    chats = [],
+    search = () => {},
+    addPostComment = () => {},
+    toggleLikePost = () => {},
+    createPost = () => {},
+    sendGameInvite = () => {},
+    toggleFollow = () => {},
+    isFollowing = () => false,
+    startChat = () => {},
+    sendChatMessage = () => {},
+    formatDate = (date) => new Date(date).toLocaleString(),
+    getUserLevel = () => 1,
+    getUserXP = () => 0,
+  } = useCommunityData() || {}
 
   // UI state
   const [activeSection, setActiveSection] = useState("home")
@@ -65,6 +65,10 @@ export default function CommunityPage() {
   const [showScheduler, setShowScheduler] = useState(false)
   const [showCreateEvent, setShowCreateEvent] = useState(false)
   const [showCreateAnnouncement, setShowCreateAnnouncement] = useState(false)
+  const [pollData, setPollData] = useState({ question: "", options: ["", ""], allowMultipleVotes: false })
+
+  const currentUser = users.find((u) => u.isCurrentUser || u.id === 1)
+  const currentUserId = currentUser?.id
 
   // Toggle create post visibility
   const toggleCreatePostVisibility = () => {
@@ -73,7 +77,7 @@ export default function CommunityPage() {
 
   // Inactivity timer
   useEffect(() => {
-    const currentUser = users.find((u) => u.id === 1)
+    const currentUser = users.find((u) => u.isCurrentUser || u.id === 1)
     if (!currentUser?.isOnline) {
       setIsHubVisible(true)
       return
@@ -84,12 +88,9 @@ export default function CommunityPage() {
     const resetTimer = () => {
       setIsHubVisible(true)
       clearTimeout(inactivityTimeout)
-      inactivityTimeout = setTimeout(
-        () => {
-          setIsHubVisible(false)
-        },
-        5 * 60 * 1000,
-      )
+      inactivityTimeout = setTimeout(() => {
+        setIsHubVisible(false)
+      }, 5 * 60 * 1000)
     }
 
     const events = ["mousemove", "click", "keypress"]
@@ -139,9 +140,10 @@ export default function CommunityPage() {
   const handleSendGameInvite = async (userId, gameId) => {
     try {
       await sendGameInvite(userId, gameId)
+      setShowGameInvite(false)
     } catch (error) {
       console.error("Error sending game invite:", error)
-      throw error
+      alert("Failed to send game invite. Please try again.")
     }
   }
 
@@ -156,18 +158,12 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="h-full min-h-screen galaxy-background transition-all duration-500">
+    <div className="h-full min-h-screen mb-[3rem] rounded-md galaxy-background transition-all duration-500">
       {/* Global styles */}
       <style jsx>{`
         /* Galaxy Background */
         .galaxy-background {
-          background: linear-gradient(
-            135deg,
-            #0d1b2a 0%,
-            #1b263b 30%,
-            #2a2a72 60%,
-            #3c096c 100%
-          );
+          background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 30%, #2a2a72 60%, #3c096c 100%);
           position: relative;
           overflow: hidden;
         }
@@ -181,8 +177,7 @@ export default function CommunityPage() {
           width: 100%;
           height: 100%;
           pointer-events: none;
-          background: 
-            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15) 0.1%, transparent 0.3%),
+          background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15) 0.1%, transparent 0.3%),
             radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.1) 0.15%, transparent 0.4%),
             radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.12) 0.1%, transparent 0.3%),
             radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.08) 0.1%, transparent 0.3%),
@@ -240,17 +235,6 @@ export default function CommunityPage() {
         .icon-animated:hover {
           transform: scale(1.2);
           color: #3b82f6;
-        }
-
-        /* Pulse animation for notifications */
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1); }
-        }
-
-        .pulse {
-          animation: pulse 1.5s infinite;
         }
 
         /* Fade in animation */
@@ -402,7 +386,7 @@ export default function CommunityPage() {
 
       {/* Community Hub (Main Container) */}
       <div
-        className={`h-[200vh] max-w-md mx-auto p-3 pb-16 sm:pb-2 md:pb-4 mt-3 sm:mt-2 glass rounded-2xl transition-opacity duration-500 ${
+        className={`h-auto max-w-md mx-auto p-3 mb-16 sm:pb-2 md:pb-4 mt-3 sm:mt-2  rounded-2xl transition-opacity duration-500 ${
           isHubVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -421,20 +405,11 @@ export default function CommunityPage() {
         <div className="flex justify-start">
           <button
             onClick={toggleCreatePostVisibility}
-            className="w-full create-post-toggle flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-white to-white text-black shadow-md hover:shadow-lg transition-all duration-300 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+            className="w-full create-post-toggle rounded-t-md rounded-b-none flex items-center gap-2 px-2 py-2 bg-gradient-to-r from-white to-white text-black shadow-md "
             aria-label={isCreatePostVisible ? "Hide post creation" : "Create a new post"}
           >
-            {isCreatePostVisible ? (
-              <>
-                <X size={16} />
-                <span className="font-medium"></span>
-              </>
-            ) : (
-              <>
-                <PlusCircle size={16} />
-                <span className="font-medium">Create Post</span>
-              </>
-            )}
+            {isCreatePostVisible ? <X className="rounded-b-full" size={16} /> : <PlusCircle size={18} />}
+            <span className="font-medium">{isCreatePostVisible ? "Create Post" : "Create Post"}</span>
           </button>
         </div>
 
@@ -444,8 +419,12 @@ export default function CommunityPage() {
           setShowPollCreator={setShowPollCreator}
           setShowTagPeople={setShowTagPeople}
           setShowScheduler={setShowScheduler}
+          toggleFollow={toggleFollow}
+          isFollowing={isFollowing}
+          currentUserId={currentUserId}
           isVisible={isCreatePostVisible}
           toggleVisibility={toggleCreatePostVisibility}
+          setPollData={setPollData}
         />
 
         {/* Main Content Area - Changes based on active section */}
@@ -506,7 +485,6 @@ export default function CommunityPage() {
             inviteToGame={inviteToGame}
             getUserLevel={getUserLevel}
             getUserXP={getUserXP}
-            className="modal-container"
           />
         )}
 
@@ -532,7 +510,21 @@ export default function CommunityPage() {
           />
         )}
 
-        {showPollCreator && <PollCreatorModal setShowPollCreator={setShowPollCreator} className="modal-container" />}
+        {showPollCreator && (
+          <PollCreatorModal
+            setShowPollCreator={setShowPollCreator}
+            pollData={pollData}
+            setPollData={(data) => {
+              setPollData(data)
+              // Update CreatePostCard's poll states
+              setHasPoll(true)
+              setPollQuestion(data.question)
+              setPollOptions(data.options)
+              setAllowMultipleVotes(data.allowMultipleVotes)
+            }}
+            className="modal-container"
+          />
+        )}
 
         {showTagPeople && (
           <TagPeopleModal users={users} setShowTagPeople={setShowTagPeople} className="modal-container" />
@@ -543,6 +535,11 @@ export default function CommunityPage() {
             users={users}
             gameOptions={gameOptions}
             setShowScheduler={setShowScheduler}
+            setScheduleData={({ date, time }) => {
+              setIsScheduled(true)
+              setScheduleDate(date)
+              setScheduleTime(time)
+            }}
             className="modal-container"
           />
         )}

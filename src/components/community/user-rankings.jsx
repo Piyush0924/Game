@@ -16,7 +16,7 @@ export default function UserRankings({ users, rankingType, handleProfileClick })
   const getStyles = () => {
     if (rankingType === "coins") {
       return {
-        container: "bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-yellow-200",
+        container: "bg-white rounded-md shadow-md overflow-hidden mb-6 card-hover border-2 border-yellow-200",
         header: "bg-gradient-to-r from-yellow-50 to-amber-50 px-4 py-2 border-b",
         title: "font-semibold text-amber-800",
         row: "hover:bg-yellow-50",
@@ -25,7 +25,7 @@ export default function UserRankings({ users, rankingType, handleProfileClick })
       }
     } else {
       return {
-        container: "bg-white rounded-xl shadow-md overflow-hidden mb-6 card-hover border-2 border-blue-200",
+        container: "bg-white rounded-md shadow-md overflow-hidden mb-6 card-hover border-2 border-blue-200",
         header: "bg-gradient-to-r from-purple-50 to-blue-50 px-4 py-2 border-b",
         title: "font-semibold text-purple-800",
         row: "hover:bg-purple-50",

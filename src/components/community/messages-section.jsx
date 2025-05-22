@@ -2,7 +2,7 @@
 
 export default function MessagesSection({ users, startChat }) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 mb-6 card-hover border-2 border-pink-200">
+    <div className="bg-white rounded-b-md rounded-t-none shadow-md p-2 mb-6 card-hover border-2 border-pink-200">
       <h2 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600 mb-4">
         Messages
       </h2>
