@@ -99,13 +99,14 @@ useEffect(() => {
 
     socket.on('waiting_for_opponent', () => {
       console.log("Received waiting_for_opponent event");
-      setStatus('Waiting for opponent...');
+      setStatus('matching');
+      setTimeLeft(3);
     });
 
     socket.on('match_found', ({ roomId, players }) => {
       console.log("Received match_found event", { roomId, players });
       localStorage.setItem("match_found", JSON.stringify({ roomId, players }));
-      setStatus('Match found! Joining...');
+      setStatus('matched');
       setRoomId(roomId);
       
       // Add a delay before starting the game

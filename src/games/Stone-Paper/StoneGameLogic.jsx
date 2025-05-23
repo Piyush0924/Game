@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Scissors, FileText, Hand } from "lucide-react"
+import { Scissors, FileText, Hand, CloudCog } from "lucide-react"
 import socket from '../../socekt'
 import axios from 'axios'
 
@@ -235,6 +235,16 @@ export default function RockPaperScissors() {
       clearInterval(timerRef.current)
 
       console.log('Move updated successfully:', response.data)
+
+      // Check if both players have made their moves
+      const updatedGame = await axios.get(`http://localhost:5000/api/game/room/${roomId}`)
+      const currentRound = updatedGame.data.rounds.find(r => r.roundNumber === roundNumber)
+      
+      if (currentRound && currentRound.player1Move && currentRound.player2Move) {
+        // Both players have moved, evaluate the round
+        evaluateRound(currentRound.player1Move, currentRound.player2Move)
+      }
+
     } catch (error) {
       console.error('Error updating move:', error)
     } finally {
@@ -260,10 +270,14 @@ export default function RockPaperScissors() {
       ) {
         result = "player1"
         roundWinner = playerId1
+        
+      console.log("result"+roundWinner)
         setScores((prev) => ({ ...prev, player1: prev.player1 + 1 }))
       } else {
         result = "player2"
         roundWinner = playerId2
+        
+      console.log("result"+roundWinner)
         setScores((prev) => ({ ...prev, player2: prev.player2 + 1 }))
       }
 

@@ -38,6 +38,8 @@ import DiceDuel from './games/Dice/DiceDuel';
 import CoinFlipBet from './games/Coinflip/CoinFlipBet';
 import TicTacToe from './games/Tictactoe/Tictactoe';
 import GamingLoginMobile from './components/login_signup/GamingLoginMobile';
+import GameResultLobby from './components/GameResultLobby';
+import TictactoeGameLogic from './games/Tictactoe/TictactoeGameLogic';
 
 function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
@@ -374,6 +376,7 @@ function App() {
         
         <Route path="*" element={<GamesPage />} />
         <Route path="/login" element={<GamingLoginMobile />} />
+        <Route path="/g" element={<TictactoeGameLogic />} />
         
       </Routes>
     </Router>

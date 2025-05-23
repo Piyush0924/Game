@@ -30,6 +30,7 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
   const [error, setError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [playerSymbols, setPlayerSymbols] = useState({ player1: 'X', player2: 'O' });
+  const [roundResults, setRoundResults] = useState([]);
 
   // Winning combinations (rows, columns, diagonals)
   const winningCombinations = [
@@ -79,6 +80,7 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
     setBoard(game.rounds[game.currentRound - 1].board.flat());
     setIsPlayerTurn(game.currentTurn === userId);
     setRoundNumber(game.currentRound);
+    console.log(game.currentRound)
     setRoundScore({
       player1: game.player1Score,
       player2: game.player2Score
@@ -93,7 +95,18 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
       });
     }
 
+    // Update round results
+    if (game.rounds && game.rounds.length > 0) {
+      const completedRounds = game.rounds.filter(round => round.winner);
+      setRoundResults(completedRounds.map(round => ({
+        roundNumber: round.roundNumber,
+        winner: round.winner === playerId1 ? 'player1' : round.winner === playerId2 ? 'player2' : 'draw',
+        board: round.board
+      })));
+    }
+
     if (game.status === 'finished') {
+      console.log(game.winner)
       setGameOver(true);
       if (onGameEnd) {
         onGameEnd({
@@ -105,7 +118,7 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
         });
       }
     }
-  }, [userId, onGameEnd]);
+  }, [userId, onGameEnd, playerId1, playerId2]);
 
   // Initialize game
   useEffect(() => {
@@ -294,6 +307,42 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
           {getStatusMessage()}
         </div>
       </div>
+
+      {/* Round Results History */}
+      {roundResults.length > 0 && (
+        <div className="mt-6 w-full max-w-md">
+          <h3 className="text-lg font-semibold text-white mb-2">Round History</h3>
+          <div className="space-y-2">
+            {roundResults.map((result, index) => (
+              <div key={index} className="bg-white/5 rounded-lg p-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/80">Round {result.roundNumber}</span>
+                  <span className={`font-semibold ${
+                    result.winner === 'draw' ? 'text-yellow-400' :
+                    result.winner === 'player1' ? 'text-blue-400' : 'text-red-400'
+                  }`}>
+                    {result.winner === 'draw' ? 'Draw' :
+                     result.winner === 'player1' ? 'Player 1 Won' : 'Player 2 Won'}
+                  </span>
+                </div>
+                {/* <div className="mt-2 grid grid-cols-3 gap-1">
+                  {result.board.flat().map((cell, cellIndex) => (
+                    <div
+                      key={cellIndex}
+                      className={`aspect-square flex items-center justify-center text-sm
+                        ${cell === null ? 'bg-white/5' :
+                          cell === playerSymbols.player1 ? 'bg-blue-500/20 text-blue-400' :
+                          'bg-red-500/20 text-red-400'}`}
+                    >
+                      {cell}
+                    </div>
+                  ))}
+                </div> */}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
