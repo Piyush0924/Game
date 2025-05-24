@@ -31,7 +31,8 @@ const RockPaperGameSchema = new mongoose.Schema({
   roomId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room',
-    required: true
+    required: true,
+    unique: true
   },
   gamePrice: Number,
   player1: {

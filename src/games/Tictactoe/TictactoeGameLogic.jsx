@@ -109,12 +109,23 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
       console.log(game.winner)
       setGameOver(true);
       if (onGameEnd) {
+        console.log(userId)
+        console.log("game.player1Score"+game.player1Score)
+        console.log("game.player2Score"+game.player2Score)
         onGameEnd({
           winner: game.winner === userId ? 'player' : 'opponent',
           score: {
             player: game.winner === userId ? game.player1Score : game.player2Score,
-            opponent: game.winner === userId ? game.player2Score : game.player1Score
+            opponent: game.winner === userId ? game.player2Score : game.player1Score,
+            player1Score:game.player1Score,
+            player2Score:game.player2Score
           }
+        // onGameEnd({
+        //   winner: game.winner === userId ? 'player' : 'opponent',
+        //   score: {
+        //     player: game.winner === userId ? game.player1Score : game.player2Score,
+        //     opponent: game.winner === userId ? game.player2Score : game.player1Score
+        //   }
         });
       }
     }
@@ -127,7 +138,7 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
         setError(null);
         const response = await axios.get(`http://localhost:5000/api/tictactoe/room/${roomId}`);
         const game = response.data;
-        
+        console.log("getting data")
         if (!game) {
           setError('Failed to initialize game');
           return;
@@ -208,7 +219,8 @@ const TictactoeGameLogic = ({ onGameEnd }) => {
 
     const row = Math.floor(index / 3);
     const col = index % 3;
-    const symbol = isPlayer1 ? playerSymbols.player1 : playerSymbols.player2;
+    // Get the correct symbol based on player ID
+    const symbol = userId === playerId1 ? playerSymbols.player1 : playerSymbols.player2;
 
     try {
       setIsUpdating(true);

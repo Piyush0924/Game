@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const RockPaperGame = require('../models/RockPaperGame');
+const User = require('../models/User');
 
 // Create new game
 router.post('/create', async (req, res) => {
@@ -93,6 +94,58 @@ router.put('/move/:gameId', async (req, res) => {
   }
 });
 
+
+router.put('/update-winner/:roomId', async (req, res) => {
+  try {
+    const game = await RockPaperGame.findOne({ roomId: req.params.roomId });
+    if (!game) return res.status(404).json({ message: "Game not found" });
+
+    // Count round wins
+    let player1Score = 0;
+    let player2Score = 0;
+
+    for (const round of game.rounds) {
+      if (round.winner === 'player1') player1Score++;
+      else if (round.winner === 'player2') player2Score++;
+    }
+
+    // Determine overall winner
+    let winnerId = null;
+    if (player1Score > player2Score) {
+      winnerId = game.player1.playerId;
+    } else if (player2Score > player1Score) {
+      winnerId = game.player2.playerId;
+    }
+
+    // Update game
+    game.player1Score = player1Score;
+    game.player2Score = player2Score;
+    game.winner = winnerId;
+    game.status = 'finished';
+    await game.save();
+
+    // Award prize
+    if (winnerId) {
+      const prizeAmount = game.gamePrice * 2;
+      const winnerUser = await User.findById(winnerId);
+      if (winnerUser) {
+        winnerUser.Balance = (winnerUser.Balance || 0) + prizeAmount;
+        await winnerUser.save();
+      }
+    }
+
+    res.json({
+      message: winnerId ? "Winner updated and prize added." : "Game was a draw.",
+      winnerId,
+      player1Score,
+      player2Score
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 // Helper function to determine round winner
 function determineRoundWinner(move1, move2) {
   if (move1 === move2) return null;

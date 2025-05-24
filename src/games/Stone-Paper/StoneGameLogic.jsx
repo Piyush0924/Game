@@ -46,12 +46,18 @@ export default function RockPaperScissors() {
   const [isPlayerTurn, setIsPlayerTurn] = useState(false)
   const timerRef = useRef(null)
   const [isGameInitialized, setIsGameInitialized] = useState(false)
-
+const [gameWinner, setGameWinner] = useState(null);
+const [player1Score, setPlayer1Score] = useState(0);
+const [player2Score, setPlayer2Score] = useState(0);
+const [use, setUse]=useState("0")
   // Add debounce refs
   const lastUpdateRef = useRef(null)
   const updateTimeoutRef = useRef(null)
   const [isProcessingUpdate, setIsProcessingUpdate] = useState(false)
 
+
+  const [game, setGame] = useState(null);
+  const [roundResults, setRoundResults] = useState([]);
   // Timer effect
   useEffect(() => {
     if (isPlayerTurn && timeLeft > 0 && !gameOver) {
@@ -178,6 +184,33 @@ export default function RockPaperScissors() {
       // Check if game is over
       if (game.status === 'finished') {
         setGameOver(true)
+        // Get prize amount and wallet balance from localStorage
+// Sample variables (you can replace these with real values)
+// let game = { winner: "user123" };
+// let userId = "user123"; // Current user ID
+
+// Check if current user is the winner
+console.log("userid"+userId)
+console.log("game"+game.winner)
+if (game.winner === userId) {
+    // Get prize and wallet balance
+    let prizeAmount = parseInt(localStorage.getItem('prizeAmount') || '0', 10);
+    let walletBalance = parseInt(localStorage.getItem('walletBalance') || '0', 10);
+
+    // Add prize to wallet
+    let updatedBalance = walletBalance + prizeAmount;
+    localStorage.setItem('walletBalance', updatedBalance.toString());
+
+    // Optionally clear prizeAmount
+    localStorage.setItem('prizeAmount', '0');
+
+    console.log("🏆 You won! New Wallet Balance: ₹" + updatedBalance);
+} else {
+    console.log("You lost. Better luck next time.");
+}
+
+
+
         setWinner(game.winner === userId ? "player1" : "player2")
       }
     } finally {
@@ -207,7 +240,53 @@ export default function RockPaperScissors() {
     }
   }, [roomId, userId, isPlayer1, isGameInitialized, gameId, handleRoundUpdate])
 
+
+  useEffect(() => {
+    const fetchGame = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/game/room/${roomId}`);
+        const gameData = response.data;
+        setGame(gameData);
+
+        const results = gameData.rounds.map((round) => {
+          if (round.winner === 'player1') {
+            return `Round ${round.roundNumber}: ${gameData.player1.name} wins`;
+          } else if (round.winner === 'player2') {
+            return `Round ${round.roundNumber}: ${gameData.player2.name} wins`;
+          } else if (round.player1Move === null && round.player2Move === null) {
+            return `Round ${round.roundNumber}: No moves made`;
+          } else if (round.player1Move != null && round.player2Move === null){
+            return `Round ${round.roundNumber}: No moves made`;
+          }else {
+            return `Round ${round.roundNumber}: Draw`;
+          }
+        });
+        
+
+        setRoundResults(results);
+      } catch (err) {
+        console.error('Error fetching game data:', err);
+      }
+    };
+
+    // Fetch initially
+    fetchGame();
+
+    // Set interval to fetch every second
+    const interval = setInterval(fetchGame, 1000);
+
+    // Clean up on unmount
+    return () => clearInterval(interval);
+  }, [roomId]);
   // Handle player selection
+useEffect(() => {
+  if (roomId && roundNumber >= 3 && gameOver === true) {
+    updateGameWinner(roomId);
+  }
+}, [roundNumber, gameOver]);
+
+
+
   const handleChoice = async (choice) => {
     if (!gameId || !isPlayerTurn || isProcessingUpdate) {
       console.log('Cannot make move:', { gameId, isPlayerTurn, isProcessingUpdate })
@@ -270,18 +349,12 @@ export default function RockPaperScissors() {
       ) {
         result = "player1"
         roundWinner = playerId1
-        
-      console.log("result"+roundWinner)
         setScores((prev) => ({ ...prev, player1: prev.player1 + 1 }))
       } else {
         result = "player2"
         roundWinner = playerId2
-        
-      console.log("result"+roundWinner)
         setScores((prev) => ({ ...prev, player2: prev.player2 + 1 }))
       }
-
-      setRoundResult(result)
 
       // Get current game state
       const currentGame = await axios.get(`http://localhost:5000/api/game/room/${roomId}`)
@@ -303,11 +376,15 @@ export default function RockPaperScissors() {
 
       // Check if game is over (3 rounds)
       if (roundNumber >= 3) {
-        const gameWinner = scores.player1 > scores.player2 ? playerId1 : 
-                          scores.player2 > scores.player1 ? playerId2 : null
-        
+        // const gameWinner = scores.player1 > scores.player2 ? playerId1 : 
+        //                   scores.player2 > scores.player1 ? playerId2 : null
+        console.log("Game Over")
+        console.log("updategame")
         setGameOver(true)
-        setWinner(gameWinner === userId ? "player1" : "player2")
+        
+// Example usage:
+        setWinner("player2")
+        // setWinner(gameWinner === userId ? "player1" : "player2")
 
         // Update game status and room status
         await axios.put(`http://localhost:5000/api/game/round/${gameId}`, {
@@ -321,10 +398,10 @@ export default function RockPaperScissors() {
           winner: gameWinner
         })
       } else {
-        // Start next round after 3 seconds
+        // Automatically start next round after 1 second
         setTimeout(() => {
           startNextRound()
-        }, 3000)
+        }, 1000)
       }
     } catch (error) {
       console.error('Error updating round result:', error)
@@ -343,6 +420,42 @@ export default function RockPaperScissors() {
     // First player starts each round
     setIsPlayerTurn(isPlayer1)
   }
+async function updateGameWinner(roomId) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/game/update-winner/${roomId}`, {
+      method: 'PUT'
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Error updating winner:", data.message);
+      return;
+    }
+
+    // Update scores in state
+    setPlayer1Score(data.player1Score);
+    setPlayer2Score(data.player2Score);
+
+if (data.player1Score > data.player2Score) {
+  setWinner('player1');
+} else if (data.player2Score > data.player1Score) {
+  setWinner('player2');
+} else {
+  setWinner('draw');
+}
+
+    // Set winner state (null for draw)
+    if (data.winnerId) {
+      setGameWinner(data.winnerId); // use playerId like '6829af25...'
+    } else {
+      setGameWinner('draw');
+    }
+
+  } catch (error) {
+    console.error("Error fetching winner:", error);
+  }
+}
 
   // Reset the game
   const resetGame = () => {
@@ -472,7 +585,7 @@ export default function RockPaperScissors() {
 
       {/* Choice buttons */}
       {!gameOver && (
-        <div className={`grid grid-cols-3 gap-4 mb-6 ${roundResult ? "hidden" : "block"}`}>
+        <div className="grid grid-cols-3 gap-4 mb-6">
           {Object.values(CHOICES).map((choice) => (
             <button
               key={choice}
@@ -486,19 +599,25 @@ export default function RockPaperScissors() {
         </div>
       )}
 
-      {/* Next round button */}
-      {roundResult && !gameOver && (
-        <button onClick={startNextRound} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
-          Next Round
-        </button>
-      )}
-
       {/* Play again button */}
       {gameOver && (
         <button onClick={resetGame} className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md">
           Play Again
         </button>
       )}
+      <div>
+      <h2>Round Results</h2>
+      {roundResults.length === 0 ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {roundResults && roundResults.map((result, index) => (
+            <li key={index}>{result}</li>
+          ))}
+        </ul>
+      )}
     </div>
+    </div>
+    
   )
 }

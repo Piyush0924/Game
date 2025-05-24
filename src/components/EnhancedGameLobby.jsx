@@ -59,13 +59,16 @@ const EnhancedGameLobby = ({
   const [tournamentWins, setTournamentWins] = useState({ player: 0, opponent: 0 });
   const [currentTournamentMatch, setCurrentTournamentMatch] = useState(0);
   const [maxTournamentMatches, setMaxTournamentMatches] = useState(tournamentMatches || 5);
-  
+  const [winner, setWinner] = useState(null)
+  const [player1Score, setPlayer1Score] = useState(null)
+  const [player2Score, setPlayer2Score] = useState(null)
   // Set up game background and determine if it's an action game
+  // uncommented code
   // useEffect(() => {
-  //   if (gameId) {
-  //     setGameBg(`/${gameId.toLowerCase()}.jpg`);
-  //     setIsActionGame(["bgmi", "freefire"].includes(gameId.toLowerCase()));
-  //   }
+    // if (gameId) {
+    //   setGameBg(`/${gameId.toLowerCase()}.jpg`);
+    //   setIsActionGame(["bgmi", "freefire"].includes(gameId.toLowerCase()));
+    // }
     
   //   const isTournamentMode = gameMode?.toLowerCase() === "tournament";
   //   setIsTournament(isTournamentMode);
@@ -75,6 +78,7 @@ const EnhancedGameLobby = ({
   //     setCurrentTournamentMatch(0);
   //   } else {
   //     setPrizeAmount(getPrizeFromEntry(entryFee));
+  //     console.log(entryFee)
   //   }
   // }, [gameId, gameMode, entryFee, tournamentMatches]);
 useEffect(() => {
@@ -105,6 +109,10 @@ useEffect(() => {
 
     socket.on('match_found', ({ roomId, players }) => {
       console.log("Received match_found event", { roomId, players });
+      
+// Example usage
+deductEntryFee(entryFee);
+      console.log("entryfees"+entryFee)
       localStorage.setItem("match_found", JSON.stringify({ roomId, players }));
       setStatus('matched');
       setRoomId(roomId);
@@ -135,6 +143,23 @@ useEffect(() => {
       socket.off('game_start');
     };
   }, []);
+
+  function deductEntryFee(entryFee) {
+    let walletBalance = localStorage.getItem('walletBalance');
+    walletBalance = walletBalance ? parseInt(walletBalance, 10) : 0;
+
+    if (walletBalance >= entryFee) {
+        walletBalance -= entryFee;
+        localStorage.setItem('walletBalance', walletBalance.toString());
+        console.log(`Entry fee deducted. New balance: ₹${walletBalance}`);
+localStorage.setItem('prizeAmount', prizeAmount.toString());
+
+    } else {
+        console.log('Insufficient balance to deduct entry fee.');
+    }
+}
+
+
   // Start matchmaking
   const findMatch = () => {
     console.log("Starting findMatch function");
@@ -303,7 +328,14 @@ useEffect(() => {
   // Handle game completion based on game type
   const handleGameCompletion = (result) => {
     console.log("Game ended with result:", result);
-    
+    console.log("result"+result.winner)
+    console.log("result"+result.score.player)
+    console.log("result"+result.score.opponent)
+    console.log("result"+result.player1Score)
+    console.log("result"+result.player2Score)
+    setWinner(result.winner)
+    setPlayer1Score(result.player1Score)
+    setPlayer2Score(result.player2Score)
     // Use the actual scores from game result
     setScore({
       player: result.score.player,
@@ -665,13 +697,46 @@ useEffect(() => {
         {status === "results" && (
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 max-w-md w-full">
             <h2 className="text-2xl font-bold text-center mb-6">
-              {score.player > score.opponent ? (
+              {winner === "player" ? (
                 <span className="text-green-400">You Won!</span>
               ) : (
                 <span className="text-red-400">Better luck next time!</span>
               )}
+              {/* {score.player > score.opponent ? (
+                <span className="text-green-400">You Won!</span>
+              ) : (
+                <span className="text-red-400">Better luck next time!</span>
+              )} */}
             </h2>
             
+            {/* <div className="flex justify-between items-center mb-8">
+              <div className="text-center">
+                <div className={`w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden ${
+                  score.player > score.opponent ? "bg-green-500/20 border-2 border-green-500/50" : "bg-white/10 border border-white/30"
+                }`}>
+                  <img src="/avatar0.jpg" alt="You" className="w-full h-full object-cover" />
+                </div>
+                {winner === "player" ? <div className="text-2xl font-medium text-white">{player1Score>player2Score?player2Score:player1Score}</div>:
+                <div className="text-2xl font-medium text-white">{player1Score>player2Score?player2Score:player1Score}</div>}
+                {score.player > score.opponent && (
+                  <div className="text-xs text-green-400 mt-1">WINNER</div>
+                )}
+              </div>
+              
+              <div className="text-xl text-white/50">vs</div>
+              
+              <div className="text-center">
+                <div className={`w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden ${
+                  score.player < score.opponent ? "bg-green-500/20 border-2 border-green-500/50" : "bg-white/10 border border-white/30"
+                }`}>
+                  <img src={opponent?.avatar || "/avatar1.jpg"} alt="Opponent" className="w-full h-full object-cover" />
+                </div>
+                <div className="text-2xl font-medium text-white">{score.opponent}</div>
+                {score.player < score.opponent && (
+                  <div className="text-xs text-green-400 mt-1">WINNER</div>
+                )}
+              </div>
+            </div> */}
             <div className="flex justify-between items-center mb-8">
               <div className="text-center">
                 <div className={`w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden ${
